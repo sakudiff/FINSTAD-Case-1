@@ -1,0 +1,107 @@
+---
+title: "FINSTAD Case 1: Building an Integrated Financial Database"
+author: 
+  - "CRUZ, Ricardo Miguel Iñigo"
+  - "GALEDO, Enrique Lorenzo Hermoso"
+  - "SEBALLOS, Josiah Dweyn Panganiban"
+  - "SEECHUNG, Camille Castro"
+  - "SISON, Aaron Joshua Estacio"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    embed-resources: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+---
+
+# 1. Introduction
+
+```{r setup}
+# Load necessary libraries
+library(tidyverse)
+library(lubridate)
+library(quantmod)
+library(DBI)
+library(RSQLite)
+```
+
+# 2. Data Sources
+*Notes on selected U.S. asset, PH asset, crypto, SPY, and FRED variables.*
+
+```{r data-sources}
+# Define tickers
+us_asset <- ""
+ph_asset <- ""
+crypto <- ""
+```
+
+# 3. Data Acquisition
+*Acquire data, identify source, sample period, original observations, missing values, duplicates.*
+
+```{r data-acquisition}
+# Fetch data code goes here
+```
+
+# 4. Data Cleaning
+*Handle missing values, duplicates, return calculations.*
+
+```{r data-cleaning}
+# Cleaning code goes here
+```
+
+# 5. Database Integration
+*Perform joins and justify strategy.*
+
+```{r database-integration}
+# Merging code goes here (left_join, inner_join, etc.)
+```
+
+# 6. SQL-Based Financial Investigation
+*10 meaningful financial questions using select, filter, mutate, arrange, group_by, summarise.*
+
+```{r sql-investigation}
+# Set up in-memory SQLite database for dplyr/SQL translation
+con <- dbConnect(RSQLite::SQLite(), ":memory:")
+# Write integrated dataset to db
+# dbWriteTable(con, "financial_data", final_dataset)
+
+# Query 1
+# ...
+```
+
+# 7. Descriptive Statistical Analysis
+*Mean, median, variance, std dev, min, max, range, skewness, kurtosis.*
+
+```{r descriptive-stats}
+# Stats code goes here
+```
+
+# 8. Data Visualization
+*At least 8 professional-quality figures.*
+
+```{r data-viz-1}
+# ggplot code goes here
+```
+
+# 9. Exploratory Financial Analysis
+*Compare returns, volatility, inflationary periods, high-VIX periods, interest-rate environments.*
+
+```{r exploratory-analysis}
+# Analysis code goes here
+```
+
+# 10. Investment Recommendation
+*Allocate USD 1,000,000.*
+
+```{r investment-rec}
+# Portfolio allocation calculations
+```
+
+# 11. Executive Dashboard (Data Prep)
+
+```{r dashboard-prep}
+# Prep data to be exported or charted for the 1-page dashboard
+```

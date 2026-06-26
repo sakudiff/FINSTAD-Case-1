@@ -1,0 +1,263 @@
+% ==============================================================================
+% DLSU Academic Paper Template (Clean Version) - Adapted for FINSTAD Case 1
+% ==============================================================================
+% Purpose:  APA 7th-edition formatted template for De La Salle University papers
+% Compile:  xelatex -> biber -> xelatex -> xelatex (or use latexmk -pdf -xelatex)
+% ==============================================================================
+
+\documentclass[12pt]{article}
+
+% Packages for Advanced Formatting
+\usepackage{geometry}         % Page margins
+\geometry{margin=1in}         % APA requires 1-inch margins on all sides
+\usepackage{amsmath}          % Math environments and equation support
+\usepackage{amssymb}          % Additional math symbols
+\let\Bbbk\relax               % Prevent conflict between amssymb and newtxmath
+\usepackage{newtxtext,newtxmath} % Times New Roman
+\usepackage{tikz}             % Vector graphics and diagrams
+\usetikzlibrary{calc}         % TikZ coordinate calculations
+\usepackage{xcolor}           % Color support (defines dlsugreen below)
+\usepackage{graphicx}         % Image inclusion (\includegraphics, \safeincludegraphics)
+\graphicspath{{.}}
+\usepackage{caption}          % Caption formatting control
+\usepackage{subcaption}       % Sub-figures and sub-tables within a single float
+\usepackage{booktabs}         % Professional table rules (\toprule, \midrule, \bottomrule)
+\usepackage{tabularx}         % Tables with automatic column width adjustment
+\usepackage{array}            % Enhanced table column types
+\usepackage{siunitx}          % Aligned numerical columns in tables
+\usepackage{threeparttable}   % Tables with footnotes that don't affect column width
+\usepackage{rotating}         % Rotated floats (sidewaystable, sidewaysfigure)
+\usepackage{adjustbox}        % Auto-scaling tables and images to fit page
+\usepackage{pdflscape}        % Landscape pages in PDF output
+\usepackage{float}            % [H] specifier: force exact float placement
+\usepackage{tablefootnote}    % Footnotes inside tables (\tablefootnote{...})
+\usepackage{listings}         % Source code listings with syntax highlighting
+\usepackage{setspace}         % Line spacing (\doublespacing, \singlespacing)
+\usepackage{titlesec}         % Section heading format customization
+\usepackage{ragged2e}         % Improved text alignment (\RaggedRight)
+\usepackage{indentfirst}      % Indent first paragraph after each heading (APA style)
+\usepackage{csquotes}         % Context-sensitive quotation marks
+\usepackage[hidelinks]{hyperref} % Clickable references and cross-references
+\usepackage{url}              % URL formatting and line-break control
+\usepackage[style=apa, backend=biber]{biblatex} % APA 7th edition bibliography
+\addbibresource{references.bib}  % Your bibliography database file
+
+% Color Definitions
+\definecolor{dlsugreen}{HTML}{00703C}  % Official DLSU green for headings and accents
+
+% R Code Listings Configuration
+\lstset{
+  language=R,
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  breakatwhitespace=true,
+  keepspaces=true,
+  columns=flexible,
+  showstringspaces=false,
+  keywordstyle=\color{blue},
+  commentstyle=\color{dlsugreen},
+  stringstyle=\color{purple},
+  backgroundcolor=\color{gray!5},
+  frame=single,
+  framerule=0pt,
+  xleftmargin=10pt,
+  xrightmargin=10pt,
+  aboveskip=15pt,
+  belowskip=15pt,
+  breakindent=10pt,
+  postbreak=\mbox{\textcolor{red}{$\\hookrightarrow$}\space}
+}
+
+% APA 7th Edition: Headings & Indents
+\titleformat{\section}{\normalfont\Large\bfseries\centering}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection.}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{12pt}{6pt}
+\setlength{\bibhang}{0.5in}
+
+\renewcommand{\TPTnoteSettings}{\parshape 1 0pt \linewidth\footnotesize\itshape}
+\newenvironment{safetable}[1][\textwidth]{\begin{adjustbox}{max width=#1,center}}{\end{adjustbox}}
+\newenvironment{largetable}{\begin{landscape}\begin{adjustbox}{max width=\textwidth,center}}{\end{adjustbox}\end{landscape}}
+
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\textfraction}{0.1}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{3}
+\setcounter{totalnumber}{5}
+
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+\urlstyle{same}
+\setcounter{biburlnumpenalty}{100}
+\setcounter{biburlucpenalty}{100}
+\setcounter{biburllcpenalty}{100}
+
+\allowdisplaybreaks
+\captionsetup{font={small,singlespacing}, labelfont=bf}
+
+\newcommand{\safeincludegraphics}[2][]{% \adjustimage{max width=\textwidth, #1}{#2}%
+}
+
+\AtBeginBibliography{\singlespacing}
+
+\begin{document}
+\sloppy
+\doublespacing
+\RaggedRight
+\setlength{\parindent}{0.5in}
+
+\thispagestyle{empty}
+
+\begin{titlepage}
+    \centering
+
+    % Top Logo and Name (Inline)
+    \vspace*{0.5cm}
+    \begin{tabular}{c@{\quad}l}
+        \raisebox{-2.0ex}{\includegraphics[height=3.5em]{dlsu_logo.png}} & 
+        \huge \textbf{\color{dlsugreen} De La Salle University}
+    \end{tabular}
+    
+    \vfill
+
+    % Central Seal
+    \includegraphics[width=0.25\textwidth]{dlsu_logo.png} \\
+
+    \vfill
+
+    % Project Title
+    {\LARGE \textbf{Building an Integrated Financial Database Using SQL in R}} \\
+    \vspace{1.5cm}
+
+    \begin{minipage}{0.8\textwidth}
+        \centering
+        {\normalsize FINSTAD Case 1 \\ {} Section C01, Group 3}
+    \end{minipage}
+
+    \vfill
+
+    \begin{minipage}{0.8\textwidth}
+        \centering
+        {\normalsize in partial fulfillment of the requirements for the course \\ {} \textbf{FINSTAD}}
+    \end{minipage}
+
+    \vfill
+
+    {\normalsize By:} \\
+    \vspace{0.5cm}
+    {\normalsize 
+    CRUZ, Ricardo Miguel Iñigo \\
+    {} GALEDO, Enrique Lorenzo Hermoso \\
+    {} SEBALLOS, Josiah Dweyn Panganiban \\
+    {} SEECHUNG, Camille Castro \\
+    {} SISON, Aaron Joshua Estacio}
+
+    \vfill
+
+    {\normalsize \today}
+\end{titlepage}
+
+\newpage
+\begin{center}
+\textbf{\Large Executive Summary}
+\end{center}
+{} [Summarize the objectives, datasets used, major SQL findings, key statistical results, and investment recommendation here (Maximum 1 Page).]
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+{} [Discuss the background of the study, objectives of the analysis, and the importance of integrating multiple financial datasets.]
+
+\section{Data Sources}
+{} [Describe the selected U.S. asset, Philippine asset, cryptocurrency, SPY benchmark, and the four required FRED macroeconomic variables.]
+
+\section{Data Acquisition}
+{} [Present a table showing the data source, sample period, original observations downloaded, missing values, and duplicate observations for each dataset.]
+
+\begin{table}[H]
+  \centering
+  \begin{safetable}
+    \begin{threeparttable}
+      \caption{Data Acquisition Summary}
+      \label{tab:data_acq}
+      \begin{tabular}{lcccc}
+        \toprule
+        Dataset & Source & Original Observations & Missing Values & Duplicates \\
+        \midrule
+        {} & {} & {} & {} & {} \\
+        \bottomrule
+      \end{tabular}
+    \end{threeparttable}
+  \end{safetable}
+\end{table}
+
+
+\section{Data Cleaning}
+{} [Describe the cleaning procedures performed, treatment of missing values, duplicate observations, and return calculations.]
+
+\section{Database Integration}
+{} [Explain the SQL join strategy used. Include a table showing observations before joins, after joins, and in the final dataset. Justify the strategy.]
+
+\begin{table}[H]
+  \centering
+  \begin{safetable}
+    \begin{threeparttable}
+      \caption{Database Integration Summary}
+      \label{tab:data_int}
+      \begin{tabular}{lccc}
+        \toprule
+        Dataset & Original Observations & After Joins & Final Analytical Dataset \\
+        \midrule
+        {} & {} & {} & {} \\
+        \bottomrule
+      \end{tabular}
+    \end{threeparttable}
+  \end{safetable}
+\end{table}
+
+\section{SQL-Based Financial Investigation}
+{} [Present at least TEN (10) financial SQL investigations containing Objective, SQL/dplyr Code, Output, and Interpretation.]
+
+\subsection{SQL Investigation 1}
+\textbf{Objective:} [Objective] \\
+\textbf{Code:} [Code] \\
+\textbf{Output:} [Output] \\
+\textbf{Financial Interpretation:} [Interpretation]
+
+\section{Descriptive Statistical Analysis}
+{} [Present mean, median, variance, standard deviation, minimum, maximum, range, skewness, kurtosis and discuss implications.]
+
+\section{Data Visualization}
+{} [Present at least EIGHT (8) professional-quality figures with titles, numbers, and interpretation.]
+
+\section{Exploratory Financial Analysis}
+{} [Answer financial questions using evidence from SQL investigations, stats, and visualizations (compare returns, volatility, inflation, high-VIX, interest-rates).]
+
+\section{Investment Recommendation}
+{} [Recommend allocation of USD 1,000,000 among U.S., PH, crypto, and cash. Justify using evidence.]
+
+\section{Executive Dashboard}
+{} [Include the 1-page executive dashboard with key stats, 3-5 charts, SQL findings, and recommendation.]
+
+\section{Conclusion}
+{} [Summarize findings, limitations, and recommendations for future work.]
+
+\newpage
+\printbibliography[title={References}]
+
+\newpage
+\appendix
+\section{Appendix A - Complete R Code} \label{sec:appendix_a}
+{} [Include the complete R script used in the analysis.]
+
+\section{Appendix B - Additional Tables and Figures} \label{sec:appendix_b}
+{} [Include supplementary outputs that are too large for the main report.]
+
+\end{document}
