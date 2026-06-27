@@ -12,6 +12,34 @@
 
 ------------------------------------------------------------------------
 
+## Table of Contents
+
+- [Project Structure](#project-structure)
+- [Welcome to GitHub! (A Guide for Beginners)](#welcome-to-github-a-guide-for-beginners)
+  - [Navigating the GitHub Website](#navigating-the-github-website)
+- [How to Get this Code into R Studio (Cloning)](#how-to-get-this-code-into-r-studio-cloning)
+- [How to Contribute & Save Your Work (The Pull Request Workflow)](#how-to-contribute--save-your-work-the-pull-request-workflow)
+  - [What is a Branch?](#what-is-a-branch)
+  - [What is a Pull Request (PR)?](#what-is-a-pull-request-pr)
+  - [A Quick Tour of R Studio — Where Do I Type What?](#a-quick-tour-of-r-studio--where-do-i-type-what)
+  - [The Step-by-Step Workflow](#the-step-by-step-workflow)
+- [Our Two Main Files: The .qmd and The .tex — What's the Difference?](#our-two-main-files-the-qmd-and-the-tex--whats-the-difference)
+  - [How They Work Together](#how-they-work-together-the-simple-flow)
+- [LaTeX Basics: How to Add Content to Your .tex File](#latex-basics-how-to-add-content-to-your-tex-file)
+  - [Adding Regular Text](#adding-regular-text)
+  - [Making Text Bold, Italic, or Underlined](#making-text-bold-italic-or-underlined)
+  - [Adding Section Headings](#adding-section-headings)
+  - [Adding a Table](#adding-a-table)
+  - [Adding an Image (Chart / Figure)](#adding-an-image-chart--figure)
+  - [Adding a Bullet List](#adding-a-bullet-list)
+  - [Adding a Numbered List](#adding-a-numbered-list)
+  - [Adding Math (If Needed)](#adding-math-if-needed)
+  - [How to Put Your R Output Into the .tex](#how-to-put-your-r-output-into-the-tex)
+- [Pro Tips for Working with Both Files](#pro-tips-for-working-with-both-files)
+
+------------------------------------------------------------------------
+
+
 ## Project Structure
 
 Here is how our project files are organized:
@@ -26,6 +54,109 @@ Here is how our project files are organized:
 
 ------------------------------------------------------------------------
 
+## Welcome to GitHub! (A Guide for Beginners)
+
+If you haven't used GitHub before, don't worry! Think of GitHub as a highly organized **Google Drive specifically for code**.
+
+Instead of saving files as `analysis_final_final_v2.R`, GitHub tracks every single change we make. It allows all of us to work on the project at the same time without accidentally deleting each other's work.
+
+### Navigating the GitHub Website
+
+When you view this repository on the GitHub website, you will see a list of folders and files. You can click on any folder (like `scripts/`) to see what's inside, or click on a file to read its contents. This page you are reading right now is the `README.md` file, which is automatically displayed on the front page of the repository.
+
+------------------------------------------------------------------------
+
+## How to Get this Code into R Studio (Cloning)
+
+To work on the project, you need to "clone" (download) this repository onto your computer using R Studio.
+
+1.  Create a free account on [GitHub](https://github.com/).
+2.  Open **R Studio**.
+3.  Go to **File** \> **New Project...**
+4.  Select **Version Control** \> **Git**.
+5.  In the "Repository URL" box, paste the URL of this GitHub repository.
+6.  Choose where you want to save the project folder on your computer.
+7.  Click **Create Project**.
+
+Now you have a local copy of our project on your computer!
+
+------------------------------------------------------------------------
+
+## How to Contribute & Save Your Work (The Pull Request Workflow)
+
+When you make changes to files in R Studio, they only save to your personal computer. To share your work with the group on GitHub, we use a system called **Branches** and **Pull Requests (PRs)**.
+
+### What is a Branch?
+Think of a branch as a separate sandbox or parallel universe. Instead of all 5 of us editing the exact same files at the same time (which causes messy conflicts), you create your own branch to work on your specific task. 
+
+### What is a Pull Request (PR)?
+A Pull Request is how you ask the group to review your work before it gets added to the main, official version of the project. 
+- **Why we use it:** It protects our main code from accidental deletions or breaking errors. It also lets us see what everyone else is doing.
+- **When will others see your changes?** They can see your branch immediately after you push it, but your code won't affect the official `main` project until the PR is merged.
+
+
+
+### A Quick Tour of R Studio — Where Do I Type What?
+
+If you open R Studio, you'll see a few different panels. Here's what each one is for:
+
+- **Source Editor (top-left)** — This is like a Word document for your code. You can write R scripts, open the `.qmd` file, edit this README, and save your work here. When you type code in the Source Editor, it doesn't run until you click the **Run** button or press **Ctrl+Enter**. Think of it as your notebook where you draft your analysis before "publishing" it.
+
+- **Console / Terminal (bottom-left)** — This is where commands actually get executed. There are actually *two* tabs here:
+  - The **Console** tab — This is for running R code line by line. If you type `2 + 2` here and press Enter, R calculates it immediately.
+  - The **Terminal** tab — This is for system commands like Git. **When the instructions below say "type these commands in the Terminal,"** click the **Terminal** tab first (next to the Console tab). Then type your `git` commands there.
+
+- **Environment / History (top-right)** — This shows all the data and variables you've loaded into R. If you import a dataset, it will appear here.
+
+- **Files / Plots / Packages / Help (bottom-right)** — This shows your project files, any charts you make, installed packages, and help documentation.
+
+**The golden rule:** Write your R analysis code in the **Source Editor** (top-left), and type your Git commands in the **Terminal** tab (bottom-left).
+
+
+### The Step-by-Step Workflow
+
+**To save your work, open the "Terminal" tab in R Studio (usually next to the Console tab at the bottom left) and type these commands in order:**
+
+#### Step 1: Create your own branch
+Before you start typing any code today, make sure you are on a new branch. **You need to pick a branch name that describes what you're working on.** Replace `your-name` with your actual name and what you're doing (e.g., `feat/joshua-data-cleaning` for data cleaning, `feat/camille-visualizations` for charts, `feat/enrique-report` for writing the report):
+
+```bash
+git switch -c feat/your-name-what-youre-doing
+```
+**⬆️ FILL THIS IN.** Example: `git switch -c feat/joshua-data-cleaning`
+*(This creates your sandbox and moves you into it).*
+
+#### Step 2: Do your work!
+Write your R code, make your graphs, save your files in R Studio.
+
+#### Step 3: Package your changes (Stage & Commit)
+When you are ready to upload your work, you need to label what you did.
+
+```bash
+git add .
+```
+*(This tells Git "I want to save ALL the files I just edited").*
+
+```bash
+git commit -m "Write a short description of what you changed here"
+```
+**⬆️ FILL THIS IN.** Example: `git commit -m "Added dplyr code for merging datasets"`
+*(Make sure to write a descriptive message so the group knows what you did).*
+
+#### Step 4: Upload your branch to GitHub (Push)
+Send your labeled work to the cloud!
+
+```bash
+git push -u origin HEAD
+```
+
+#### Step 5: Open a Pull Request (PR)
+Go to our project page on the GitHub website. You will see a green button that says **"Compare & pull request"**. Click it, write a short description of what you did, and click **"Create pull request"**.
+
+Once the group reviews it and clicks **Merge**, your code becomes part of the official project!
+
+------------------------------------------------------------------------
+
 ## Our Two Main Files: The `.qmd` and The `.tex` — What's the Difference?
 
 You'll notice we have two important files in this project:
@@ -37,7 +168,7 @@ You'll notice we have two important files in this project:
 
 ### `reports/finstad_report.tex` — The "Make It Look Pretty" File
 - **What it is:** A LaTeX file (pronounced *lah-tech*). LaTeX is a typesetting system — think of it as the professional version of Microsoft Word, but instead of clicking buttons to bold text, you type commands like `\textbf{bold text}`. It's what academics use to write papers because it handles formatting, citations, tables, and page layout perfectly every time.
-- **What it does:** It takes the final polished results from your `.qmd` file and lays them out in a beautiful APA 7th-edition formatted report with proper headings, margins, page numbers, and a table of contents.
+- **What it does:** It takes the final polished results from your `.qmd` file and lays them out in a beautiful APA 7th-edition formatted report with proper headings, margins, page numbers, and a table of contents. When you compile it, it produces a PDF (you can find the latest one at `reports/finstad_report.pdf`).
 - **When to use it:** After the analysis is done — when you're ready to write the final report with your introduction, methodology, results, and investment recommendation.
 
 ### How They Work Together (The Simple Flow)
@@ -54,6 +185,8 @@ Step 2: Copy your final numbers, tables, and charts
 Step 3: Render the .tex file into a PDF 
         (beautiful, ready-to-submit paper)
 ```
+
+> **💡 The `.tex` file compiles into a PDF.** Every time you "render" or "compile" the LaTeX file, it produces a polished, publication-ready PDF document. You can see the latest compiled version right here in our repository at **`reports/finstad_report.pdf`** — that's the finished report ready for submission!
 
 **Think of it this way:** The `.qmd` file is where you cook the meal (do the messy work, taste-test, adjust seasoning). The `.tex` file is where you plate it for the final presentation (everything neat, garnished, and ready to serve).
 
@@ -172,104 +305,3 @@ You simply: **Type that number into the .tex file** in the appropriate section. 
 
 
 ------------------------------------------------------------------------
-
-## Welcome to GitHub! (A Guide for Beginners)
-
-If you haven't used GitHub before, don't worry! Think of GitHub as a highly organized **Google Drive specifically for code**.
-
-Instead of saving files as `analysis_final_final_v2.R`, GitHub tracks every single change we make. It allows all of us to work on the project at the same time without accidentally deleting each other's work.
-
-### Navigating the GitHub Website
-
-When you view this repository on the GitHub website, you will see a list of folders and files. You can click on any folder (like `scripts/`) to see what's inside, or click on a file to read its contents. This page you are reading right now is the `README.md` file, which is automatically displayed on the front page of the repository.
-
-------------------------------------------------------------------------
-
-## How to Get this Code into R Studio (Cloning)
-
-To work on the project, you need to "clone" (download) this repository onto your computer using R Studio.
-
-1.  Create a free account on [GitHub](https://github.com/).
-2.  Open **R Studio**.
-3.  Go to **File** \> **New Project...**
-4.  Select **Version Control** \> **Git**.
-5.  In the "Repository URL" box, paste the URL of this GitHub repository.
-6.  Choose where you want to save the project folder on your computer.
-7.  Click **Create Project**.
-
-Now you have a local copy of our project on your computer!
-
-------------------------------------------------------------------------
-
-## How to Contribute & Save Your Work (The Pull Request Workflow)
-
-When you make changes to files in R Studio, they only save to your personal computer. To share your work with the group on GitHub, we use a system called **Branches** and **Pull Requests (PRs)**.
-
-### What is a Branch?
-Think of a branch as a separate sandbox or parallel universe. Instead of all 5 of us editing the exact same files at the same time (which causes messy conflicts), you create your own branch to work on your specific task. 
-
-### What is a Pull Request (PR)?
-A Pull Request is how you ask the group to review your work before it gets added to the main, official version of the project. 
-- **Why we use it:** It protects our main code from accidental deletions or breaking errors. It also lets us see what everyone else is doing.
-- **When will others see your changes?** They can see your branch immediately after you push it, but your code won't affect the official `main` project until the PR is merged.
-
-
-
-### A Quick Tour of R Studio — Where Do I Type What?
-
-If you open R Studio, you'll see a few different panels. Here's what each one is for:
-
-- **Source Editor (top-left)** — This is like a Word document for your code. You can write R scripts, open the `.qmd` file, edit this README, and save your work here. When you type code in the Source Editor, it doesn't run until you click the **Run** button or press **Ctrl+Enter**. Think of it as your notebook where you draft your analysis before "publishing" it.
-
-- **Console / Terminal (bottom-left)** — This is where commands actually get executed. There are actually *two* tabs here:
-  - The **Console** tab — This is for running R code line by line. If you type `2 + 2` here and press Enter, R calculates it immediately.
-  - The **Terminal** tab — This is for system commands like Git. **When the instructions below say "type these commands in the Terminal,"** click the **Terminal** tab first (next to the Console tab). Then type your `git` commands there.
-
-- **Environment / History (top-right)** — This shows all the data and variables you've loaded into R. If you import a dataset, it will appear here.
-
-- **Files / Plots / Packages / Help (bottom-right)** — This shows your project files, any charts you make, installed packages, and help documentation.
-
-**The golden rule:** Write your R analysis code in the **Source Editor** (top-left), and type your Git commands in the **Terminal** tab (bottom-left).
-
-
-### The Step-by-Step Workflow
-
-**To save your work, open the "Terminal" tab in R Studio (usually next to the Console tab at the bottom left) and type these commands in order:**
-
-#### Step 1: Create your own branch
-Before you start typing any code today, make sure you are on a new branch. **You need to pick a branch name that describes what you're working on.** Replace `your-name` with your actual name and what you're doing (e.g., `feat/joshua-data-cleaning` for data cleaning, `feat/camille-visualizations` for charts, `feat/enrique-report` for writing the report):
-
-```bash
-git switch -c feat/your-name-what-youre-doing
-```
-**⬆️ FILL THIS IN.** Example: `git switch -c feat/joshua-data-cleaning`
-*(This creates your sandbox and moves you into it).*
-
-#### Step 2: Do your work!
-Write your R code, make your graphs, save your files in R Studio.
-
-#### Step 3: Package your changes (Stage & Commit)
-When you are ready to upload your work, you need to label what you did.
-
-```bash
-git add .
-```
-*(This tells Git "I want to save ALL the files I just edited").*
-
-```bash
-git commit -m "Write a short description of what you changed here"
-```
-**⬆️ FILL THIS IN.** Example: `git commit -m "Added dplyr code for merging datasets"`
-*(Make sure to write a descriptive message so the group knows what you did).*
-
-#### Step 4: Upload your branch to GitHub (Push)
-Send your labeled work to the cloud!
-
-```bash
-git push -u origin HEAD
-```
-
-#### Step 5: Open a Pull Request (PR)
-Go to our project page on the GitHub website. You will see a green button that says **"Compare & pull request"**. Click it, write a short description of what you did, and click **"Create pull request"**.
-
-Once the group reviews it and clicks **Merge**, your code becomes part of the official project!
