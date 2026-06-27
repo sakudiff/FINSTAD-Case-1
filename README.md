@@ -64,6 +64,25 @@ A Pull Request is how you ask the group to review your work before it gets added
 - **Why we use it:** It protects our main code from accidental deletions or breaking errors. It also lets us see what everyone else is doing.
 - **When will others see your changes?** They can see your branch immediately after you push it, but your code won't affect the official `main` project until the PR is merged.
 
+
+
+### A Quick Tour of R Studio — Where Do I Type What?
+
+If you open R Studio, you'll see a few different panels. Here's what each one is for:
+
+- **Source Editor (top-left)** — This is like a Word document for your code. You can write R scripts, open the `.qmd` file, edit this README, and save your work here. When you type code in the Source Editor, it doesn't run until you click the **Run** button or press **Ctrl+Enter**. Think of it as your notebook where you draft your analysis before "publishing" it.
+
+- **Console / Terminal (bottom-left)** — This is where commands actually get executed. There are actually *two* tabs here:
+  - The **Console** tab — This is for running R code line by line. If you type `2 + 2` here and press Enter, R calculates it immediately.
+  - The **Terminal** tab — This is for system commands like Git. **When the instructions below say "type these commands in the Terminal,"** click the **Terminal** tab first (next to the Console tab). Then type your `git` commands there.
+
+- **Environment / History (top-right)** — This shows all the data and variables you've loaded into R. If you import a dataset, it will appear here.
+
+- **Files / Plots / Packages / Help (bottom-right)** — This shows your project files, any charts you make, installed packages, and help documentation.
+
+**The golden rule:** Write your R analysis code in the **Source Editor** (top-left), and type your Git commands in the **Terminal** tab (bottom-left).
+
+
 ### The Step-by-Step Workflow
 
 **To save your work, open the "Terminal" tab in R Studio (usually next to the Console tab at the bottom left) and type these commands in order:**
