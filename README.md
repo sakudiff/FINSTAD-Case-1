@@ -17,10 +17,159 @@
 Here is how our project files are organized:
 
 -   `/data/` — Where we will store our downloaded datasets (CSV, Excel). This includes our chosen US Asset, PH Asset, Crypto, SPY, and FRED macroeconomic data.
--   `/scripts/` — Where we keep our R scripts (e.g., `data_cleaning.R`, `analysis.R`).
--   `/reports/` — Where we will save our R Markdown (`.Rmd`) files and final Word/PDF reports.
+-   `/scripts/` — Where our analysis code lives. The main file here is `finstad_analysis.qmd` (a Quarto Markdown file) — this is where we write R code, run analysis, make charts, and test our findings.
+-   `/reports/` — Where our formatted report lives. The main file here is `finstad_report.tex` (a LaTeX file) — this is where we assemble the final APA-formatted PDF paper using the polished results from our analysis.
 -   `/presentations/` — Where we will store our presentation slide deck and Executive Dashboard.
 -   `guidelines.md` — The project requirements and rubric provided by the instructor.
+
+
+
+------------------------------------------------------------------------
+
+## Our Two Main Files: The `.qmd` and The `.tex` — What's the Difference?
+
+You'll notice we have two important files in this project:
+
+### `scripts/finstad_analysis.qmd` — The "Do the Work" File
+- **What it is:** A Quarto Markdown file (like a smart, mix-code-and-words document). Think of it as your lab notebook where you write R code, run it, see the results, and write your analysis all in one place.
+- **What it does:** You write R code inside special blocks called "code chunks." When you "render" this file, R runs all the code, generates the tables and charts, and stitches everything together into a final HTML or PDF document.
+- **When to use it:** During the analysis phase — when you're downloading data, cleaning it, merging it, running SQL queries, calculating statistics, making charts, and figuring out your findings.
+
+### `reports/finstad_report.tex` — The "Make It Look Pretty" File
+- **What it is:** A LaTeX file (pronounced *lah-tech*). LaTeX is a typesetting system — think of it as the professional version of Microsoft Word, but instead of clicking buttons to bold text, you type commands like `\textbf{bold text}`. It's what academics use to write papers because it handles formatting, citations, tables, and page layout perfectly every time.
+- **What it does:** It takes the final polished results from your `.qmd` file and lays them out in a beautiful APA 7th-edition formatted report with proper headings, margins, page numbers, and a table of contents.
+- **When to use it:** After the analysis is done — when you're ready to write the final report with your introduction, methodology, results, and investment recommendation.
+
+### How They Work Together (The Simple Flow)
+
+```
+Step 1: Do your analysis in the .qmd file
+        (write R code, run it, see charts, find answers)
+                │
+                ▼
+Step 2: Copy your final numbers, tables, and charts 
+        into the .tex file as the "fancy report"
+                │
+                ▼
+Step 3: Render the .tex file into a PDF 
+        (beautiful, ready-to-submit paper)
+```
+
+**Think of it this way:** The `.qmd` file is where you cook the meal (do the messy work, taste-test, adjust seasoning). The `.tex` file is where you plate it for the final presentation (everything neat, garnished, and ready to serve).
+
+---
+
+## LaTeX Basics: How to Add Content to Your `.tex` File
+
+You don't need to become a LaTeX expert — just a few simple commands will let you add everything you need.
+
+### Adding Regular Text
+Just type normally between sections. Paragraphs are separated by a blank line:
+
+```latex
+This is a normal paragraph. Everything here will  
+appear in the report as plain text.
+
+This is a new paragraph. See? Just leave a blank line.
+```
+
+### Making Text Bold, Italic, or Underlined
+
+```latex
+\textbf{This will be bold}        → **This will be bold**
+\textit{This will be italic}       → *This will be italic*
+\underline{This will be underlined} → underlined
+```
+
+### Adding Section Headings
+The template already has all the sections set up. But if you need to write your own:
+
+```latex
+\section{Title of My Section}        → 1. Title of My Section
+\subsection{Subsection Title}         → 1.1 Subsection Title
+\subsubsection{Smaller Subsection}    → 1.1.1 Smaller Subsection
+```
+
+### Adding a Table
+Here's a simple table you can copy-paste and fill in with your numbers:
+
+```latex
+\begin{table}[H]
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    Asset & Mean Return & Std Dev & Sharpe Ratio \\
+    \midrule
+    SPY   & 0.85\%      & 1.25\%  & 0.68          \\
+    BTC   & 2.10\%      & 4.50\%  & 0.47          \\
+    \bottomrule
+  \end{tabular}
+  \caption{Daily Returns Summary}
+  \label{tab:returns}
+\end{table}
+```
+
+**Quick table anatomy:**
+- `{lccc}` — Means: left-aligned column, then 3 centered columns (`l` = left, `c` = center, `r` = right)
+- Columns are separated with `&`, rows end with `\\`
+- `\toprule`, `\midrule`, `\bottomrule` — fancy horizontal lines
+
+### Adding an Image (Chart / Figure)
+Save your chart as a PNG file in the `/reports/` folder, then add:
+
+```latex
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{my_chart.png}
+  \caption{Cumulative Returns of Assets (2020–2025)}
+  \label{fig:cumulative_returns}
+\end{figure}
+```
+
+**Pro tip:** The `[width=\textwidth]` part scales the image to fit the page width. You can use `width=0.5\textwidth` for half-width, or `height=8cm` for a specific height.
+
+### Adding a Bullet List
+```latex
+\begin{itemize}
+  \item First point
+  \item Second point
+  \item Third point
+\end{itemize}
+```
+
+### Adding a Numbered List
+```latex
+\begin{enumerate}
+  \item Step one
+  \item Step two
+  \item Step three
+\end{enumerate}
+```
+
+### Adding Math (If Needed)
+```latex
+The Sharpe ratio is calculated as: $\frac{R_p - R_f}{\sigma_p}$
+```
+
+### How to Put Your R Output Into the .tex
+
+When you run code in your `.qmd` file and get a result like:
+```
+Mean return of SPY: 0.85%
+```
+
+You simply: **Type that number into the .tex file** in the appropriate section. Or better yet, if the `.qmd` produces a table or chart, save it as a PNG/CSV and use the `\includegraphics` or `\begin{tabular}` commands above to insert it.
+
+---
+
+## Pro Tips for Working with Both Files
+
+1. **Do all your heavy lifting in the .qmd** — Download data, clean it, run your 10 SQL investigations, calculate stats, make charts. The .qmd is built for this.
+2. **Only bring the final polished results into the .tex** — Nobody needs to see your debugging code or the 15 versions of the same chart you tried. The .tex is the final draft.
+3. **Keep your chart filenames simple** — Save as `returns.png`, `correlation.png`, `portfolio.png` so it's easy to reference in the .tex.
+4. **Render the .tex every time you make changes** to see if the PDF looks right. If you get an error, don't panic — usually it's a missing `}` or `\\` — read the error message, fix it, and render again.
+5. **You can render the .tex in R Studio** — Open the file, then click the "Compile PDF" button (it looks like a little PDF icon) or use the keyboard shortcut **Ctrl+Shift+K** (Windows/Linux) / **Cmd+Shift+K** (Mac).
+
 
 ------------------------------------------------------------------------
 
