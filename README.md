@@ -237,11 +237,12 @@ If you open R Studio, you'll see a few different panels. Here's what each one is
 **To save your work, open the "Terminal" tab in R Studio (usually next to the Console tab at the bottom left) and type these commands in order:**
 
 #### Step 1: Create your own branch
-Before you start typing any code today, make sure you are on a new branch. Replace `your-name` with your actual name (e.g., `feat/joshua-data-cleaning`):
+Before you start typing any code today, make sure you are on a new branch. **You need to pick a branch name that describes what you're working on.** Replace `your-name` with your actual name and what you're doing (e.g., `feat/joshua-data-cleaning` for data cleaning, `feat/camille-visualizations` for charts, `feat/enrique-report` for writing the report):
 
 ```bash
-git switch -c feat/your-name
+git switch -c feat/your-name-what-youre-doing
 ```
+**⬆️ FILL THIS IN.** Example: `git switch -c feat/joshua-data-cleaning`
 *(This creates your sandbox and moves you into it).*
 
 #### Step 2: Do your work!
@@ -256,9 +257,10 @@ git add .
 *(This tells Git "I want to save ALL the files I just edited").*
 
 ```bash
-git commit -m "Added dplyr code for merging datasets"
+git commit -m "Write a short description of what you changed here"
 ```
-*(Make sure to write a descriptive message).*
+**⬆️ FILL THIS IN.** Example: `git commit -m "Added dplyr code for merging datasets"`
+*(Make sure to write a descriptive message so the group knows what you did).*
 
 #### Step 4: Upload your branch to GitHub (Push)
 Send your labeled work to the cloud!

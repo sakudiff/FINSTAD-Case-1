@@ -1,0 +1,24 @@
+# LaTeX build artifacts (auto-generated, don't commit)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.out
+*.run.xml
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# R / R Studio
+.Rproj.user
+.Rhistory
+.Rdata
+.rsconnect/
+
+# OS files
+.DS_Store
+Thumbs.db
