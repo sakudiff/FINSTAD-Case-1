@@ -14,15 +14,22 @@
 
 ### Task Sign-Up Sheet
 
-Please put your name next to the part you will be responsible for.
+This project has been broken down into granular tasks mapping the coding (`.qmd`) and writing (`.tex`) requirements. Please put your name next to the sections you will take on.
 
-| Task / Section | Responsibilities | Assigned To |
-|---|---|---|
-| **Data Cleaning & Integration** | Write R code to import all 8 CSVs, treat missing values, and execute SQL joins (`dplyr`). Write **Section 4** (Data Cleaning) and **Section 5** (Database Integration) including the observation reduction table. | *[Name Here]* |
-| **SQL Investigations (Part 1)** | Brainstorm 5 financial questions, write the `dplyr` code to answer them, and write the financial interpretations. Write **Section 6** (Investigations 1-5). | *[Name Here]* |
-| **SQL Investigations (Part 2)** | Brainstorm 5 more financial questions, write the `dplyr` code, and write the interpretations. Write **Section 6** (Investigations 6-10). | *[Name Here]* |
-| **Stats & Visualization** | Compute mean, median, variance, skewness, etc. Generate the 8 professional figures and write their interpretations. Write **Section 7** (Descriptive Statistics) and **Section 8** (Data Visualization). | *[Name Here]* |
-| **Final Analysis & Dashboard** | Synthesize the findings to allocate the USD 1,000,000. Design the 1-page dashboard. Write the **Executive Summary**, **Section 9** (Exploratory Analysis), **Section 10** (Recommendation), and **Section 11** (Executive Dashboard). | *[Name Here]* |
+| Task Category | `.qmd` Responsibility (R Code) | `.tex` Responsibility (Paper) | Assigned To |
+|---|---|---|---|
+| **Intro & Data Sources** | Load all 8 CSVs. Generate summary table of missing values, duplicates, and initial observations. | Write **Sec 1** (Intro), **Sec 2** (Data Sources), and **Sec 3** (Data Acquisition). | *[Name]* |
+| **Cleaning & Integration** | Clean data, calculate daily returns, execute `dplyr` joins to merge all 8 datasets into one. | Write **Sec 4** (Cleaning) and **Sec 5** (Integration) including the observation reduction table. | *[Name]* |
+| **SQL Investigations 1-3** | Write `dplyr` code/queries for the first 3 financial questions. | Write **Sec 6 (Q1-Q3)** and their financial interpretations. | *[Name]* |
+| **SQL Investigations 4-7** | Write `dplyr` code/queries for 4 more financial questions. | Write **Sec 6 (Q4-Q7)** and their financial interpretations. | *[Name]* |
+| **SQL Investigations 8-10**| Write `dplyr` code/queries for the last 3 financial questions. | Write **Sec 6 (Q8-Q10)** and their financial interpretations. | *[Name]* |
+| **Descriptive Statistics** | Code `summarise()` for mean, variance, skewness, kurtosis, min/max. | Write **Sec 7** (Descriptive Statistics) & interpretations. | *[Name]* |
+| **Data Visualization** | Code `ggplot2` to generate the 8 required professional figures and export them as PNGs. | Write **Sec 8** (Data Visualization) & insert the charts. | *[Name]* |
+| **Exploratory Analysis** | *(No code required, relies on previous outputs)* | Write **Sec 9** (Exploratory Financial Analysis). | *[Name]* |
+| **Recommendation & Conclusion** | *(No code required, relies on previous outputs)* | Write **Sec 10** (Investment Recommendation) and **Sec 12** (Conclusion). | *[Name]* |
+| **Exec Dashboard & Summary** | Code the 1-page dashboard layout in `.qmd` (or format in PPT). | Write **Sec 11** (Executive Dashboard) and **Executive Summary**. | *[Name]* |
+| **Presentation Deck** | Migrate the best charts and tables from `.qmd` into slides. | Create the 10-minute **Presentation Deck** (Canva/PPT). | *[Name]* |
+| **Lead LaTeX Editor** | Ensure the `.qmd` outputs successfully compile into the final `.pdf`. | Manage `finstad_report.tex` formatting, table layouts, and APA citations. | *[Name]* |
 
 ------------------------------------------------------------------------
 
