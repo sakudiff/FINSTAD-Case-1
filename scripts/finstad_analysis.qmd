@@ -33,9 +33,9 @@ library(RSQLite)
 
 ```{r data-sources}
 # Define tickers
-us_asset <- ""
-ph_asset <- ""
-crypto <- ""
+us_asset <- "AAPL"
+ph_asset <- "BDO.PS"
+crypto <- "BTC-USD"
 ```
 
 # 3. Data Acquisition
