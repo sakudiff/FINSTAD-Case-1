@@ -10,6 +10,20 @@
 4.  SEECHUNG, Camille Castro
 5.  SISON, Aaron Joshua Estacio
 
+---
+
+### Task Sign-Up Sheet
+
+Please put your name next to the part you will be responsible for.
+
+| Task / Section | Responsibilities | Assigned To |
+|---|---|---|
+| **Data Cleaning & Integration** | Write R code to import all 8 CSVs, treat missing values, and execute SQL joins (`dplyr`). Write **Section 4** (Data Cleaning) and **Section 5** (Database Integration) including the observation reduction table. | *[Name Here]* |
+| **SQL Investigations (Part 1)** | Brainstorm 5 financial questions, write the `dplyr` code to answer them, and write the financial interpretations. Write **Section 6** (Investigations 1-5). | *[Name Here]* |
+| **SQL Investigations (Part 2)** | Brainstorm 5 more financial questions, write the `dplyr` code, and write the interpretations. Write **Section 6** (Investigations 6-10). | *[Name Here]* |
+| **Stats & Visualization** | Compute mean, median, variance, skewness, etc. Generate the 8 professional figures and write their interpretations. Write **Section 7** (Descriptive Statistics) and **Section 8** (Data Visualization). | *[Name Here]* |
+| **Final Analysis & Dashboard** | Synthesize the findings to allocate the USD 1,000,000. Design the 1-page dashboard. Write the **Executive Summary**, **Section 9** (Exploratory Analysis), **Section 10** (Recommendation), and **Section 11** (Executive Dashboard). | *[Name Here]* |
+
 ------------------------------------------------------------------------
 
 ## Table of Contents
