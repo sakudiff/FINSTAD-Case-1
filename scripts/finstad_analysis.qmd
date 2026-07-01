@@ -111,31 +111,31 @@ obs_original <- data.frame(
 
 # Standardise date formats
 # AAPL, BTC, SPY: POSIXct-style strings like "2016-06-30 00:00:00-04:00"
-aapl <- aapl %>% mutate(Date = as.Date(ymd_hms(Date)))
-btc  <- btc  %>% mutate(Date = as.Date(ymd_hms(Date)))
-spy  <- spy  %>% mutate(Date = as.Date(ymd_hms(Date)))
+aapl <- aapl |> mutate(Date = as.Date(ymd_hms(Date)))
+btc  <- btc  |> mutate(Date = as.Date(ymd_hms(Date)))
+spy  <- spy  |> mutate(Date = as.Date(ymd_hms(Date)))
 
 # BDO: MM/DD/YYYY
-bdo <- bdo %>% mutate(Date = mdy(Date))
+bdo <- bdo |> mutate(Date = mdy(Date))
 
 # CPI, DGS10, FEDFUNDS, VIX: YYYY-MM-DD
-cpi     <- cpi     %>% mutate(Date = ymd(Date))
-dgs10   <- dgs10   %>% mutate(Date = ymd(Date))
-fedfunds <- fedfunds %>% mutate(Date = ymd(Date))
-vix     <- vix     %>% mutate(Date = ymd(Date))
+cpi     <- cpi     |> mutate(Date = ymd(Date))
+dgs10   <- dgs10   |> mutate(Date = ymd(Date))
+fedfunds <- fedfunds |> mutate(Date = ymd(Date))
+vix     <- vix     |> mutate(Date = ymd(Date))
 
 # Filter ALL datasets to 2020-01-01 to 2025-12-31
 start_date <- as.Date("2020-01-01")
 end_date   <- as.Date("2025-12-31")
 
-aapl <- aapl %>% filter(Date >= start_date & Date <= end_date)
-bdo  <- bdo  %>% filter(Date >= start_date & Date <= end_date)
-btc  <- btc  %>% filter(Date >= start_date & Date <= end_date)
-spy  <- spy  %>% filter(Date >= start_date & Date <= end_date)
-cpi     <- cpi     %>% filter(Date >= start_date & Date <= end_date)
-dgs10   <- dgs10   %>% filter(Date >= start_date & Date <= end_date)
-fedfunds <- fedfunds %>% filter(Date >= start_date & Date <= end_date)
-vix     <- vix     %>% filter(Date >= start_date & Date <= end_date)
+aapl <- aapl |> filter(Date >= start_date & Date <= end_date)
+bdo  <- bdo  |> filter(Date >= start_date & Date <= end_date)
+btc  <- btc  |> filter(Date >= start_date & Date <= end_date)
+spy  <- spy  |> filter(Date >= start_date & Date <= end_date)
+cpi     <- cpi     |> filter(Date >= start_date & Date <= end_date)
+dgs10   <- dgs10   |> filter(Date >= start_date & Date <= end_date)
+fedfunds <- fedfunds |> filter(Date >= start_date & Date <= end_date)
+vix     <- vix     |> filter(Date >= start_date & Date <= end_date)
 
 # Observations after filtering
 obs_filtered <- data.frame(
@@ -162,16 +162,16 @@ dup_summary <- data.frame(
 
 # Clean BDO: parse Vol. column if it exists
 if ("Vol." %in% colnames(bdo)) {
-  bdo <- bdo %>% mutate(`Vol.` = parse_bdo_volume(`Vol.`))
+  bdo <- bdo |> mutate(`Vol.` = parse_bdo_volume(`Vol.`))
 }
 
 # Calculate daily returns for OHLC assets
 # Daily_Return = (Close / lag(Close)) - 1
 # For BDO the Price column is the close price
-aapl <- aapl %>% arrange(Date) %>% mutate(Daily_Return = (Close / lag(Close)) - 1)
-bdo  <- bdo  %>% arrange(Date) %>% mutate(Daily_Return = (Price / lag(Price)) - 1)
-btc  <- btc  %>% arrange(Date) %>% mutate(Daily_Return = (Close / lag(Close)) - 1)
-spy  <- spy  %>% arrange(Date) %>% mutate(Daily_Return = (Close / lag(Close)) - 1)
+aapl <- aapl |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
+bdo  <- bdo  |> arrange(Date) |> mutate(Daily_Return = (Price / lag(Price)) - 1)
+btc  <- btc  |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
+spy  <- spy  |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
 
 # Note: BDO's Change. column can be used to verify Daily_Return computation
 # The first observation of each asset will have NA for Daily_Return (no prior day)
@@ -199,61 +199,61 @@ FRED data (CPI, DGS10, FEDFUNDS) has fewer rows due to monthly or business-daily
 
 # Prepare asset data for joining
 # Standardise column names: BDO uses Price (close price) and Vol. (volume)
-bdo_clean <- bdo %>% rename(Close = Price, Volume = `Vol.`)
+bdo_clean <- bdo |> rename(Close = Price, Volume = `Vol.`)
 
 # Add Asset identifier to each OHLC dataset and select common columns
-aapl_clean <- aapl %>% mutate(Asset = "AAPL") %>%
+aapl_clean <- aapl |> mutate(Asset = "AAPL") |>
   select(Date, Asset, Open, High, Low, Close, Volume, Daily_Return)
-bdo_clean  <- bdo_clean %>% mutate(Asset = "BDO") %>%
+bdo_clean  <- bdo_clean |> mutate(Asset = "BDO") |>
   select(Date, Asset, Open, High, Low, Close, Volume, Daily_Return)
-btc_clean  <- btc %>% mutate(Asset = "BTC") %>%
+btc_clean  <- btc |> mutate(Asset = "BTC") |>
   select(Date, Asset, Open, High, Low, Close, Volume, Daily_Return)
-spy_clean  <- spy %>% mutate(Asset = "SPY") %>%
+spy_clean  <- spy |> mutate(Asset = "SPY") |>
   select(Date, Asset, Open, High, Low, Close, Volume, Daily_Return)
 
 # Combine all assets into one long-format table
 assets_all <- bind_rows(aapl_clean, bdo_clean, btc_clean, spy_clean)
 
 # Pivot to wide format: one row per date, columns per asset
-assets_wide <- assets_all %>%
-  select(Date, Asset, Close, Daily_Return) %>%
+assets_wide <- assets_all |>
+  select(Date, Asset, Close, Daily_Return) |>
   pivot_wider(names_from = Asset,
               values_from = c(Close, Daily_Return),
               names_sep = "_")
 
 # Prepare macro datasets with descriptive column names
-cpi_clean     <- cpi     %>% rename(CPI = Value)
-dgs10_clean   <- dgs10   %>% rename(DGS10 = Value)
-fedfunds_clean <- fedfunds %>% rename(FEDFUNDS = Value)
-vix_clean     <- vix     %>% rename(VIX = Value)
+cpi_clean     <- cpi     |> rename(CPI = Value)
+dgs10_clean   <- dgs10   |> rename(DGS10 = Value)
+fedfunds_clean <- fedfunds |> rename(FEDFUNDS = Value)
+vix_clean     <- vix     |> rename(VIX = Value)
 
 
 
 # Demonstration of all four join types
 
 # 1) left_join: keep all asset dates, attach macro data where available
-left_example <- assets_wide %>%
-  left_join(cpi_clean, by = "Date") %>%
-  left_join(dgs10_clean, by = "Date") %>%
-  left_join(fedfunds_clean, by = "Date") %>%
+left_example <- assets_wide |>
+  left_join(cpi_clean, by = "Date") |>
+  left_join(dgs10_clean, by = "Date") |>
+  left_join(fedfunds_clean, by = "Date") |>
   left_join(vix_clean, by = "Date")
 
 # 2) inner_join: only dates present in ALL datasets
-inner_example <- assets_wide %>%
-  inner_join(cpi_clean, by = "Date") %>%
-  inner_join(dgs10_clean, by = "Date") %>%
-  inner_join(fedfunds_clean, by = "Date") %>%
+inner_example <- assets_wide |>
+  inner_join(cpi_clean, by = "Date") |>
+  inner_join(dgs10_clean, by = "Date") |>
+  inner_join(fedfunds_clean, by = "Date") |>
   inner_join(vix_clean, by = "Date")
 
 # 3) full_join: all dates from any dataset
-full_example <- assets_wide %>%
-  full_join(cpi_clean, by = "Date") %>%
-  full_join(dgs10_clean, by = "Date") %>%
-  full_join(fedfunds_clean, by = "Date") %>%
+full_example <- assets_wide |>
+  full_join(cpi_clean, by = "Date") |>
+  full_join(dgs10_clean, by = "Date") |>
+  full_join(fedfunds_clean, by = "Date") |>
   full_join(vix_clean, by = "Date")
 
 # 4) anti_join: asset dates with NO macro data
-anti_example <- assets_wide %>%
+anti_example <- assets_wide |>
   anti_join(cpi_clean, by = "Date")
 
 # Build the final analytical dataset
@@ -286,35 +286,35 @@ con <- dbConnect(RSQLite::SQLite(), ":memory:")
 # Build long-format analytical dataset for SQL queries
 # Each row is one asset-date combination with macro variables attached
 sql_long <- bind_rows(
-  final_dataset %>%
+  final_dataset |>
     select(Date, CPI, DGS10, FEDFUNDS, VIX,
-           Close = Close_AAPL, Daily_Return = Daily_Return_AAPL) %>%
+           Close = Close_AAPL, Daily_Return = Daily_Return_AAPL) |>
     mutate(Asset = "AAPL"),
-  final_dataset %>%
+  final_dataset |>
     select(Date, CPI, DGS10, FEDFUNDS, VIX,
-           Close = Close_BDO, Daily_Return = Daily_Return_BDO) %>%
+           Close = Close_BDO, Daily_Return = Daily_Return_BDO) |>
     mutate(Asset = "BDO"),
-  final_dataset %>%
+  final_dataset |>
     select(Date, CPI, DGS10, FEDFUNDS, VIX,
-           Close = Close_BTC, Daily_Return = Daily_Return_BTC) %>%
+           Close = Close_BTC, Daily_Return = Daily_Return_BTC) |>
     mutate(Asset = "BTC"),
-  final_dataset %>%
+  final_dataset |>
     select(Date, CPI, DGS10, FEDFUNDS, VIX,
-           Close = Close_SPY, Daily_Return = Daily_Return_SPY) %>%
+           Close = Close_SPY, Daily_Return = Daily_Return_SPY) |>
     mutate(Asset = "SPY")
 )
 
 # Pre-calculate CPI YoY for Q10 (inflation analysis)
 # CPI is monthly; YoY change = (current / 12-month-ago) - 1
-cpi_yoy <- cpi_clean %>%
-  arrange(Date) %>%
-  mutate(CPI_YoY = (CPI / lag(CPI, 12)) - 1) %>%
+cpi_yoy <- cpi_clean |>
+  arrange(Date) |>
+  mutate(CPI_YoY = (CPI / lag(CPI, 12)) - 1) |>
   select(Date, CPI_YoY)
 
 # Join CPI_YoY into the long dataset and forward-fill to cover all trading days
-sql_long <- sql_long %>%
-  left_join(cpi_yoy, by = "Date") %>%
-  arrange(Date) %>%
+sql_long <- sql_long |>
+  left_join(cpi_yoy, by = "Date") |>
+  arrange(Date) |>
   tidyr::fill(CPI_YoY, .direction = "down")
 
 
@@ -325,17 +325,17 @@ fin_data <- tbl(con, "integrated_data")
 ```{r q1}
 # Q1: Risk-Adjusted Daily Return by Asset -- SISON, Aaron Joshua Estacio
 
-q1 <- fin_data %>%
-  group_by(Asset) %>%
+q1 <- fin_data |>
+  group_by(Asset) |>
   summarise(
     Mean_Daily_Return = mean(Daily_Return, na.rm = TRUE),
     SD_Daily_Return = sd(Daily_Return, na.rm = TRUE)
-  ) %>%
-  mutate(Risk_Adjusted_Return = Mean_Daily_Return / SD_Daily_Return) %>%
-  arrange(desc(Risk_Adjusted_Return)) %>%
+  ) |>
+  mutate(Risk_Adjusted_Return = Mean_Daily_Return / SD_Daily_Return) |>
+  arrange(desc(Risk_Adjusted_Return)) |>
   collect()
 
-spy_ratio <- q1 %>% filter(Asset == "SPY") %>% pull(Risk_Adjusted_Return)
+spy_ratio <- q1 |> filter(Asset == "SPY") |> pull(Risk_Adjusted_Return)
 
 ggplot(q1, aes(x = Risk_Adjusted_Return, y = reorder(Asset, Risk_Adjusted_Return),
                 fill = Asset)) +
@@ -365,19 +365,19 @@ ggsave("../reports/fig_q1.pdf", width = 7, height = 3.5, device = "pdf")
 ```{r q2}
 # Q2: COVID-19 Crash Cumulative Returns -- SISON, Aaron Joshua Estacio
 
-q2_raw <- fin_data %>%
-  select(Date, Asset, Daily_Return) %>%
-  collect() %>%
+q2_raw <- fin_data |>
+  select(Date, Asset, Daily_Return) |>
+  collect() |>
   mutate(Date = as.Date(Date))
 
-q2 <- q2_raw %>%
-  filter(Date >= as.Date("2020-02-01") & Date <= as.Date("2020-03-31")) %>%
-  filter(!is.na(Daily_Return)) %>%
-  group_by(Asset) %>%
-  arrange(Date) %>%
+q2 <- q2_raw |>
+  filter(Date >= as.Date("2020-02-01") & Date <= as.Date("2020-03-31")) |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
   mutate(Cumulative_Return = cumprod(1 + Daily_Return) - 1)
 
-q2_summary <- q2 %>%
+q2_summary <- q2 |>
   summarise(
     Start_Date = min(Date),
     End_Date = max(Date),
@@ -406,18 +406,18 @@ ggsave("../reports/fig_q2.pdf", width = 7, height = 4, device = "pdf")
 ```{r q3}
 # Q3: Pairwise Correlation of Daily Returns -- SISON, Aaron Joshua Estacio
 
-returns_wide <- fin_data %>%
-  select(Date, Asset, Daily_Return) %>%
-  collect() %>%
+returns_wide <- fin_data |>
+  select(Date, Asset, Daily_Return) |>
+  collect() |>
   pivot_wider(names_from = Asset, values_from = Daily_Return)
 
-cor_matrix <- returns_wide %>%
-  select(AAPL, BDO, BTC, SPY) %>%
+cor_matrix <- returns_wide |>
+  select(AAPL, BDO, BTC, SPY) |>
   cor(use = "pairwise.complete.obs")
 
-cor_long <- as.data.frame(cor_matrix) %>%
-  tibble::rownames_to_column("Asset1") %>%
-  tidyr::pivot_longer(-Asset1, names_to = "Asset2", values_to = "Correlation") %>%
+cor_long <- as.data.frame(cor_matrix) |>
+  tibble::rownames_to_column("Asset1") |>
+  tidyr::pivot_longer(-Asset1, names_to = "Asset2", values_to = "Correlation") |>
   mutate(Asset1 = factor(Asset1, levels = rev(c("AAPL", "BDO", "BTC", "SPY"))),
          Asset2 = factor(Asset2, levels = c("AAPL", "BDO", "BTC", "SPY")))
 
@@ -450,31 +450,31 @@ ggsave("../reports/fig_q3.pdf", width = 6, height = 4.5, device = "pdf")
 ```{r q8}
 # Q8: VIX Regime Analysis -- SISON, Aaron Joshua Estacio
 
-q8_raw <- fin_data %>%
-  filter(!is.na(VIX)) %>%
-  select(Asset, Date, Daily_Return, VIX) %>%
-  collect() %>%
+q8_raw <- fin_data |>
+  filter(!is.na(VIX)) |>
+  select(Asset, Date, Daily_Return, VIX) |>
+  collect() |>
   mutate(Date = as.Date(Date))
 
-q8 <- q8_raw %>%
+q8 <- q8_raw |>
   mutate(
     VIX_Regime = case_when(
       VIX > 30 ~ "High Volatility (VIX > 30)",
       VIX < 20 ~ "Low Volatility (VIX < 20)",
       TRUE ~ "Moderate (20 <= VIX <= 30)"
     )
-  ) %>%
-  group_by(Asset, VIX_Regime) %>%
+  ) |>
+  group_by(Asset, VIX_Regime) |>
   summarise(
     Mean_Daily_Return = mean(Daily_Return, na.rm = TRUE),
     SD_Daily_Return = sd(Daily_Return, na.rm = TRUE),
     Observations = n(),
     .groups = "drop"
-  ) %>%
+  ) |>
   arrange(Asset, VIX_Regime)
 
-q8_plot <- q8 %>%
-  filter(VIX_Regime %in% c("High Volatility (VIX > 30)", "Low Volatility (VIX < 20)")) %>%
+q8_plot <- q8 |>
+  filter(VIX_Regime %in% c("High Volatility (VIX > 30)", "Low Volatility (VIX < 20)")) |>
   mutate(VIX_Regime = recode(VIX_Regime,
     "High Volatility (VIX > 30)" = "VIX > 30 (High Fear)",
     "Low Volatility (VIX < 20)" = "VIX < 20 (Low Fear)"))
@@ -501,35 +501,35 @@ ggsave("../reports/fig_q8.pdf", width = 7, height = 4, device = "pdf")
 ```{r q9}
 # Q9: Interest Rate Sensitivity -- SISON, Aaron Joshua Estacio
 
-q9_raw <- fin_data %>%
-  filter(!is.na(DGS10)) %>%
-  select(Asset, Date, Daily_Return, DGS10) %>%
-  collect() %>%
+q9_raw <- fin_data |>
+  filter(!is.na(DGS10)) |>
+  select(Asset, Date, Daily_Return, DGS10) |>
+  collect() |>
   mutate(Date = as.Date(Date))
 
-q9 <- q9_raw %>%
-  group_by(Asset) %>%
-  arrange(Date) %>%
-  mutate(DGS10_Change = DGS10 - lag(DGS10)) %>%
-  ungroup() %>%
-  filter(!is.na(DGS10_Change)) %>%
+q9 <- q9_raw |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(DGS10_Change = DGS10 - lag(DGS10)) |>
+  ungroup() |>
+  filter(!is.na(DGS10_Change)) |>
   mutate(
     Yield_Direction = case_when(
       DGS10_Change > 0 ~ "Yields Rising",
       DGS10_Change < 0 ~ "Yields Falling",
       TRUE ~ "No Change"
     )
-  ) %>%
-  group_by(Asset, Yield_Direction) %>%
+  ) |>
+  group_by(Asset, Yield_Direction) |>
   summarise(
     Mean_Daily_Return = mean(Daily_Return, na.rm = TRUE),
     SD_Daily_Return = sd(Daily_Return, na.rm = TRUE),
     Observations = n(),
     .groups = "drop"
-  ) %>%
+  ) |>
   arrange(Asset, Yield_Direction)
 
-q9_plot <- q9 %>%
+q9_plot <- q9 |>
   filter(Yield_Direction %in% c("Yields Rising", "Yields Falling"))
 
 ggplot(q9_plot, aes(x = Asset, y = Mean_Daily_Return, fill = Yield_Direction)) +
@@ -554,17 +554,17 @@ ggsave("../reports/fig_q9.pdf", width = 7, height = 4, device = "pdf")
 ```{r q10}
 # Q10: Inflation Hedge Performance -- SISON, Aaron Joshua Estacio
 
-q10_raw <- fin_data %>%
-  select(Date, Asset, Daily_Return, CPI_YoY) %>%
-  collect() %>%
+q10_raw <- fin_data |>
+  select(Date, Asset, Daily_Return, CPI_YoY) |>
+  collect() |>
   mutate(Date = as.Date(Date))
 
-q10 <- q10_raw %>%
-  filter(!is.na(CPI_YoY) & CPI_YoY > 0.05) %>%
-  filter(!is.na(Daily_Return)) %>%
-  group_by(Asset) %>%
-  arrange(Date) %>%
-  mutate(Cumulative_Return = cumprod(1 + Daily_Return) - 1) %>%
+q10 <- q10_raw |>
+  filter(!is.na(CPI_YoY) & CPI_YoY > 0.05) |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(Cumulative_Return = cumprod(1 + Daily_Return) - 1) |>
   summarise(
     Start_Date = min(Date),
     End_Date = max(Date),
@@ -573,10 +573,10 @@ q10 <- q10_raw %>%
     Total_Cumulative_Return = last(Cumulative_Return),
     Mean_Daily_Return = mean(Daily_Return, na.rm = TRUE),
     Observations = n()
-  ) %>%
+  ) |>
   arrange(desc(Total_Cumulative_Return))
 
-q10_plot <- q10 %>%
+q10_plot <- q10 |>
   mutate(Asset = factor(Asset, levels = q10$Asset[order(q10$Total_Cumulative_Return)]))
 
 ggplot(q10_plot, aes(x = Total_Cumulative_Return, y = Asset, fill = Asset)) +

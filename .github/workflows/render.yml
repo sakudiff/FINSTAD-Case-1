@@ -20,7 +20,7 @@ jobs:
           r-version: ${{ env.R_VERSION }}
       - name: Parse-check all R code in .qmd
         run: |
-          awk '/^```\{r/,/^```/' scripts/finstad_analysis.qmd | sed '1d;$d' > /tmp/r_code.R
+          sed -n '/^```{r/,/^```/{/^```{r/!{/^```/!p}}' scripts/finstad_analysis.qmd > /tmp/r_code.R
           R --no-echo --no-restore -e 'parse(file="/tmp/r_code.R"); cat("OK: all R code parses cleanly.\n")'
 
   render:
