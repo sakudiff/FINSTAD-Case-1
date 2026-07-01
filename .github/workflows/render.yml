@@ -57,10 +57,24 @@ jobs:
             )
           '
 
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          version: "latest"
+      - name: Set up Quarto (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          curl -sL https://github.com/quarto-dev/quarto-cli/releases/download/v1.9.38/quarto-1.9.38-linux-amd64.deb -o /tmp/quarto.deb
+          sudo dpkg -i /tmp/quarto.deb
+          quarto --version
+      - name: Set up Quarto (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          curl -sL https://github.com/quarto-dev/quarto-cli/releases/download/v1.9.38/quarto-1.9.38-macos.pkg -o /tmp/quarto.pkg
+          sudo installer -pkg /tmp/quarto.pkg -target /
+          quarto --version
+      - name: Set up Quarto (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          curl -sL https://github.com/quarto-dev/quarto-cli/releases/download/v1.9.38/quarto-1.9.38-win.msi -o quarto.msi
+          msiexec /i quarto.msi /qn /norestart
+          quarto --version
 
       - name: Set up TinyTeX
         uses: r-lib/actions/setup-tinytex@v2
