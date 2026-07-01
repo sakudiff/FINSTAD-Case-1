@@ -1,0 +1,124 @@
+name: Render Report
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  R_VERSION: "4.4"
+
+jobs:
+  syntax:
+    name: Syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ env.R_VERSION }}
+      - name: Parse-check all R code in .qmd
+        run: |
+          awk '/^```\{r/,/^```/' scripts/finstad_analysis.qmd | sed '1d;$d' > /tmp/r_code.R
+          R --no-echo --no-restore -e 'parse(file="/tmp/r_code.R"); cat("OK: all R code parses cleanly.\n")'
+
+  render:
+    name: Render on ${{ matrix.os }}
+    needs: syntax
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            crank: "https://packagemanager.rstudio.com/all/__linux__/jammy/latest"
+          - os: macos-latest
+            crank: "https://packagemanager.rstudio.com/all/latest"
+          - os: windows-latest
+            crank: "https://packagemanager.rstudio.com/all/latest"
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ env.R_VERSION }}
+          use-public-rspm: true
+
+      - name: Install R packages
+        run: |
+          Rscript -e '
+            install.packages(
+              c("dplyr", "tidyr", "lubridate", "DBI", "RSQLite",
+                "ggplot2", "scales", "knitr", "rmarkdown"),
+              repos = c(CRAN = "${{ matrix.crank }}"),
+              Ncpus = parallel::detectCores()
+            )
+          '
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: "1.6"
+
+      - name: Set up TinyTeX
+        uses: r-lib/actions/setup-tinytex@v2
+
+      - name: Install biber + LaTeX extras
+        run: tlmgr install biber collection-latexextra
+
+      - name: Render .qmd appendix
+        run: |
+          cd scripts
+          quarto render finstad_analysis.qmd --to pdf
+
+      - name: Copy appendix into reports/
+        run: cp scripts/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf
+        shell: bash
+
+      - name: Compile report with latexmk
+        run: |
+          cd reports
+          latexmk -pdf finstad_report.tex
+
+      - name: Upload report PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: finstad-report-${{ matrix.os }}
+          path: reports/finstad_report.pdf
+
+      - name: Upload appendix PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: finstad-appendix-${{ matrix.os }}
+          path: scripts/finstad_analysis.pdf
+
+  commit-pdf:
+    name: Commit rendered PDFs to repo
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: render
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Stage rendered PDFs
+        run: |
+          cp finstad-report-ubuntu-latest/finstad_report.pdf reports/finstad_report.pdf
+          cp finstad-appendix-ubuntu-latest/finstad_analysis.pdf scripts/finstad_analysis.pdf
+          cp finstad-appendix-ubuntu-latest/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/finstad_report.pdf scripts/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf
+          git diff --staged --quiet || git commit -m "ci: auto-render PDFs [skip ci]"
+          git push
