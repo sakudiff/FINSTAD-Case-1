@@ -95,10 +95,13 @@ jobs:
         run: cp scripts/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf
         shell: bash
 
-      - name: Compile report with latexmk
+      - name: Compile report (xelatex + biber)
         run: |
           cd reports
-          latexmk -pdf finstad_report.tex
+          xelatex -interaction=nonstopmode -halt-on-error finstad_report.tex
+          biber finstad_report
+          xelatex -interaction=nonstopmode -halt-on-error finstad_report.tex
+          xelatex -interaction=nonstopmode -halt-on-error finstad_report.tex
 
       - name: Upload report PDF
         uses: actions/upload-artifact@v4
