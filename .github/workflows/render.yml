@@ -30,13 +30,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         include:
           - os: ubuntu-latest
             crank: "https://packagemanager.rstudio.com/all/__linux__/jammy/latest"
           - os: macos-latest
-            crank: "https://packagemanager.rstudio.com/all/latest"
-          - os: windows-latest
             crank: "https://packagemanager.rstudio.com/all/latest"
 
     steps:
@@ -57,19 +55,7 @@ jobs:
               Ncpus = parallel::detectCores()
             )
           '
-      - name: Install R packages (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          Rscript -e '
-            pkgs <- c("dplyr", "tidyr", "lubridate", "DBI", "RSQLite",
-                      "ggplot2", "scales", "knitr", "rmarkdown", "dbplyr")
-            for (pkg in pkgs) {
-              cat("Installing:", pkg, "\n")
-              install.packages(pkg,
-                repos = c(CRAN = "${{ matrix.crank }}"),
-                quiet = FALSE)
-            }
-          '
+
 
       - name: Set up Quarto (Linux)
         if: runner.os == 'Linux'
@@ -83,13 +69,6 @@ jobs:
           curl -sL https://github.com/quarto-dev/quarto-cli/releases/download/v1.9.38/quarto-1.9.38-macos.pkg -o /tmp/quarto.pkg
           sudo installer -pkg /tmp/quarto.pkg -target /
           quarto --version
-      - name: Set up Quarto (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          curl -sL https://github.com/quarto-dev/quarto-cli/releases/download/v1.9.38/quarto-1.9.38-win.msi -o quarto.msi
-          msiexec /i quarto.msi /qn /norestart
-          quarto --version
-
       - name: Set up TinyTeX
         uses: r-lib/actions/setup-tinytex@v2
 
