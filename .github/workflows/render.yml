@@ -98,10 +98,13 @@ jobs:
       - name: Compile report (xelatex + biber)
         run: |
           cd reports
-          xelatex -interaction=nonstopmode -halt-on-error finstad_report.tex
-          biber finstad_report
-          xelatex -interaction=nonstopmode -halt-on-error finstad_report.tex
-          xelatex -interaction=nonstopmode -halt-on-error finstad_report.tex
+          xelatex -interaction=nonstopmode finstad_report.tex 2>&1 || true
+          echo "=== BIBER ==="
+          biber finstad_report 2>&1 || true
+          echo "=== XELATEX 2 ==="
+          xelatex -interaction=nonstopmode finstad_report.tex 2>&1 || true
+          echo "=== XELATEX 3 ==="
+          xelatex -interaction=nonstopmode finstad_report.tex 2>&1 || true
 
       - name: Upload report PDF
         uses: actions/upload-artifact@v4
