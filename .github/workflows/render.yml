@@ -79,8 +79,12 @@ jobs:
       - name: Set up TinyTeX
         uses: r-lib/actions/setup-tinytex@v2
 
+      - name: Install system fonts (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install -y --no-install-recommends fonts-urw-base35
       - name: Install biber + LaTeX extras
-        run: tlmgr install biber collection-latexextra
+        run: tlmgr install biber collection-latexextra biblatex-apa xetex
 
       - name: Render .qmd appendix
         run: |
