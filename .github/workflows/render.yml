@@ -79,10 +79,11 @@ jobs:
       - name: Set up TinyTeX
         uses: r-lib/actions/setup-tinytex@v2
 
-      - name: Install system fonts (Linux)
+      - name: Install system fonts and rebuild cache (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get install -y --no-install-recommends fonts-urw-base35
+          sudo fc-cache -f
       - name: Install biber + LaTeX extras
         run: tlmgr install biber collection-latexextra biblatex-apa xetex
 
