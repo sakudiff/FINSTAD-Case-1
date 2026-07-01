@@ -51,7 +51,7 @@ jobs:
           Rscript -e '
             install.packages(
               c("dplyr", "tidyr", "lubridate", "DBI", "RSQLite",
-                "ggplot2", "scales", "knitr", "rmarkdown"),
+                "ggplot2", "scales", "knitr", "rmarkdown", "dbplyr"),
               repos = c(CRAN = "${{ matrix.crank }}"),
               Ncpus = parallel::detectCores()
             )
