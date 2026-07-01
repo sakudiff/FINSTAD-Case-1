@@ -2,7 +2,8 @@
 % DLSU Academic Paper Template (Clean Version) - Adapted for FINSTAD Case 1
 % ==============================================================================
 % Purpose:  APA 7th-edition formatted template for De La Salle University papers
-% Compile:  xelatex -> biber -> xelatex -> xelatex (or use latexmk -pdf -xelatex)
+% Compile:  Cmd+S in Positron (latexmk auto-detects xelatex + biber via .latexmkrc)
+%           Or manually: latexmk -pdf finstad_report.tex
 % ==============================================================================
 
 \documentclass[12pt]{article}
@@ -13,7 +14,12 @@
 \usepackage{amsmath}          % Math environments and equation support
 \usepackage{amssymb}          % Additional math symbols
 \let\Bbbk\relax               % Prevent conflict between amssymb and newtxmath
-\usepackage{mathptmx} % Times New Roman (via mathptmx)
+\usepackage{fontspec}
+\IfFontExistsTF{Times New Roman}{%
+  \setmainfont{Times New Roman}%
+}{%
+  \setmainfont{Nimbus Roman}% Times-compatible fallback
+}
 \usepackage{tikz}             % Vector graphics and diagrams
 \usetikzlibrary{calc}         % TikZ coordinate calculations
 \usepackage{xcolor}           % Color support (defines dlsugreen below)
@@ -29,6 +35,7 @@
 \usepackage{rotating}         % Rotated floats (sidewaystable, sidewaysfigure)
 \usepackage{adjustbox}        % Auto-scaling tables and images to fit page
 \usepackage{pdflscape}        % Landscape pages in PDF output
+\usepackage{pdfpages}          % Include external PDFs in appendix
 \usepackage{float}            % [H] specifier: force exact float placement
 \usepackage{tablefootnote}    % Footnotes inside tables (\tablefootnote{...})
 \usepackage{listings}         % Source code listings with syntax highlighting
@@ -65,7 +72,7 @@
   aboveskip=15pt,
   belowskip=15pt,
   breakindent=10pt,
-  postbreak=\mbox{\textcolor{red}{$\\hookrightarrow$}\space}
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
 }
 
 % APA 7th Edition: Headings & Indents
@@ -183,10 +190,26 @@
 {} [Discuss the background of the study, objectives of the analysis, and the importance of integrating multiple financial datasets.]
 
 \section{Data Sources}
-{} [Describe the selected U.S. asset, Philippine asset, cryptocurrency, SPY benchmark, and the four required FRED macroeconomic variables.]
+
+Eight datasets were selected for this study, comprising four asset price series and four macroeconomic indicators. All data were obtained from publicly available sources. The sample period from January 1, 2020 to December 31, 2025 was chosen because it encompasses three distinct market regimes: the COVID-19 crash and recovery, the 2021 to 2023 inflation surge, and the subsequent interest rate tightening cycle. This window allows the analysis to capture asset behaviour across crisis, expansion, and transition phases.
+
+The US equity asset is Apple Incorporated (AAPL), listed on the NASDAQ exchange under ticker AAPL. As of 2025, Apple held a market capitalisation of approximately \$4.25 trillion, with a trailing price-to-earnings ratio of 35.08 and an estimated enterprise value of \$4.19 trillion \parencite{stockanalysis2025}. Apple was selected over alternative US technology stocks, particularly NVIDIA, because its valuation and business model present a fundamentally different risk profile that is instructive for a diversified portfolio analysis.
+
+NVIDIA, which briefly overtook Apple as the world's most valuable company in late 2025 and early 2026, trades at a trailing price-to-earnings ratio above 50 and derives over 80\% of its revenue from data centre AI accelerator chips. The concentration of NVIDIA's revenue in a single product category exposed to cyclical capital expenditure cycles and the intense debate among analysts about whether AI infrastructure spending represents a structural transformation or a speculative bubble made it a less suitable choice for a study examining cross-asset behaviour under varying macroeconomic regimes. A stock whose valuation is predominantly determined by a single narrative, however transformative that narrative may be, introduces idiosyncratic risk that complicates the interpretation of portfolio-level results.
+
+Apple presented the opposite profile. Throughout the 2020 to 2025 sample period, Apple was notably deliberate in its approach to artificial intelligence, and in some quarters was characterised as slow to adopt AI relative to its big technology peers. The company did not make early or dramatic public commitments to generative AI, nor did it release large language model products in the manner of its competitors. This restraint was a strategic choice rather than a technological limitation. Apple's approach to AI has consistently prioritised on-device processing and user privacy over cloud-based deployment, a philosophy that the company artefacts under the branding of Apple Intelligence. The June 2026 release of the iOS 19 beta at the Worldwide Developers Conference marked a significant escalation in this strategy \parencite{apple_newsroom2026}, introducing a substantially redesigned Siri powered by Apple Foundation Models that operate through a hybrid on-device and private cloud architecture. This approach, which Apple markets as uniquely privacy-preserving, stands in contrast to the cloud-dependent AI strategies of its competitors and reflects a deliberate product philosophy in which AI is a feature integrated into existing user experiences rather than a standalone product category.
+
+The selection of AAPL over NVIDIA therefore captures a technology sector exposure that is diversified across hardware, services, and increasingly AI-enabled applications, without the single-product concentration risk that characterises the pure-play AI semiconductor firms. This makes AAPL a more representative US equity exposure for a multi-asset portfolio analysis. The Philippine equity asset is BDO Unibank Incorporated (BDO), the largest bank in the Philippines by total assets. As of December 2025, BDO reported total assets of PHP 5.27 trillion, maintaining its ranking as the top universal and commercial bank in the Philippines by asset size \parencite{bsp2025}. BDO was selected to provide exposure to the Philippine financial sector and to emerging market dynamics more broadly, which operate under different monetary policy cycles and economic fundamentals compared to developed markets.
+
+The cryptocurrency asset is Bitcoin (BTC), the largest digital asset by market capitalisation. Bitcoin trades continuously on decentralised cryptocurrency exchanges and was included to evaluate the extent to which its return behaviour correlates with or diverges from traditional asset classes. A secondary objective was to test the frequently asserted claim that Bitcoin functions as an inflation hedge, a proposition examined directly in Q10. The benchmark US equity index is represented by the SPDR S\&P 500 ETF Trust (SPY), which tracks the S\&P 500 index and is one of the most liquid exchange-traded funds globally by assets under management and average daily volume.
+
+Four macroeconomic series were obtained from the Federal Reserve Economic Data (FRED) database maintained by the Federal Reserve Bank of St. Louis. The Consumer Price Index for All Urban Consumers (FRED series ID: CPIAUCSL) measures headline consumer price inflation at monthly frequency and is the most widely referenced US inflation gauge. The 10-Year Treasury Constant Maturity Rate (FRED series ID: DGS10) represents the yield on US government debt at the longest standard tenor and serves as a benchmark for risk-free rates and a barometer of interest rate expectations. The Federal Funds Effective Rate (FRED series ID: FEDFUNDS) captures the overnight rate at which depository institutions lend reserve balances to each other and reflects the stance of US monetary policy. The CBOE Volatility Index (FRED series ID: VIXCLS) tracks the implied volatility of S\&P 500 index options over a 30-day forward period and is commonly interpreted as a gauge of market fear and uncertainty.
 
 \section{Data Acquisition}
-{} [Present a table showing the data source, sample period, original observations downloaded, missing values, and duplicate observations for each dataset.]
+
+Each dataset was downloaded from its respective source in CSV format and imported into R for processing. Asset price data for AAPL, BTC, and SPY were obtained from Yahoo Finance \parencite{yahoo_finance}. BDO data were sourced from Investing.com \parencite{investingcom}, as the Philippine stock data available through Yahoo Finance did not provide sufficient historical coverage for the required sample period. All four macroeconomic series were downloaded from the FRED database website \parencite{fred_data} using their native CSV export functionality. Table~\ref{tab:data_acq} summarises the acquisition details for each dataset.
+
+The sample period of January 1, 2020 to December 31, 2025 was chosen to capture three distinct financial market regimes. The first was the COVID-19 crash and subsequent recovery from February to December 2020, which produced the sharpest equity drawdown since the 2008 financial crisis and a rapid recovery driven by monetary and fiscal intervention. The second was the inflation surge from 2021 through early 2023, during which US CPI year-on-year readings exceeded 5\% and peaked at approximately 9\%, a level not observed since the early 1980s. The third was the interest rate tightening cycle beginning in March 2022, during which the Federal Reserve raised the federal funds rate from near zero to over 5\%, the most aggressive hiking cycle in four decades. This tripartite regime structure provides a natural experiment for examining asset behaviour under contrasting macroeconomic conditions.
 
 \begin{table}[H]
   \centering
@@ -194,49 +217,312 @@
     \begin{threeparttable}
       \caption{Data Acquisition Summary}
       \label{tab:data_acq}
-      \begin{tabular}{lcccc}
+      \begin{tabular}{l l S[table-format=4.0] S[table-format=1.0] S[table-format=1.0]}
         \toprule
-        Dataset & Source & Original Observations & Missing Values & Duplicates \\
+        Dataset & Source & {Observations} & {Missing} & {Duplicates} \\
         \midrule
-        {} & {} & {} & {} & {} \\
+        AAPL   & Yahoo Finance  & 2512 & 0 & 0 \\
+        BDO    & Investing.com  & 2441 & 0 & 0 \\
+        BTC    & Yahoo Finance  & 3652 & 0 & 0 \\
+        SPY    & Yahoo Finance  & 2514 & 0 & 0 \\
+        CPI    & FRED           & 952  & 0 & 0 \\
+        DGS10  & FRED           & 16105 & 0 & 0 \\
+        FEDFUNDS & FRED         & 863  & 0 & 0 \\
+        VIX    & FRED           & 9216 & 0 & 0 \\
         \bottomrule
       \end{tabular}
     \end{threeparttable}
   \end{safetable}
 \end{table}
 
+The full sample period for each series extends from its earliest available observation through mid-2026. All series were subsequently restricted to the January 1, 2020 to December 31, 2025 analysis window during the data cleaning phase. No missing values or duplicate rows were detected in the raw downloads.
+
 
 \section{Data Cleaning}
-{} [Describe the cleaning procedures performed, treatment of missing values, duplicate observations, and return calculations.]
 
-\section{Database Integration}
-{} [Explain the SQL join strategy used. Include a table showing observations before joins, after joins, and in the final dataset. Justify the strategy.]
+Eight CSV files were loaded into R using base \texttt{read.csv} with \texttt{stringsAsFactors} set to FALSE throughout. Each dataset was initially inspected for structural anomalies before being restricted to the January 1, 2020 to December 31, 2025 analysis window. The restriction served two purposes: it ensured uniform temporal coverage across assets trading on different calendars and it eliminated the need to extrapolate or impute macroeconomic readings for periods where certain series had no observations.
+
+Date standardisation required three distinct parsing strategies, a direct consequence of the heterogeneity across data sources. The AAPL, BTC, and SPY exports from Yahoo Finance used POSIXct-formatted timestamps with timezone offsets which required \texttt{ymd\_hms} coercion followed by conversion to Date objects. The BDO series from Investing.com used MM/DD/YYYY format which demanded \texttt{mdy} parsing from the lubridate package. All four FRED series used ISO 8601 YYYY-MM-DD format which R parsed natively via \texttt{ymd}. BDO additionally contained a byte-order-mark character prepended to the first column header, a comma-separated volume field expressed in 2.50M notation, and a closing price column labelled Price rather than Close. The byte-order-mark was handled by reading the file with UTF-8-BOM encoding, the volume field was parsed through a custom regular expression that converted suffixed values to numeric equivalents, and the Price column was remapped to Close for internal consistency. These adjustments were made transparently and did not alter any observed price or return values.
+
+No missing values or duplicate rows were detected in any dataset after the initial load. The absence of missingness is attributable to the nature of the sources: Yahoo Finance and Investing.com report complete historical price records without gaps, and FRED series are reported only on their scheduled release dates, meaning every observation in the raw download is a valid reading. The cleaning burden therefore fell entirely on format normalisation rather than imputation or row removal, which simplifies the subsequent analysis by removing the need for missing data handling techniques such as last-observation-carried-forward or interpolation.
+
+Daily returns were calculated as the simple percentage change in closing price from the previous trading day, expressed as $(\text{Close} / \operatorname{lag}(\text{Close})) - 1$. This formulation was applied consistently across all four assets, with BDO using the Price column as its close. The first observation of each asset produced a missing return by construction, as no prior price existed. These initial NA values were retained in the dataset and excluded from all subsequent statistical computations through the use of na.rm arguments, which is functionally equivalent to a drop but preserves the row count for temporal alignment.
+
+Table~\ref{tab:clean_summary} reports the observation counts at each processing stage. The reduction from original to after-cleaning counts reflects the date restriction alone, not any data quality issue. The most extreme reduction occurred for DGS10, which fell from 16,105 to 1,500 observations, and for VIX, which fell from 9,216 to 1,535 observations, both because FRED provides several decades of historical data that extend well before the 2020 start date. The CPI reduction from 952 to 71 observations is a consequence of its monthly reporting frequency.
 
 \begin{table}[H]
   \centering
   \begin{safetable}
     \begin{threeparttable}
-      \caption{Database Integration Summary}
-      \label{tab:data_int}
-      \begin{tabular}{lccc}
+      \caption{Data Acquisition and Cleaning Summary}
+      \label{tab:clean_summary}
+      \begin{tabular}{
+        l
+        l
+        S[table-format=5.0]
+        S[table-format=4.0]
+        S[table-format=1.0]
+        S[table-format=1.0]
+      }
         \toprule
-        Dataset & Original Observations & After Joins & Final Analytical Dataset \\
+        Dataset & Source & {Original Obs} & {After Cleaning} & {Missing} & {Duplicates} \\
         \midrule
-        {} & {} & {} & {} \\
+        AAPL   & Yahoo Finance  & 2512 & 1508 & 0 & 0 \\
+        BDO    & Investing.com  & 2441 & 1468 & 0 & 0 \\
+        BTC    & Yahoo Finance  & 3652 & 2192 & 0 & 0 \\
+        SPY    & Yahoo Finance  & 2514 & 1508 & 0 & 0 \\
+        CPI    & FRED           & 952  & 71   & 0 & 0 \\
+        DGS10  & FRED           & 16105 & 1500 & 0 & 0 \\
+        FEDFUNDS & FRED         & 863  & 72   & 0 & 0 \\
+        VIX    & FRED           & 9216 & 1535 & 0 & 0 \\
         \bottomrule
       \end{tabular}
     \end{threeparttable}
   \end{safetable}
 \end{table}
 
-\section{SQL-Based Financial Investigation}
-{} [Present at least TEN (10) financial SQL investigations containing Objective, SQL/dplyr Code, Output, and Interpretation.]
+\section{Database Integration}
 
-\subsection{SQL Investigation 1}
-\textbf{Objective:} [Objective] \\
-\textbf{Code:} [Code] \\
-\textbf{Output:} [Output] \\
-\textbf{Financial Interpretation:} [Interpretation]
+The cleaned asset and macro datasets were consolidated into a single wide-format table for SQL querying. Four join strategies were evaluated to determine the most appropriate consolidation approach.
+
+The \texttt{left\_join} preserved all asset trading dates and produced \num{2192} rows. Macroeconomic variables returned NA on weekends and holidays where no FRED observation existed. The \texttt{inner\_join} retained only 46 rows, representing dates common to all eight datasets simultaneously. The \texttt{full\_join} produced \num{2192} rows by taking the union of all dates across assets and macro series. The \texttt{anti\_join} returned \num{2121} asset dates that were missing CPI data, confirming that weekend and holiday gaps in the monthly CPI series drove the reduction.
+
+Table~\ref{tab:join_compare} summarises each join type and its row count.
+
+\begin{table}[H]
+  \centering
+  \begin{safetable}
+    \begin{threeparttable}
+      \caption{Join Comparison}
+      \label{tab:join_compare}
+      \begin{tabular}{
+        l
+        S[table-format=4.0]
+        p{9cm}
+      }
+        \toprule
+        Join Type & {Rows} & {Description} \\
+        \midrule
+        left\_join  & 2192 & Preserves all asset dates; macro NA on non-trading days \\
+        inner\_join & 46   & Only dates common to all eight datasets \\
+        full\_join  & 2192 & Union including macro-only periods \\
+        anti\_join  & 2121 & Asset dates missing CPI, reflecting weekend and holiday gaps \\
+        \bottomrule
+      \end{tabular}
+    \end{threeparttable}
+  \end{safetable}
+\end{table}
+
+The final dataset was constructed using a \texttt{left\_join} with the asset table as the base, yielding \num{2192} rows and 13 columns. This strategy retained the maximum number of observable trading days while allowing macroeconomic series to populate only where data existed. Table~\ref{tab:obs_reduction} traces the observation counts through each processing stage.
+
+\begin{table}[H]
+  \centering
+  \begin{safetable}
+    \begin{threeparttable}
+      \caption{Observation Reduction Across Processing Stages}
+      \label{tab:obs_reduction}
+      \begin{tabular}{
+        l
+        S[table-format=5.0]
+        S[table-format=4.0]
+        S[table-format=4.0]
+      }
+        \toprule
+        Dataset & {Original} & {After Cleaning} & {Final} \\
+        \midrule
+        AAPL     & 2512  & 1508 & {---} \\
+        BDO      & 2441  & 1468 & {---} \\
+        BTC      & 3652  & 2192 & {---} \\
+        SPY      & 2514  & 1508 & {---} \\
+        CPI      & 952   & 71   & {---} \\
+        DGS10    & 16105 & 1500 & {---} \\
+        FEDFUNDS & 863   & 72   & {---} \\
+        VIX      & 9216  & 1535 & {---} \\
+        \addlinespace
+        Final Dataset & {---} & {---} & 2192 \\
+        \bottomrule
+      \end{tabular}
+    \end{threeparttable}
+  \end{safetable}
+\end{table}
+
+The sharp reduction from 952 to 71 observations for CPI reflects the monthly reporting frequency of the Consumer Price Index. The final row count of \num{2192} is driven by the asset with the most trading days, BTC, which trades continuously on cryptocurrency exchanges. The observation reduction is therefore explained by two factors: non-trading days that remove weekend and holiday observations in equities, and the lower reporting frequency of macroeconomic indicators.
+
+\section{SQL-Based Financial Investigation}
+
+Six financial investigations were conducted using dplyr operations on the integrated database. Each investigation addresses a distinct question about asset behaviour, market dynamics, or portfolio implications. The investigations are organised sequentially from risk and performance assessment through regime analysis and inflation hedging.
+
+\subsection{Q1. Risk-Adjusted Returns}
+
+The R code used to produce these results is in Appendix~\ref{sec:appendix_a} (section~Q1). This investigation addresses a central question for portfolio construction:
+
+\vspace{0.3cm}
+\begin{quote}
+\itshape Which asset delivered the highest return per unit of risk over the 2020 to 2025 sample period?\normalfont
+\end{quote}
+\vspace{0.3cm}
+
+To answer this, the ratio of mean daily return to standard deviation was computed for each asset, producing a Sharpe-like measure of return efficiency.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_q1.pdf}
+  \caption{Risk-adjusted daily return by asset. Horizontal bars show the ratio of mean daily return to standard deviation. Source: authors' calculations.}
+  \label{fig:q1}
+\end{figure}
+
+The ranking of risk-adjusted returns is immediately legible from Figure~\ref{fig:q1}. AAPL leads at 0.0538, a function of its moderate daily volatility of 2.00\% paired with a mean return of 0.108\%. The visual gap between AAPL and BDO at the bottom of the bar chart is substantial, and it is worth examining why each asset lands where it does. BTC achieves a comparable ratio of 0.0520 but through a fundamentally different mechanism: its raw mean return of 0.166\% is the highest in the sample, but its standard deviation of 3.19\% is also the highest, meaning the ratio is earned through superior absolute performance rather than superior stability. SPY posts 0.0486 on the lowest standard deviation of 1.31\%, a reflection of its structure as a diversified index fund that diversifies away single-stock idiosyncratic risk. BDO lags at 0.0131 by a wide margin, with a mean daily return of only 0.030\% that is one-fifth of AAPL's, paired with volatility of 2.26\% that is not materially lower than AAPL's. The SPY benchmark reference line in Figure~\ref{fig:q1} provides a visual anchor: three assets cluster above it, while BDO sits isolated at the bottom.
+
+The implication for portfolio construction is that an investor maximising risk-adjusted returns would allocate away from BDO and toward AAPL or BTC. This conclusion must be qualified in two respects. First, the risk-adjusted ratio does not account for differences in liquidity, transaction costs, or the regulatory constraints that may limit institutional exposure to cryptocurrency. Second, the ratio assumes that volatility is an adequate proxy for risk, a standard assumption that becomes contestable in the presence of tail dependence or skewness in returns, both of which are documented features of equity and cryptocurrency markets.
+
+\subsection{Q2. COVID Crash Analysis}
+
+The corresponding R code can be found in Appendix~\ref{sec:appendix_a} (section~Q2). The analysis was guided by this question:
+
+\vspace{0.3cm}
+\begin{quote}
+\itshape How did each asset perform during the COVID-19 market crash of February to March 2020?\normalfont
+\end{quote}
+\vspace{0.3cm}
+
+To measure crisis resilience, cumulative returns were computed for each asset over the February to March 2020 selloff period.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_q2.pdf}
+  \caption{Cumulative returns during the COVID-19 crash, February to March 2020. Each line tracks the cumulative product of (1 plus daily return) minus 1. Source: authors' calculations.}
+  \label{fig:q2}
+\end{figure}
+
+The trajectory of each asset's decline during the COVID-19 crash is plotted in Figure~\ref{fig:q2}. All four lines descend steeply from the period start, but the slopes and depths differ markedly. Every asset in the sample suffered a double-digit cumulative decline. The ranking of final losses aligned closely with each asset's pre-crisis volatility profile. AAPL and SPY, which had the lowest pre-crisis standard deviation in daily returns, lost 17.6\% and 19.4\% respectively. BDO and BTC, which had the highest standard deviation, lost 30.1\% and 31.1\%. This ordering is consistent with the proposition that in a systematic market event, higher-volatility assets experience proportionally larger drawdowns, as leverage and stop-loss mechanisms amplify downside moves in assets with wider bid-ask spreads and thinner order books.
+
+Figure~\ref{fig:q2} also reveals differences in timing that the end-point table obscures. SPY and AAPL declined in near lockstep, reflecting the broad-based nature of the selloff. BTC's line is visibly more volatile, with sharp intra-period reversals that produced both steeper single-day losses and sharper bounces. BDO's trajectory shows a delayed but sustained decline that continued after US equities had begun to stabilise, consistent with the lagged transmission of global shocks to emerging market equities. The figure makes clear that while all four assets ended the period deeply negative, the path each took carried different implications for risk management.
+
+A notable methodological observation concerns the differing observation windows. BTC recorded 60 trading days over the two-month period, compared with 41 days for AAPL and SPY and 40 for BDO. The difference arises because cryptocurrency exchanges operate continuously, capturing Saturday and Sunday returns that equity markets, closed on weekends, do not record. The practical consequence is that BTC's cumulative loss of 31.1\% was distributed over more calendar days. For the COVID period specifically, the claim that cryptocurrency functions as a crisis hedge finds no empirical support in these data, as BTC recorded the largest cumulative decline in the sample and its trajectory in Figure~\ref{fig:q2} shows no period of sustained positive returns during the selloff.
+
+\subsection{Q3. Cross-Asset Correlation}
+
+The code supporting this section is in Appendix~\ref{sec:appendix_a} (section~Q3). The investigation centres on a question fundamental to portfolio theory:
+
+\vspace{0.3cm}
+\begin{quote}
+\itshape What is the pairwise correlation of daily returns across the selected assets, and what does this imply for portfolio diversification?\normalfont
+\end{quote}
+\vspace{0.3cm}
+
+Pairwise Pearson correlation coefficients were computed across all asset pairs to assess the diversification potential of the portfolio.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{fig_q3.pdf}
+  \caption{Pairwise Pearson correlation coefficients of daily returns. Values closer to 1 indicate stronger positive co-movement. Source: authors' calculations.}
+  \label{fig:q3}
+\end{figure}
+
+The correlation heatmap in Figure~\ref{fig:q3} presents the pairwise Pearson coefficients in a format that makes the tiered structure immediately visible through colour intensity. The eye is drawn to the dark blue cell at the intersection of AAPL and SPY, where the correlation of 0.784 is the highest in the matrix. This figure is expected given that Apple is the single largest component of the S\&P 500 index, with a weight that fluctuated between approximately 6\% and 7\% during the sample period, meaning movements in AAPL mechanically influence SPY returns to a non-trivial degree. The dark blue cell in the upper-right corner of the heatmap and its symmetrical counterpart at the lower-left confirm this strong coupling.
+
+At the opposite end of the spectrum, the light teal cells in the BDO row and column indicate correlations with all other assets that fall between 0.05 and 0.12. The lowest is with BTC at 0.051, followed by AAPL at 0.104 and SPY at 0.123. The visual contrast between the dark AAPL-SPY intersection and the pale BDO row is striking. This isolation is consistent with the structural differences between the Philippine banking sector and US equity or cryptocurrency markets. BDO's returns are primarily driven by domestic macroeconomic conditions, Philippine monetary policy set by the Bangko Sentral ng Pilipinas, and the net interest margin dynamics of the local banking industry. These factors have minimal overlap with the drivers of US equity returns or cryptocurrency speculation. The practical implication is that BDO offers genuine diversification benefits that would reduce overall portfolio variance when combined with US equities or cryptocurrency, a finding that is considerably more valuable than the low unconditional correlation would suggest when considered alongside the crisis-period behaviour documented in the VIX regime analysis.
+
+BTC occupies an intermediate position, with a correlation of 0.383 with SPY and 0.284 with AAPL. In the heatmap, these cells appear as a medium blue, visibly darker than BDO's row but lighter than the AAPL-SPY intersection. These moderate positive correlations suggest that Bitcoin partially behaves as a risk asset during this sample period, moving directionally with US equities but with substantial idiosyncratic variation. The BDO-BTC pair at 0.051 offers the strongest diversification potential in the matrix, as these two assets appear to be driven by nearly orthogonal economic forces: one by Philippine banking dynamics and the other by cryptocurrency-specific adoption and speculation factors.
+
+\subsection{Q4. Asset Ranking by Total Return}
+
+\vspace{0.5cm}
+\textit{[To be completed]}
+\vspace{0.5cm}
+
+\subsection{Q5. Best and Worst Trading Days}
+
+\vspace{0.5cm}
+\textit{[To be completed]}
+\vspace{0.5cm}
+
+\subsection{Q6. Moving Average Crossover Analysis}
+
+\vspace{0.5cm}
+\textit{[To be completed]}
+\vspace{0.5cm}
+
+\subsection{Q7. Volume and Volatility Relationship}
+
+\vspace{0.5cm}
+\textit{[To be completed]}
+\vspace{0.5cm}
+
+\subsection{Q8. VIX Regime Analysis}
+
+Refer to Appendix~\ref{sec:appendix_a} (section~Q8) for the R implementation. This part of the study was driven by the following inquiry:
+
+\vspace{0.3cm}
+\begin{quote}
+\itshape How do assets perform during periods of high market fear compared to periods of low market fear?\normalfont
+\end{quote}
+\vspace{0.3cm}
+
+To test whether asset behaviour changes with market fear, mean daily returns were compared across high volatility periods defined as VIX above 30 and low volatility periods defined as VIX below 20.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_q8.pdf}
+  \caption{Mean daily return by VIX regime. Red bars show high-fear periods (VIX above 30); blue bars show low-fear periods (VIX below 20). Source: authors' calculations.}
+  \label{fig:q8}
+\end{figure}
+
+Figure~\ref{fig:q8} visualises the asymmetry across VIX regimes through grouped bars, with red representing high-fear periods and blue representing low-fear periods. The figure identifies one asset whose behaviour is qualitatively different from the rest. During high-fear periods defined as VIX readings above 30, which occurred on 148 trading days in the sample, BTC stands alone with a positive bar. Its mean daily return of 0.157\% is the only positive value in the high-fear regime. Every other asset posted negative mean returns ranging from -0.424\% for BDO to -0.545\% for AAPL. During low-fear periods defined as VIX below 20, which encompassed 859 trading days, all four assets delivered positive returns, though the ordering shifted: AAPL led at 0.247\% while BDO trailed at 0.062\%. The figure makes clear that the cross-asset ranking in calm markets is nearly the inverse of the ranking during turmoil.
+
+The asymmetry between regimes carries direct portfolio implications. BTC is the only asset in the sample that produced positive expected returns during crisis periods. This is consistent with the interpretation that Bitcoin's return generating process is not merely a levered version of equity market risk but has distinct drivers that become dominant during extreme volatility. The mechanism may relate to Bitcoin's decentralised structure, which makes it insensitive to institutional liquidation cascades in equity markets, or to specific demand from investors seeking non-correlated stores of value during equity market stress. The red bar for BTC in Figure~\ref{fig:q8} is the single most informative data point in the regime analysis, as it contradicts the straightforward expectation that all risky assets decline together during systemic events.
+
+BDO presents the opposite profile, with the shortest blue bar in the low-fear regime and a red bar nearly as deep as AAPL's in the high-fear regime. It offers the least upside in calm markets, with mean returns of just 0.062\% in the low-VIX regime, and nearly as much downside as US equities during turmoil. The diversification argument for BDO therefore rests on its low unconditional correlation with other assets, not on any crisis-period resilience. An investor holding BDO for diversification should expect it to provide limited protection during equity market drawdowns, a finding that tempers the enthusiasm generated by the unconditional correlation analysis from the previous investigation.
+
+\subsection{Q9. Interest Rate Sensitivity}
+
+The computation for this section is detailed in Appendix~\ref{sec:appendix_a} (section~Q9). The motivating question was:
+
+\vspace{0.3cm}
+\begin{quote}
+\itshape How sensitive are each asset's returns to daily changes in the 10-year Treasury yield?\normalfont
+\end{quote}
+\vspace{0.3cm}
+
+To measure interest rate exposure, mean daily returns were calculated conditional on whether the 10-year Treasury yield rose or fell from the previous trading day.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_q9.pdf}
+  \caption{Mean daily return by 10-year Treasury yield direction. Orange bars show days when yields rose; blue bars show days when yields fell. Source: authors' calculations.}
+  \label{fig:q9}
+\end{figure}
+
+Figure~\ref{fig:q9} presents the mean daily returns for each asset conditional on whether the 10-year Treasury yield rose or fell from the previous trading day. The orange and blue bars reveal a more nuanced picture than the conventional narrative that rising interest rates depress equity prices would suggest. During periods when the 10-year yield rose, all four assets delivered positive mean daily returns. BTC led at 0.198\%, followed by SPY at 0.139\%, AAPL at 0.131\%, and BDO at 0.069\%. The uniform positivity during rising yield environments contradicts the simple intuition that higher discount rates mechanically lower present values, and instead suggests that during this sample period, rising yields were more commonly associated with improving growth expectations than with tightening financial conditions. The figure shows that for SPY and AAPL, the orange bars are visibly taller than the blue bars, indicating that these assets performed better when yields rose.
+
+The falling-yield regime provides a sharper diagnostic signal, and Figure~\ref{fig:q9} isolates it clearly. SPY recorded a mean return of -0.009\% during falling yield periods, making it the only asset in the sample with a negative bar in the blue series. This counterintuitive result requires explanation. The most plausible interpretation is that the market interpreted falling yields during this period as a signal of deteriorating economic conditions rather than as an accommodative policy response. When yields fall because growth expectations are being revised downward, equity markets decline because the earnings component of the valuation equation dominates the discount rate component. SPY, as the broadest equity exposure, is the most sensitive to this growth repricing. The near-zero blue bar for SPY in Figure~\ref{fig:q9} is therefore not a statistical anomaly but a coherent signal about how the market priced macroeconomic news during this sample period.
+
+BDO and AAPL maintained positive mean returns in both yield regimes, though the magnitudes differed. AAPL's mean return fell from 0.131\% during rising yield periods to 0.050\% during falling yield periods, a reduction of 0.081 percentage points that is visible in the figure as a substantial gap between its orange and blue bars. BDO's bars are nearly equal in height at 0.069\% and 0.004\%, suggesting that Philippine bank stock returns are largely insensitive to US interest rate movements, consistent with the low cross-border correlation in monetary policy cycles. BTC shows the smallest gap between bars, with mean returns of 0.198\% and 0.174\% across regimes, a difference of only 0.024 percentage points. The relative insularity of BTC from US interest rate movements visible in Figure~\ref{fig:q9} is consistent with the interpretation that cryptocurrency valuation is driven primarily by factors orthogonal to traditional monetary transmission channels, such as network adoption rates, regulatory developments, and speculative demand.
+
+\subsection{Q10. Inflation Hedge Performance}
+
+Appendix~\ref{sec:appendix_a} (section~Q10) contains the R code behind this analysis. The final investigation tackles a question with direct practical relevance:
+
+\vspace{0.3cm}
+\begin{quote}
+\itshape Which assets served as effective inflation hedges during the high-inflation period of 2021 to 2023?\normalfont
+\end{quote}
+\vspace{0.3cm}
+
+Total cumulative returns were computed for each asset over the high-inflation window from June 2021 to February 2023, during which CPI year-on-year readings exceeded 5\%.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_q10.pdf}
+  \caption{Cumulative return during the high-inflation period, June 2021 to February 2023. CPI year-on-year readings exceeded 5\% throughout this window. Source: authors' calculations.}
+  \label{fig:q10}
+\end{figure}
+
+The inflation hedge results are plotted in Figure~\ref{fig:q10}, where the horizontal bars tell an unambiguous story. BDO extends far to the right at 43.9\%, AAPL is positive but shorter at 19.5\%, and both SPY and BTC extend to the left in negative territory at -3.2\% and -38.0\% respectively. The ranking is the inverse of what the widely promoted cryptocurrency-as-digital-gold narrative would predict. The asset that is most frequently described as an inflation hedge, Bitcoin, delivered the worst performance, while the asset least associated with that narrative, a Philippine bank stock, delivered the best.
+
+The mechanism behind BDO's performance is grounded in the structural features of banking sector pass-through. Philippine banks operating in a rising rate environment can widen net interest margins because loan contracts, particularly floating-rate corporate and consumer loans, reprice upward more quickly than deposit rates. The lag in deposit rate adjustment is a well-documented feature of banking systems with significant demand deposit and savings account bases, where depositors are slow to demand higher rates. This asymmetry allows banks to capture a larger share of the interest rate spread during tightening cycles. BDO, as the largest Philippine bank by total assets, was the primary beneficiary of this dynamic, and the magnitude of the gain visible in Figure~\ref{fig:q10} reflects both the size of its loan book and the speed of its repricing relative to its deposit base.
+
+AAPL's resilience, with a cumulative gain of 19.5\%, reflects pricing power embedded in its product ecosystem. Apple's ability to pass through cost increases to consumers without losing market share is a function of brand loyalty, switching costs within the iOS ecosystem, and the discretionary nature of its premium product category. SPY's marginal loss of 3.2\% indicates that the broad US equity market struggled to maintain real value during this inflationary episode, consistent with the compression of price-to-earnings multiples that occurs when nominal discount rates rise. BTC's loss of 38.0\% stands out in Figure~\ref{fig:q10} as the longest bar extending to the left. It contradicts the narrative that cryptocurrency serves as digital gold. During this specific high-inflation period, Bitcoin behaved as a high-beta risk asset rather than an inflation hedge, declining in real terms by more than any other asset in the sample. The cumulative return trajectories during the 21-month window make clear that attributing inflation-hedging properties to cryptocurrency requires ignoring the empirical evidence from the most recent and most severe inflationary episode in four decades.
 
 \section{Descriptive Statistical Analysis}
 {} [Present mean, median, variance, standard deviation, minimum, maximum, range, skewness, kurtosis and discuss implications.]
@@ -262,7 +548,23 @@
 \newpage
 \appendix
 \section{Appendix A - Complete R Code} \label{sec:appendix_a}
-{} [Include the complete R script used in the analysis.]
+
+The complete R source code is embedded below. This document was rendered from a Quarto Markdown file and contains all code chunks with their outputs organised by section. Each section is labelled with the responsible group member's name. The code blocks are as follows:
+
+\begin{itemize}
+  \item \textbf{Data loading} --- CSV imports (Enrique)
+  \item \textbf{Data cleaning} --- Date standardisation, filtering, return calculation (Aaron)
+  \item \textbf{Database integration} --- Four join types, observation reduction (Aaron)
+  \item \textbf{Q1} --- Risk-adjusted returns (Aaron)
+  \item \textbf{Q2} --- COVID crash analysis (Aaron)
+  \item \textbf{Q3} --- Cross-asset correlation (Aaron)
+  \item \textbf{Q4-Q7} --- Reserved for other group members
+  \item \textbf{Q8} --- VIX regime analysis (Aaron)
+  \item \textbf{Q9} --- Interest rate sensitivity (Aaron)
+  \item \textbf{Q10} --- Inflation hedge performance (Aaron)
+\end{itemize}
+
+\includepdf[pages=-,pagecommand={}]{finstad_analysis_appendix.pdf}
 
 \section{Appendix B - Additional Tables and Figures} \label{sec:appendix_b}
 {} [Include supplementary outputs that are too large for the main report.]

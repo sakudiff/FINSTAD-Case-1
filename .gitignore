@@ -22,3 +22,15 @@
 # OS files
 .DS_Store
 Thumbs.db
+.pi
+
+# Quarto build artifacts
+scripts/finstad_analysis.html
+scripts/finstad_analysis_files/
+scripts/finstad_analysis.tex
+scripts/*.knit.md
+scripts/*.utf8.md
+
+# Stale figure PDFs (ggsave copies, not the reports/ originals)
+fig_q*.pdf
+scripts/fig_q*.pdf
