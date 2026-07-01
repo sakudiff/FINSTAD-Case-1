@@ -46,7 +46,8 @@ jobs:
           r-version: ${{ env.R_VERSION }}
           use-public-rspm: true
 
-      - name: Install R packages
+      - name: Install R packages (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           Rscript -e '
             install.packages(
@@ -55,6 +56,19 @@ jobs:
               repos = c(CRAN = "${{ matrix.crank }}"),
               Ncpus = parallel::detectCores()
             )
+          '
+      - name: Install R packages (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Rscript -e '
+            pkgs <- c("dplyr", "tidyr", "lubridate", "DBI", "RSQLite",
+                      "ggplot2", "scales", "knitr", "rmarkdown", "dbplyr")
+            for (pkg in pkgs) {
+              cat("Installing:", pkg, "\n")
+              install.packages(pkg,
+                repos = c(CRAN = "${{ matrix.crank }}"),
+                quiet = FALSE)
+            }
           '
 
       - name: Set up Quarto (Linux)
