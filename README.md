@@ -24,12 +24,26 @@ This project has been broken down into granular tasks mapping the coding (`.qmd`
 | **Sec 6: SQL Investigations (Q4-Q7)** | Write `dplyr` code/queries for 4 more financial questions. | Write **Sec 6 (Q4-Q7)** and their financial interpretations. | Inigo |
 | **Sec 6: SQL Investigations (Q8-Q10)** | Write `dplyr` code/queries for the last 3 financial questions. | Write **Sec 6 (Q8-Q10)** and their financial interpretations. | Aaron |
 | **Sec 7: Descriptive Statistics** | Code `summarise()` for mean, variance, skewness, kurtosis, min/max. | Write **Sec 7** (Descriptive Statistics) & interpretations. | Enrique |
-| **Sec 8: Data Visualization** | Code `ggplot2` to generate the 8 required professional figures and export them as PNGs. | Write **Sec 8** (Data Visualization) & insert the charts. | Josiah |
+| ~~**Sec 8: Data Visualization**~~ | *(Visualizations merged into Sec 6 to maintain narrative flow)* | *(Omitted from report)* | \- |
 | **Sec 9: Exploratory Analysis** | *(No code required, relies on previous outputs)* | Write **Sec 9** (Exploratory Financial Analysis). | Camille |
 | **Sec 10 & 12: Recommendation & Conclusion** | *(No code required, relies on previous outputs)* | Write **Sec 10** (Investment Recommendation) and **Sec 12** (Conclusion). | Camille |
-| **Exec Summary & Sec 11: Dashboard** | Code the 1-page dashboard layout in `.qmd` (or format in PPT). | Write **Sec 11** (Executive Dashboard) and **Executive Summary**. | Inigo |
+| **Exec Summary & Sec 11: Dashboard** | Code the 1-page dashboard layout in `.qmd` (or format in PPT). | Write **Sec 11** (Executive Dashboard) and **Executive Summary**. | Josiah |
 | **Presentation Deck** | Migrate the best charts and tables from `.qmd` into slides. | Create the 10-minute **Presentation Deck** (Canva/PPT). | Josiah |
 | **Lead LaTeX Editor** | Ensure the `.qmd` outputs successfully compile into the final `.pdf`. | Manage `finstad_report.tex` formatting, table layouts, and APA citations. | *\[Name\]* |
+
+### Note for Josiah: The Executive Dashboard
+Since Section 8 (Data Visualization) was merged directly into the SQL investigations, your primary tasks are now the **Presentation Deck** and **Section 11: Executive Dashboard**. 
+
+**What is the Executive Dashboard?**
+The rubric strictly mandates a 1-page visual summary containing: the selected assets, key descriptive statistics, 3–5 important charts, major SQL findings, and the final investment recommendation. It is essentially an infographic for an executive who won't read the 20-page paper. 
+
+**How to build it:**
+No Canva, no PowerPoint, no "microslop" allowed. You must use one of the following:
+1. **The HTML/Quarto Way:** Build it in a standalone `.qmd` or `.html` file using custom CSS/HTML grids to arrange the dashboard.
+2. **The Native LaTeX Way:** Build a custom `twocolumn` or `minipage` layout directly in `finstad_report.tex`. 
+3. **The Figma Way (Last Resort):** If you absolutely must use a visual design tool, use Figma and export it as a 1-page PDF file (`dashboard.pdf`).
+
+If you get stuck on the code or layout, ask the group for help.
 
 ------------------------------------------------------------------------
 
@@ -342,7 +356,7 @@ Every time you push a commit to GitHub, an automated pipeline runs in the cloud.
 
 Here is exactly what happens when you push:
 
-```
+```         
 You: git add . && git commit -m "added Q4 analysis" && git push
         |
 GitHub Actions:
