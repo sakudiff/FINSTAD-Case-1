@@ -24,10 +24,10 @@ This project has been broken down into granular tasks mapping the coding (`.qmd`
 | **Sec 6: SQL Investigations (Q4-Q7)** | Write `dplyr` code/queries for 4 more financial questions. | Write **Sec 6 (Q4-Q7)** and their financial interpretations. | Inigo |
 | **Sec 6: SQL Investigations (Q8-Q10)** | Write `dplyr` code/queries for the last 3 financial questions. | Write **Sec 6 (Q8-Q10)** and their financial interpretations. | Aaron |
 | **Sec 7: Descriptive Statistics** | Code `summarise()` for mean, variance, skewness, kurtosis, min/max. | Write **Sec 7** (Descriptive Statistics) & interpretations. | Enrique |
-| **Sec 8: Data Visualization** | Code `ggplot2` to generate the 8 required professional figures and export them as PNGs. | Write **Sec 8** (Data Visualization) & insert the charts. | Josiah |
+| ~~**Sec 8: Data Visualization**~~ | *(Visualizations merged into Sec 6 to maintain narrative flow)* | *(Omitted from report)* | - |
 | **Sec 9: Exploratory Analysis** | *(No code required, relies on previous outputs)* | Write **Sec 9** (Exploratory Financial Analysis). | Camille |
 | **Sec 10 & 12: Recommendation & Conclusion** | *(No code required, relies on previous outputs)* | Write **Sec 10** (Investment Recommendation) and **Sec 12** (Conclusion). | Camille |
-| **Exec Summary & Sec 11: Dashboard** | Code the 1-page dashboard layout in `.qmd` (or format in PPT). | Write **Sec 11** (Executive Dashboard) and **Executive Summary**. | Inigo |
+| **Exec Summary & Sec 11: Dashboard** | Code the 1-page dashboard layout in `.qmd` (or format in PPT). | Write **Sec 11** (Executive Dashboard) and **Executive Summary**. | Josiah |
 | **Presentation Deck** | Migrate the best charts and tables from `.qmd` into slides. | Create the 10-minute **Presentation Deck** (Canva/PPT). | Josiah |
 | **Lead LaTeX Editor** | Ensure the `.qmd` outputs successfully compile into the final `.pdf`. | Manage `finstad_report.tex` formatting, table layouts, and APA citations. | *\[Name\]* |
 
