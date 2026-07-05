@@ -456,7 +456,7 @@ q4 <- q4_raw |>
     Start_Close = first(Close),
     End_Close = last(Close),
     Total_Return = (End_Close / Start_Close) - 1,
-    Annualized_Return = (1 + Total_Return)^(252 / n()) - 1,
+    Annualized_Return = (1 + Total_Return)^(365.25 / as.numeric(End_Date - Start_Date)) - 1,
     Mean_Daily_Return = mean(Daily_Return, na.rm = TRUE),
     SD_Daily_Return = sd(Daily_Return, na.rm = TRUE),
     Observations = n(),
