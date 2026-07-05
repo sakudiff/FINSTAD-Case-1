@@ -438,14 +438,244 @@ ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
 ggsave("../reports/fig_q3.pdf", width = 6, height = 4.5, device = "pdf")
 ```
 
-```{r q4-q7}
-# Q4-Q7: Assigned to CRUZ, Ricardo Miguel Inigo
-# Q4: Asset Ranking by Total Return
-# Q5: Best and Worst Trading Days
-# Q6: Moving Average Crossover Analysis
-# Q7: Volume and Volatility Relationship
-# Code to be provided by responsible group member
+```{r q4}
+# Q4: Asset Ranking by Total Return -- CRUZ, Ricardo Miguel Inigo
+
+q4_raw <- fin_data |>
+  select(Date, Asset, Close, Daily_Return) |>
+  collect() |>
+  mutate(Date = as.Date(Date))
+
+q4 <- q4_raw |>
+  filter(!is.na(Close), !is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  summarise(
+    Start_Date = min(Date),
+    End_Date = max(Date),
+    Start_Close = first(Close),
+    End_Close = last(Close),
+    Total_Return = (End_Close / Start_Close) - 1,
+    Annualized_Return = (1 + Total_Return)^(252 / n()) - 1,
+    Mean_Daily_Return = mean(Daily_Return, na.rm = TRUE),
+    SD_Daily_Return = sd(Daily_Return, na.rm = TRUE),
+    Observations = n(),
+    .groups = "drop"
+  ) |>
+  arrange(desc(Total_Return))
+
+q4_plot <- q4 |>
+  mutate(Asset = factor(Asset, levels = q4$Asset[order(q4$Total_Return)]))
+
+ggplot(q4_plot, aes(x = Total_Return, y = Asset, fill = Asset)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  geom_vline(xintercept = 0, linewidth = 0.3, color = "#595959") +
+  geom_text(aes(x = Total_Return / 2,
+                label = sprintf("%+.1f%%", Total_Return * 100)),
+            hjust = 0.5, size = 3.2, color = "white", fontface = "bold") +
+  scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                BTC = "#F7931A", SPY = "#00733E")) +
+  scale_x_continuous(labels = scales::percent_format(),
+                     expand = expansion(mult = c(0.15, 0.15))) +
+  labs(title = "Asset Ranking by Total Return",
+       subtitle = "Total price return from 2020 to 2025",
+       x = "Total Return", y = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/fig_q4.pdf", width = 7, height = 3.5, device = "pdf")
 ```
+
+```{r q5}
+# Q5: Best and Worst Trading Days -- CRUZ, Ricardo Miguel Inigo
+
+q5_raw <- fin_data |>
+  select(Date, Asset, Daily_Return) |>
+  collect() |>
+  mutate(Date = as.Date(Date))
+
+q5 <- q5_raw |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  summarise(
+    Best_Date = Date[which.max(Daily_Return)],
+    Best_Daily_Return = max(Daily_Return, na.rm = TRUE),
+    Worst_Date = Date[which.min(Daily_Return)],
+    Worst_Daily_Return = min(Daily_Return, na.rm = TRUE),
+    Return_Range = Best_Daily_Return - Worst_Daily_Return,
+    Observations = n(),
+    .groups = "drop"
+  ) |>
+  arrange(Worst_Daily_Return)
+
+q5_plot <- q5 |>
+  select(Asset, Best_Daily_Return, Worst_Daily_Return) |>
+  pivot_longer(cols = c(Best_Daily_Return, Worst_Daily_Return),
+               names_to = "Trading_Day_Type",
+               values_to = "Daily_Return") |>
+  mutate(
+    Trading_Day_Type = recode(Trading_Day_Type,
+                              Best_Daily_Return = "Best Trading Day",
+                              Worst_Daily_Return = "Worst Trading Day")
+  )
+
+ggplot(q5_plot, aes(x = Asset, y = Daily_Return, fill = Trading_Day_Type)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  geom_hline(yintercept = 0, linewidth = 0.3, color = "#595959") +
+  scale_fill_manual(values = c("Best Trading Day" = "#2E45B8",
+                                "Worst Trading Day" = "#C91D42")) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Best and Worst Single-Day Returns",
+       subtitle = "Largest one-day gains and losses by asset, 2020 to 2025",
+       x = NULL, y = "Daily Return", fill = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"),
+        legend.position = "bottom")
+ggsave("../reports/fig_q5.pdf", width = 7, height = 4, device = "pdf")
+```
+
+```{r q6}
+# Q6: Moving Average Crossover Analysis -- CRUZ, Ricardo Miguel Inigo
+
+q6_raw <- fin_data |>
+  select(Date, Asset, Close, Daily_Return) |>
+  collect() |>
+  mutate(Date = as.Date(Date))
+
+q6_ma <- q6_raw |>
+  filter(!is.na(Close)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(
+    MA_20 = as.numeric(stats::filter(Close, rep(1 / 20, 20), sides = 1)),
+    MA_60 = as.numeric(stats::filter(Close, rep(1 / 60, 60), sides = 1)),
+    Signal = case_when(
+      MA_20 > MA_60 ~ "Bullish",
+      MA_20 < MA_60 ~ "Bearish",
+      TRUE ~ "Neutral"
+    )
+  ) |>
+  ungroup()
+
+q6 <- q6_ma |>
+  filter(!is.na(MA_20), !is.na(MA_60), !is.na(Daily_Return)) |>
+  group_by(Asset, Signal) |>
+  summarise(
+    Mean_Daily_Return = mean(Daily_Return, na.rm = TRUE),
+    SD_Daily_Return = sd(Daily_Return, na.rm = TRUE),
+    Observations = n(),
+    .groups = "drop"
+  ) |>
+  arrange(Asset, desc(Mean_Daily_Return))
+
+q6_latest_signal <- q6_ma |>
+  filter(!is.na(MA_20), !is.na(MA_60)) |>
+  group_by(Asset) |>
+  slice_max(Date, n = 1, with_ties = FALSE) |>
+  ungroup() |>
+  select(Asset, Date, Close, MA_20, MA_60, Signal) |>
+  arrange(Asset)
+
+q6_plot <- q6_ma |>
+  filter(Date >= as.Date("2024-01-01"))
+
+ggplot(q6_plot, aes(x = Date)) +
+  geom_line(aes(y = Close), linewidth = 0.4, color = "#595959") +
+  geom_line(aes(y = MA_20), linewidth = 0.5, color = "#2E45B8") +
+  geom_line(aes(y = MA_60), linewidth = 0.5, color = "#C91D42") +
+  facet_wrap(~ Asset, scales = "free_y") +
+  labs(title = "20-Day and 60-Day Moving Average Crossover",
+       subtitle = "Bullish signal when 20-day MA is above 60-day MA, 2024 to 2025",
+       x = NULL, y = "Closing Price") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/fig_q6.pdf", width = 7, height = 4.5, device = "pdf")
+```
+
+```{r q7}
+# Q7: Volume and Volatility Relationship -- CRUZ, Ricardo Miguel Inigo
+
+volume_lookup <- assets_all |>
+  select(Date, Asset, Volume) |>
+  mutate(
+    Date = as.Date(Date),
+    Volume = as.numeric(Volume)
+  )
+
+q7_raw <- fin_data |>
+  select(Date, Asset, Daily_Return) |>
+  collect() |>
+  mutate(
+    Date = as.Date(Date),
+    Daily_Return = as.numeric(Daily_Return)
+  ) |>
+  left_join(volume_lookup, by = c("Date", "Asset")) |>
+  filter(
+    !is.na(Daily_Return),
+    !is.na(Volume),
+    Volume > 0
+  )
+
+q7 <- q7_raw |>
+  group_by(Asset) |>
+  mutate(
+    Volume_Threshold = quantile(Volume, 0.75, na.rm = TRUE),
+    Volume_Regime = if_else(
+      Volume >= Volume_Threshold,
+      "High Volume Days",
+      "Normal Volume Days"
+    ),
+    Absolute_Return = abs(Daily_Return)
+  ) |>
+  ungroup() |>
+  group_by(Asset, Volume_Regime) |>
+  summarise(
+    Observations = n(),
+    Mean_Daily_Return = mean(Daily_Return, na.rm = TRUE),
+    Mean_Absolute_Return = mean(Absolute_Return, na.rm = TRUE),
+    Volatility = sd(Daily_Return, na.rm = TRUE),
+    Average_Volume = mean(Volume, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(Asset, Volume_Regime)
+
+q7
+
+ggplot(q7, aes(x = Asset, y = Mean_Absolute_Return, fill = Volume_Regime)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Volume and Volatility Relationship",
+    subtitle = "Mean absolute daily return during high-volume versus normal-volume days, 2020 to 2025",
+    x = NULL,
+    y = "Mean Absolute Daily Return",
+    fill = NULL
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(size = 9, color = "#595959"),
+    legend.position = "bottom"
+  )
+
+dir.create("../reports", recursive = TRUE, showWarnings = FALSE)
+
+ggsave("../reports/fig_q7.pdf", width = 7, height = 4, device = "pdf")
+```
+
 
 ```{r q8}
 # Q8: VIX Regime Analysis -- SISON, Aaron Joshua Estacio
