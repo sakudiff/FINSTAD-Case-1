@@ -427,7 +427,7 @@ BTC occupies an intermediate position, with a correlation of 0.383 with SPY and 
 
 \subsection{Q4. Asset Ranking by Total Return}
 
-Refer to Appendix~\ref{sec:appendix_a} (section~Q4) for the R implementation. The analysis was guided by the following inquiry:
+Refer to Appendix~\ref{sec:appendix_a} (section~Q4) for the R implementation.
 
 \vspace{0.3cm}
 \begin{quote}
@@ -440,15 +440,17 @@ To compare performance across different asset classes, total and annualized retu
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{fig_q4.pdf}
-  \caption{Asset ranking by total price return from 2020 to 2025. Source: authors' calculations.}
+  \caption{Asset ranking by total price return from 2020 to 2025. Source authors calculations.}
   \label{fig:q4}
 \end{figure}
 
-Bitcoin (BTC) generated the highest absolute return over the six-year period at 1,153\%, reflecting its high-beta profile. Apple (AAPL) and the S\&P 500 (SPY) delivered equity returns of 279\% and 131\%, respectively. BDO Unibank (BDO) exhibited a total return of 5.0\%, consistent with the structural constraints of emerging market banking sectors operating under shifting domestic interest rate regimes.
+The asset ranking from 2020 to 2025 demonstrates a severe divergence in return profiles driven by systemic liquidity events. Bitcoin (BTC) delivered a 1,153\% total return over the six-year period. Apple (AAPL) and the S\&P 500 (SPY) returned 279\% and 131\% respectively. BDO Unibank (BDO) stagnated at a 5.0\% total return. The magnitude of the BTC outperformance relative to traditional equities exposes the mechanics of the zero-interest-rate policy era. Asset classes with zero intrinsic cash flows captured the majority of the speculative premium.
+
+The 5.0\% total return for BDO provides a stark counterpoint to the technology rally. Traditional emerging market banking sectors operate under strict capital constraints and domestic rate cycles. The Philippine rate hiking cycle severely compressed valuation multiples for domestic banks despite steady core earnings. The contrast between BTC and BDO illustrates a market environment that rewarded untested network adoption over regulated credit intermediation.
 
 \subsection{Q5. Best and Worst Trading Days}
 
-Refer to Appendix~\ref{sec:appendix_a} (section~Q5) for the R implementation. The analysis was guided by the following inquiry:
+Refer to Appendix~\ref{sec:appendix_a} (section~Q5) for the R implementation.
 
 \vspace{0.3cm}
 \begin{quote}
@@ -461,15 +463,17 @@ Extreme daily returns isolate an asset's tail risk and structural volatility. Th
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{fig_q5.pdf}
-  \caption{Best and worst single-day returns by asset, 2020 to 2025. Source: authors' calculations.}
+  \caption{Best and worst single-day returns by asset, 2020 to 2025. Source authors calculations.}
   \label{fig:q5}
 \end{figure}
 
-BTC recorded the widest spread between its best and worst trading days (+18.7\% to -37.2\%), highlighting the severe tail risks inherent in cryptocurrency markets. SPY exhibited the narrowest range (+10.5\% to -10.9\%), functioning as a diversified macroeconomic anchor. The extreme negative days for equities align with the March 2020 COVID-19 selloff, where panic-induced deleveraging drove historic single-day drawdowns across traditional markets.
+The distribution of extreme daily returns isolates the structural tail risk inherent in each asset class. BTC recorded the widest spread between its best trading day (+18.7\%) and its worst (-37.2\%). The SPY exhibited the narrowest range, oscillating between +10.5\% and -10.9\%. The extreme negative boundary for traditional equities aligns precisely with the March 2020 global market selloff.
+
+A single-day drawdown of 37.2\% in BTC reveals a market microstructure uniquely vulnerable to liquidity cascades. Regulated equities benefit from circuit breakers that halt trading during panic events. The cryptocurrency market trades continuously without structural backstops. The absence of these backstops allows forced liquidations to accelerate price declines into a void of liquidity.
 
 \subsection{Q6. Moving Average Crossover Analysis}
 
-Refer to Appendix~\ref{sec:appendix_a} (section~Q6) for the R implementation. The analysis was guided by the following inquiry:
+Refer to Appendix~\ref{sec:appendix_a} (section~Q6) for the R implementation.
 
 \vspace{0.3cm}
 \begin{quote}
@@ -482,15 +486,17 @@ A 20-day and 60-day simple moving average crossover strategy was implemented to 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{fig_q6.pdf}
-  \caption{20-day and 60-day moving average crossovers, 2024 to 2025. Source: authors' calculations.}
+  \caption{20-day and 60-day moving average crossovers, 2024 to 2025. Source authors calculations.}
   \label{fig:q6}
 \end{figure}
 
-Traditional equities display extended periods of directional momentum; AAPL and BDO recorded only 6 crossovers during the 2024--2025 period, while SPY recorded 8. BTC's moving averages intersected 15 times over the same period, confirming that its price discovery is dominated by frequent sentiment shocks rather than gradual institutional accumulation.
+The 20-day and 60-day moving average crossovers quantify the stability of momentum regimes. Over the 2024 to 2025 period, traditional equities displayed extended periods of directional momentum. AAPL and BDO recorded exactly 6 crossover events. The SPY recorded 8 intersections. BTC generated 15 distinct crossovers over the same 24 months.
+
+The high frequency of BTC crossovers signals a market dominated by sentiment shocks rather than institutional accumulation. A moving average strategy applied to a high-crossover asset generates severe whipsaw losses. The trader buys the false breakout and sells the false breakdown. The stability of the SPY crossovers confirms that macroeconomic trends take months to price into diversified indices.
 
 \subsection{Q7. Volume and Volatility Relationship}
 
-Refer to Appendix~\ref{sec:appendix_a} (section~Q7) for the R implementation. The analysis was guided by the following inquiry:
+Refer to Appendix~\ref{sec:appendix_a} (section~Q7) for the R implementation.
 
 \vspace{0.3cm}
 \begin{quote}
@@ -503,11 +509,13 @@ To test the volume-volatility hypothesis, trading days were partitioned into ``H
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{fig_q7.pdf}
-  \caption{Mean absolute daily return during high-volume versus normal-volume days, 2020 to 2025. Source: authors' calculations.}
+  \caption{Mean absolute daily return during high-volume versus normal-volume days, 2020 to 2025. Source authors calculations.}
   \label{fig:q7}
 \end{figure}
 
-Mean absolute returns were systematically higher on high-volume days across all asset classes. BTC exhibited a mean absolute return of 3.05\% on high-volume days compared to 1.83\% on normal days. SPY showed a similar proportional expansion, increasing from 0.61\% to 1.60\%. This confirms that liquidity events in these markets are predominantly driven by information shocks that induce aggressive price repricing, rather than benign block trading.
+Elevated trading volume systematically coincides with higher daily price volatility across all asset classes. BTC exhibited a mean absolute return of 3.05\% on high-volume days compared to 1.83\% on normal days. The SPY showed a similar proportional expansion from 0.61\% to 1.60\%. The AAPL and BDO datasets confirm this uniform positive correlation.
+
+The empirical data supports the mixture of distributions hypothesis. Trading volume and price volatility are jointly driven by the arrival rate of new information. High-volume days do not represent benign liquidity provision by institutional block traders. They represent aggressive repricing events where participants demand immediacy at any cost.
 
 
 \subsection{Q8. VIX Regime Analysis}
