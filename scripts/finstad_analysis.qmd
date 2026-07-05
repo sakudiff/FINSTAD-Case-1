@@ -640,7 +640,7 @@ ggplot(fig1_data, aes(x = Date, y = Cumulative_Return, color = Asset)) +
         legend.position = "bottom")
 ggsave("../reports/fig_viz1.pdf", width = 7, height = 4, device = "pdf")
 ```
-Figure 1: Cumulative Returns by Asset overlays each asset's daily return distribution against a fitted normal curve. AAPL is the only asset with positive skewness (0.28), meaning its rare extreme days lean toward the upside. BTC and BDO both show negative skewness (-0.48 and -0.40 respectively), indicating tail risk weighted toward sudden losses. SPY records the highest kurtosis of all four assets (12.97) despite a comparatively mild skew (-0.26), meaning its returns are usually tightly clustered near zero but still capable of rare, extreme shock days. All four kurtosis values exceed 3, the benchmark for a normal distribution, confirming that none of these assets follow a standard bell curve.
+Figure 1: Cumulative Returns by Asset tracks the growth of $1 invested in each asset from 2020 to 2026. BTC shows the steepest and most volatile climb, reaching cumulative returns above 1,000% with sharp cyclical peaks and drawdowns. AAPL and SPY both trend steadily upward, with AAPL consistently outperforming its SPY benchmark. BDO remains close to the 0% line for most of the period, indicating limited net nominal gain relative to the other three assets.
 
 ```{r}
 # Figure 2: Closing Price Trends by Asset
@@ -660,7 +660,7 @@ ggplot(sql_long, aes(x = Date, y = Close, color = Asset)) +
 
 ggsave("../reports/fig_viz2.pdf", width = 7, height = 5, device = "pdf")
 ```
-Figure 2: Closing Price Trends by Asset plots nominal closing prices rather than normalized returns, revealing that BDO experienced meaningful price swings on its own scale despite appearing flat in @fig-cumulative-returns. Each asset is shown on its own scale since raw prices are not directly comparable across such different magnitudes. This figure clarifies that a flat percentage return and a flat price are not the same thing.
+Figure 2: Closing Price Trends by Asset plots nominal closing prices rather than normalized returns, revealing that BDO experienced meaningful price swings on its own scale despite appearing flat in Figure 1: Cumulative Returns. Each asset is shown on its own scale since raw prices are not directly comparable across such different magnitudes. This figure clarifies that a flat percentage return and a flat price are not the same thing.
 
 ```{r}
 # Figure 3: Return Distribution with Skewness & Kurtosis
