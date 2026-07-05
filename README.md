@@ -38,10 +38,12 @@ Since Section 8 (Data Visualization) was merged directly into the SQL investigat
 The rubric strictly mandates a 1-page visual summary containing: the selected assets, key descriptive statistics, 3–5 important charts, major SQL findings, and the final investment recommendation. It is essentially an infographic for an executive who won't read the 20-page paper. 
 
 **How to build it:**
-You have three options to get this 1-pager into our final PDF (No Canva, no PowerPoint, no "microslop" allowed. We write code here):
-1. **The Native LaTeX Way (Recommended):** We build a custom `twocolumn` or `minipage` layout directly in `finstad_report.tex`. You draft the bullet points, pick the 3-5 best charts, and we will code the LaTeX layout.
-2. **The HTML/Quarto Way:** You build it in a standalone `.qmd` or `.html` file using custom CSS/HTML grids to arrange the dashboard.
-3. **The Figma Way (Last Resort):** If you absolutely must use a visual design tool, use Figma. Export it as a 1-page PDF file (`dashboard.pdf`) and we will seamlessly embed it using the `\includepdf{dashboard.pdf}` command in LaTeX.
+No Canva, no PowerPoint, no "microslop" allowed. You must use one of the following:
+1. **The HTML/Quarto Way:** Build it in a standalone `.qmd` or `.html` file using custom CSS/HTML grids to arrange the dashboard.
+2. **The Native LaTeX Way:** Build a custom `twocolumn` or `minipage` layout directly in `finstad_report.tex`. 
+3. **The Figma Way (Last Resort):** If you absolutely must use a visual design tool, use Figma and export it as a 1-page PDF file (`dashboard.pdf`).
+
+If you get stuck on the code or layout, ask the group for help.
 
 ------------------------------------------------------------------------
 
