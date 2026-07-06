@@ -357,6 +357,8 @@ q1 <- fin_data |>
 
 spy_ratio <- q1 |> filter(Asset == "SPY") |> pull(Risk_Adjusted_Return)
 
+print(knitr::kable(q1, digits=4, caption="Q1 Data Output"))
+
 ggplot(q1, aes(x = Risk_Adjusted_Return, y = reorder(Asset, Risk_Adjusted_Return),
                 fill = Asset)) +
   geom_col(width = 0.6, show.legend = FALSE) +
@@ -408,6 +410,8 @@ q2_summary <- q2 |>
     Observations = n()
   )
 
+print(knitr::kable(q2_summary, digits=4, caption="Q2 Summary Data Output"))
+
 ggplot(q2, aes(x = Date, y = Cumulative_Return, color = Asset)) +
   geom_line(linewidth = 0.8) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "#B3B3B3", linewidth = 0.3) +
@@ -446,6 +450,8 @@ cor_long <- as.data.frame(cor_matrix) |>
   tidyr::pivot_longer(-Asset1, names_to = "Asset2", values_to = "Correlation") |>
   mutate(Asset1 = factor(Asset1, levels = rev(c("AAPL", "BDO", "BTC", "SPY"))),
          Asset2 = factor(Asset2, levels = c("AAPL", "BDO", "BTC", "SPY")))
+
+print(knitr::kable(round(cor_matrix, 4), caption="Q3 Correlation Matrix Output"))
 
 ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
   geom_tile(color = "white", linewidth = 1) +
@@ -495,6 +501,8 @@ q4 <- q4_raw |>
 
 q4_plot <- q4 |>
   mutate(Asset = factor(Asset, levels = q4$Asset[order(q4$Total_Return)]))
+
+print(knitr::kable(q4, digits=4, caption="Q4 Data Output"))
 
 ggplot(q4_plot, aes(x = Total_Return, y = Asset, fill = Asset)) +
   geom_col(width = 0.6, show.legend = FALSE) +
@@ -553,6 +561,8 @@ q5_plot <- q5 |>
                               Best_Daily_Return = "Best Trading Day",
                               Worst_Daily_Return = "Worst Trading Day")
   )
+
+print(knitr::kable(q5, digits=4, caption="Q5 Data Output"))
 
 ggplot(q5_plot, aes(x = Asset, y = Daily_Return, fill = Trading_Day_Type)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6) +
@@ -620,6 +630,8 @@ q6_latest_signal <- q6_ma |>
 
 q6_plot <- q6_ma |>
   filter(Date >= as.Date("2024-01-01"))
+
+print(knitr::kable(q6, digits=4, caption="Q6 Data Output"))
 
 ggplot(q6_plot, aes(x = Date)) +
   geom_line(aes(y = Close), linewidth = 0.4, color = "#595959") +
@@ -689,6 +701,8 @@ q7 <- q7_raw |>
 
 q7
 
+print(knitr::kable(q7, digits=4, caption="Q7 Data Output"))
+
 ggplot(q7, aes(x = Asset, y = Mean_Absolute_Return, fill = Volume_Regime)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6) +
   scale_y_continuous(labels = scales::percent_format()) +
@@ -750,6 +764,8 @@ q8_plot <- q8 |>
     "High Volatility (VIX > 30)" = "VIX > 30 (High Fear)",
     "Low Volatility (VIX < 20)" = "VIX < 20 (Low Fear)"))
 
+print(knitr::kable(q8, digits=4, caption="Q8 Data Output"))
+
 ggplot(q8_plot, aes(x = Asset, y = Mean_Daily_Return, fill = VIX_Regime)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6) +
   geom_hline(yintercept = 0, linewidth = 0.3, color = "#595959") +
@@ -806,6 +822,8 @@ q9 <- q9_raw |>
 q9_plot <- q9 |>
   filter(Yield_Direction %in% c("Yields Rising", "Yields Falling"))
 
+print(knitr::kable(q9, digits=4, caption="Q9 Data Output"))
+
 ggplot(q9_plot, aes(x = Asset, y = Mean_Daily_Return, fill = Yield_Direction)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6) +
   geom_hline(yintercept = 0, linewidth = 0.3, color = "#595959") +
@@ -855,6 +873,8 @@ q10 <- q10_raw |>
 
 q10_plot <- q10 |>
   mutate(Asset = factor(Asset, levels = q10$Asset[order(q10$Total_Cumulative_Return)]))
+
+print(knitr::kable(q10, digits=4, caption="Q10 Data Output"))
 
 ggplot(q10_plot, aes(x = Total_Cumulative_Return, y = Asset, fill = Asset)) +
   geom_col(width = 0.6, show.legend = FALSE) +
