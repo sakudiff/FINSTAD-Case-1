@@ -67,28 +67,28 @@ This project has been broken down into granular tasks mapping the coding (`.qmd`
 
 ## Table of Contents
 
--   [Project Structure](#project-structure)
--   [Welcome to GitHub! (A Guide for Beginners)](#welcome-to-github-a-guide-for-beginners)
-    -   [Navigating the GitHub Website](#navigating-the-github-website)
--   [How to Get this Code into R Studio (Cloning)](#how-to-get-this-code-into-r-studio-cloning)
--   [How to Contribute & Save Your Work (The Pull Request Workflow)](#how-to-contribute--save-your-work-the-pull-request-workflow)
-    -   [What is a Branch?](#what-is-a-branch)
-    -   [What is a Pull Request (PR)?](#what-is-a-pull-request-pr)
-    -   [A Quick Tour of R Studio — Where Do I Type What?](#a-quick-tour-of-r-studio--where-do-i-type-what)
-    -   [The Step-by-Step Workflow](#the-step-by-step-workflow)
--   [Our Two Main Files: The .qmd and The .tex — What's the Difference?](#our-two-main-files-the-qmd-and-the-tex--whats-the-difference)
-    -   [How They Work Together](#how-they-work-together-the-simple-flow)
--   [LaTeX Basics: How to Add Content to Your .tex File](#latex-basics-how-to-add-content-to-your-tex-file)
-    -   [Adding Regular Text](#adding-regular-text)
-    -   [Making Text Bold, Italic, or Underlined](#making-text-bold-italic-or-underlined)
-    -   [Adding Section Headings](#adding-section-headings)
-    -   [Adding a Table](#adding-a-table)
-    -   [Adding an Image (Chart / Figure)](#adding-an-image-chart--figure)
-    -   [Adding a Bullet List](#adding-a-bullet-list)
-    -   [Adding a Numbered List](#adding-a-numbered-list)
-    -   [Adding Math (If Needed)](#adding-math-if-needed)
-    -   [How to Put Your R Output Into the .tex](#how-to-put-your-r-output-into-the-tex)
--   [Pro Tips for Working with Both Files](#pro-tips-for-working-with-both-files)
+- [Project Structure](#project-structure)
+- [Welcome to GitHub! (A Guide for Beginners)](#welcome-to-github-a-guide-for-beginners)
+  - [Navigating the GitHub Website](#navigating-the-github-website)
+- [How to Get this Code into R Studio (Cloning)](#how-to-get-this-code-into-r-studio-cloning)
+- [How to Contribute & Save Your Work (The Pull Request Workflow)](#how-to-contribute--save-your-work-the-pull-request-workflow)
+  - [What is a Branch?](#what-is-a-branch)
+  - [What is a Pull Request (PR)?](#what-is-a-pull-request-pr)
+  - [A Quick Tour of R Studio — Where Do I Type What?](#a-quick-tour-of-r-studio--where-do-i-type-what)
+  - [The Step-by-Step Workflow](#the-step-by-step-workflow)
+- [Our Two Main Files: The .qmd and The .tex — What's the Difference?](#our-two-main-files-the-qmd-and-the-tex--whats-the-difference)
+  - [How They Work Together](#how-they-work-together-the-simple-flow)
+- [LaTeX Basics: How to Add Content to Your .tex File](#latex-basics-how-to-add-content-to-your-tex-file)
+  - [Adding Regular Text](#adding-regular-text)
+  - [Making Text Bold, Italic, or Underlined](#making-text-bold-italic-or-underlined)
+  - [Adding Section Headings](#adding-section-headings)
+  - [Adding a Table](#adding-a-table)
+  - [Adding an Image (Chart / Figure)](#adding-an-image-chart--figure)
+  - [Adding a Bullet List](#adding-a-bullet-list)
+  - [Adding a Numbered List](#adding-a-numbered-list)
+  - [Adding Math (If Needed)](#adding-math-if-needed)
+  - [How to Put Your R Output Into the .tex](#how-to-put-your-r-output-into-the-tex)
+- [Pro Tips for Working with Both Files](#pro-tips-for-working-with-both-files)
 
 ------------------------------------------------------------------------
 
@@ -96,11 +96,11 @@ This project has been broken down into granular tasks mapping the coding (`.qmd`
 
 Here is how our project files are organized:
 
--   `/data/` — Where we will store our downloaded datasets (CSV, Excel). This includes our chosen US Asset, PH Asset, Crypto, SPY, and FRED macroeconomic data.
--   `/scripts/` — Where our analysis code lives. The main file here is `finstad_analysis.qmd` (a Quarto Markdown file) — this is where we write R code, run analysis, make charts, and test our findings.
--   `/reports/` — Where our formatted report lives. The main file here is `finstad_report.tex` (a LaTeX file) — this is where we assemble the final APA-formatted PDF paper using the polished results from our analysis.
--   `/presentations/` — Where we will store our presentation slide deck and Executive Dashboard.
--   `guidelines.md` — The project requirements and rubric provided by the instructor.
+- `/data/` — Where we will store our downloaded datasets (CSV, Excel). This includes our chosen US Asset, PH Asset, Crypto, SPY, and FRED macroeconomic data.
+- `/scripts/` — Where our analysis code lives. The main file here is `finstad_analysis.qmd` (a Quarto Markdown file) — this is where we write R code, run analysis, make charts, and test our findings.
+- `/reports/` — Where our formatted report lives. The main file here is `finstad_report.tex` (a LaTeX file) — this is where we assemble the final APA-formatted PDF paper using the polished results from our analysis.
+- `/presentations/` — Where we will store our presentation slide deck and Executive Dashboard.
+- `guidelines.md` — The project requirements and rubric provided by the instructor.
 
 ------------------------------------------------------------------------
 
@@ -148,16 +148,16 @@ A Pull Request is how you ask the group to review your work before it gets added
 
 If you open R Studio, you'll see a few different panels. Here's what each one is for:
 
--   **Source Editor (top-left)** — This is like a Word document for your code. You can write R scripts, open the `.qmd` file, edit this README, and save your work here. When you type code in the Source Editor, it doesn't run until you click the **Run** button or press **Ctrl+Enter**. Think of it as your notebook where you draft your analysis before "publishing" it.
+- **Source Editor (top-left)** — This is like a Word document for your code. You can write R scripts, open the `.qmd` file, edit this README, and save your work here. When you type code in the Source Editor, it doesn't run until you click the **Run** button or press **Ctrl+Enter**. Think of it as your notebook where you draft your analysis before "publishing" it.
 
--   **Console / Terminal (bottom-left)** — This is where commands actually get executed. There are actually *two* tabs here:
+- **Console / Terminal (bottom-left)** — This is where commands actually get executed. There are actually *two* tabs here:
 
-    -   The **Console** tab — This is for running R code line by line. If you type `2 + 2` here and press Enter, R calculates it immediately.
-    -   The **Terminal** tab — This is for system commands like Git. **When the instructions below say "type these commands in the Terminal,"** click the **Terminal** tab first (next to the Console tab). Then type your `git` commands there.
+  - The **Console** tab — This is for running R code line by line. If you type `2 + 2` here and press Enter, R calculates it immediately.
+  - The **Terminal** tab — This is for system commands like Git. **When the instructions below say "type these commands in the Terminal,"** click the **Terminal** tab first (next to the Console tab). Then type your `git` commands there.
 
--   **Environment / History (top-right)** — This shows all the data and variables you've loaded into R. If you import a dataset, it will appear here.
+- **Environment / History (top-right)** — This shows all the data and variables you've loaded into R. If you import a dataset, it will appear here.
 
--   **Files / Plots / Packages / Help (bottom-right)** — This shows your project files, any charts you make, installed packages, and help documentation.
+- **Files / Plots / Packages / Help (bottom-right)** — This shows your project files, any charts you make, installed packages, and help documentation.
 
 **The golden rule:** Write your R analysis code in the **Source Editor** (top-left), and type your Git commands in the **Terminal** tab (bottom-left).
 
@@ -217,21 +217,21 @@ You'll notice we have a specific file structure to avoid merge conflicts when mu
 
 ### `scripts/finstad_analysis.qmd` — The "Do the Work" File
 
--   **What it is:** A Quarto Markdown file (like a smart, mix-code-and-words document). Think of it as your lab notebook where you write R code, run it, see the results, and test your findings.
--   **When to use it:** During the analysis phase — downloading data, cleaning it, merging it, running SQL queries, calculating statistics, and making charts.
+- **What it is:** A Quarto Markdown file (like a smart, mix-code-and-words document). Think of it as your lab notebook where you write R code, run it, see the results, and test your findings.
+- **When to use it:** During the analysis phase — downloading data, cleaning it, merging it, running SQL queries, calculating statistics, and making charts.
 
 ### `reports/sections/*.tex` — The "Write Your Chapter" Files
 
--   **What they are:** Individual LaTeX files for each chapter (e.g., `06_sql_investigation.tex`, `08_data_visualization.tex`). 
--   **What they do:** This is where you actually write your assigned portion of the paper. By keeping sections in separate files, we prevent messy Git merge conflicts when everyone pushes their work at once.
--   **When to use it:** When you're ready to write your final text, tables, and insert your charts.
+- **What they are:** Individual LaTeX files for each chapter (e.g., `06_sql_investigation.tex`, `08_data_visualization.tex`).
+- **What they do:** This is where you actually write your assigned portion of the paper. By keeping sections in separate files, we prevent messy Git merge conflicts when everyone pushes their work at once.
+- **When to use it:** When you're ready to write your final text, tables, and insert your charts.
 
 ### `reports/finstad_report.tex` — The "Master Assembler" File
 
--   **What it is:** The main LaTeX document. **Do not write your essay in here.** 
--   **What it does:** It pulls in all the individual section files from `reports/sections/`, applies the APA 7th-edition formatting, and builds the final PDF.
+- **What it is:** The main LaTeX document. **Do not write your essay in here.**
+- **What it does:** It pulls in all the individual section files from `reports/sections/`, applies the APA 7th-edition formatting, and builds the final PDF.
 
-### How They Work Together (The Simple Flow)
+### How They Work Together (The Simple Flow) {#how-they-work-together-the-simple-flow}
 
 ```         
 Step 1: Do your analysis in the .qmd file

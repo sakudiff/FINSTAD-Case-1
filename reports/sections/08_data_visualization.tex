@@ -120,7 +120,7 @@ The mechanism behind BDO's performance is grounded in the structural features of
 
 \subsection{Statistical and Portfolio Distributions}
 
-The preceding analysis isolated the arithmetic drawdown aggregation during specific crisis windows (such as the COVID-19 shock in Figure 2). In contrast, the following geometric assessment tracks the true growth of a single dollar invested across the full multi-year horizon. Bitcoin shows the steepest and most volatile trajectory, reaching cumulative returns above 1,000\% through sharp cyclical peaks and drawdowns. Apple and the S\&P 500 trend steadily upward, while BDO indicates limited net nominal gain over the period.
+The preceding analysis isolated the arithmetic drawdown aggregation during specific crisis windows (such as the COVID-19 shock in Figure~\ref{fig:viz_q2}). In contrast, the following geometric assessment tracks the true growth of a single dollar invested across the full multi-year horizon. Figure~\ref{fig:viz_viz1}: Cumulative Returns by Asset tracks the growth of \$1 invested in each asset from 2020 to 2026. BTC shows the steepest and most volatile climb, reaching cumulative returns above 1,000\% with sharp cyclical peaks and drawdowns. AAPL and SPY both trend steadily upward, with AAPL consistently outperforming its SPY benchmark. BDO remains close to the 0\% line for most of the period, indicating limited net nominal gain relative to the other three assets.
 
 \begin{figure}[H]
   \centering
@@ -129,7 +129,7 @@ The preceding analysis isolated the arithmetic drawdown aggregation during speci
   \label{fig:viz_viz1}
 \end{figure}
 
-Raw percentage returns conceal absolute capital requirements. Plotting nominal closing prices clarifies that BDO experienced meaningful price swings on its own scale despite appearing flat on a standardized percentage basis. A stagnant percentage return does not preclude local price volatility.
+Figure~\ref{fig:viz_viz2}: Closing Price Trends by Asset plots nominal closing prices rather than normalized returns, revealing that BDO experienced meaningful price swings on its own scale despite appearing flat in Figure~\ref{fig:viz_viz1}: Cumulative Returns. Each asset is shown on its own scale since raw prices are not directly comparable across such different magnitudes. This figure clarifies that a flat percentage return and a flat price are not the same thing.
 
 \begin{figure}[H]
   \centering
@@ -138,7 +138,7 @@ Raw percentage returns conceal absolute capital requirements. Plotting nominal c
   \label{fig:viz_viz2}
 \end{figure}
 
-Distributional shape dictates tail risk. Overlaying daily return distributions against a fitted normal curve exposes severe non-normality across all assets. Apple is the only asset exhibiting positive skewness (0.28), indicating that its rare extreme days lean toward the upside. Bitcoin and BDO both demonstrate negative skewness (-0.48 and -0.40 respectively), confirming a tail risk weighted toward sudden, outsized losses. The S\&P 500 records the highest kurtosis (12.97) despite a relatively mild skew (-0.26). Its returns cluster tightly near zero, yet remain exposed to rare extreme shock days. No asset in the portfolio follows a standard bell curve.
+Figure~\ref{fig:viz_viz3}: Return Distribution with Skewness \& Kurtosis overlays each asset's daily return distribution against a fitted normal curve. AAPL is the only asset with positive skewness (0.28), meaning its rare extreme days lean toward the upside. BTC and BDO both show negative skewness (-0.48 and -0.40 respectively), indicating tail risk weighted toward sudden losses. SPY records the highest kurtosis of all four assets (12.97) despite a comparatively mild skew (-0.26), meaning its returns are usually tightly clustered near zero but still capable of rare, extreme shock days. All four kurtosis values exceed 3, the benchmark for a normal distribution, confirming that none of these assets follow a standard bell curve.
 
 \begin{figure}[H]
   \centering
@@ -147,7 +147,7 @@ Distributional shape dictates tail risk. Overlaying daily return distributions a
   \label{fig:viz_viz3}
 \end{figure}
 
-Analyzing the median and interquartile range further contextualizes these outlier days. Bitcoin maintains the widest interquartile spread and the most extreme outliers in both directions. The S\&P 500 exhibits the most compressed range, validating the volatility-dampening effect of 500-company diversification. BDO displays a visible structural skew toward downside outlier days.
+Figure~\ref{fig:viz_viz4}: Return Range \& Spread by Asset shows each asset's typical daily return range and outlier days. BTC has the widest box and most extreme outliers in both directions, consistent with its high kurtosis in Figure~\ref{fig:viz_viz3}: Return Distribution with Skewness \& Kurtosis. SPY has the narrowest, most compressed box, reflecting the volatility-dampening effect of diversification across 500 companies. AAPL and BDO fall in between, with BDO showing a visible skew toward downside outlier days.
 
 \begin{figure}[H]
   \centering
@@ -156,7 +156,7 @@ Analyzing the median and interquartile range further contextualizes these outlie
   \label{fig:viz_viz4}
 \end{figure}
 
-A 30-day rolling volatility measure captures the time-varying nature of this risk. A sharp, synchronized volatility spike occurred across all four assets in early 2020 during the COVID-19 shock. Outside of that systemic event, Bitcoin consistently establishes the highest rolling volatility baseline, moving in cyclical waves tied to its independent market cycles. The S\&P 500 maintains the lowest and most stable volatility floor, while Apple and BDO show idiosyncratic spikes tied to specific corporate or regional events rather than broad macroeconomic shocks.
+Figure~\ref{fig:viz_viz5}: 30-Day Rolling Volatility by Asset shows a sharp, synchronized volatility spike across all four assets in early 2020, consistent with the onset of the COVID-19 market shock. Outside that period, BTC consistently maintains the highest rolling volatility baseline, with visible cyclical waves tied to its bull and bear cycles. SPY maintains the lowest and most stable volatility floor throughout, while AAPL and BDO show occasional idiosyncratic spikes tied to specific events rather than broad macro shocks.
 
 \begin{figure}[H]
   \centering
@@ -165,7 +165,7 @@ A 30-day rolling volatility measure captures the time-varying nature of this ris
   \label{fig:viz_viz5}
 \end{figure}
 
-Volatility eventually forces drawdowns. Measuring the percentage decline from running historical highs shows that Bitcoin suffers the deepest drawdowns, frequently falling below -60\%, and requires the longest recovery periods. The S\&P 500 demonstrates the shallowest drawdowns and the fastest recoveries. BDO exhibits prolonged periods trapped in negative territory, signaling a significantly slower capital recovery trajectory for investors holding the asset through a cyclical downturn.
+Figure~\ref{fig:viz_viz6}: Drawdown from Peak by Asset shows each asset's percentage decline from its own running historical high. BTC shows the deepest drawdowns of the group, falling well below -60\%, and takes the longest to recover to a prior peak. SPY shows the shallowest and fastest-recovering drawdowns, consistent with its role as a diversified benchmark. BDO shows a prolonged period stuck in negative territory rather than a fast recovery, indicating slower capital recovery for investors holding it through a downturn.
 
 \begin{figure}[H]
   \centering
@@ -174,7 +174,7 @@ Volatility eventually forces drawdowns. Measuring the percentage decline from ru
   \label{fig:viz_viz6}
 \end{figure}
 
-Plotting mean daily returns against the standard deviation quantifies the risk-return tradeoff. Bitcoin delivers the highest mean daily return (0.166\%) but demands the highest risk (3.19\% daily standard deviation). Apple secures a highly efficient middle ground, generating a 0.108\% mean daily return at only a 2.00\% daily volatility level—roughly 37\% less risk than Bitcoin. BDO performs the weakest on a risk-adjusted basis, carrying risk similar to Apple (2.26\% standard deviation) while yielding the lowest mean daily return of the group (0.0295\%).
+Figure~\ref{fig:viz_viz7}: Risk vs. Return by Asset plots each asset's mean daily return against its standard deviation of daily returns. BTC delivers the highest mean daily return (0.166\%) but also the highest risk by a clear margin (3.19\% daily standard deviation). AAPL offers a more efficient middle ground, with a mean daily return of 0.108\% at only 2.00\% daily volatility, roughly 37\% less risk than BTC. SPY sits at the lowest-risk end (1.31\% standard deviation) with a modest 0.0636\% mean daily return. BDO is the weakest performer on a risk-adjusted basis, carrying a similar or slightly higher risk level than AAPL (2.26\% standard deviation) while delivering the lowest mean daily return of all four assets (0.0295\%).
 
 \begin{figure}[H]
   \centering
@@ -183,7 +183,7 @@ Plotting mean daily returns against the standard deviation quantifies the risk-r
   \label{fig:viz_viz7}
 \end{figure}
 
-The risk-return profiles culminate in the portfolio variance allocation. Under a naive equal-dollar weighting (one-third each to Apple, BDO, and Bitcoin), Bitcoin alone drives 55.3\% of the total portfolio variance despite representing only 33.3\% of the invested capital. Apple and BDO contribute 22.8\% and 21.9\% respectively. An equal-dollar allocation does not yield an equal-risk allocation. Reducing the Bitcoin weighting is structurally required to lower total portfolio risk without proportionally sacrificing expected returns.
+Figure~\ref{fig:viz_viz8}: Equal-Weighted Portfolio Risk Contribution shows that under an equal one-third weighting across AAPL, BDO, and BTC, BTC alone contributes 55.3\% of total portfolio variance despite representing only one-third of invested capital. AAPL and BDO contribute 22.8\% and 21.9\% respectively, roughly proportional to their capital weights. This demonstrates that an equal-dollar allocation does not produce an equal-risk allocation, and supports the case that a reduced BTC weight could meaningfully lower total portfolio risk without a proportional loss in expected return.
 
 \begin{figure}[H]
   \centering

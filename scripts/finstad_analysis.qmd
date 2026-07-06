@@ -8,7 +8,7 @@ author:
   - "SISON, Aaron Joshua Estacio"
 format:
   pdf:
-    toc: false
+    toc: true
     documentclass: article
     classoption: 12pt
     geometry:
@@ -24,7 +24,7 @@ include-in-header:
       \RecustomVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,breakanywhere=true,commandchars=\\\{\}}
       \let\verbatim\Verbatim
       \let\endverbatim\endVerbatim
-      \pagenumbering{gobble}
+      \pagenumbering{arabic}
 execute:
   warning: false
   message: false
@@ -87,7 +87,8 @@ ph_asset <- "BDO.PS"
 crypto <- "BTC-USD"
 ```
 
-# Appendix A3 - Data Loading (GALEDO, Enrique Lorenzo Hermoso)
+# Appendix A3 - Data Loading
+*Author: GALEDO, Enrique Lorenzo Hermoso*
 Loads all 8 CSV datasets from the data/ directory into R data frames. Records the original observation count for each dataset before any cleaning operations.
 Datasets include 4 asset price series (AAPL, BDO, BTC, SPY) and 4 FRED macroeconomic series (CPI, DGS10, FEDFUNDS, VIX).
 
@@ -114,7 +115,8 @@ obs_original <- data.frame(
 safe_kable(obs_original, caption="Original Observations per Dataset")
 ```
 
-# Appendix A4 - Data Cleaning (SISON, Aaron Joshua Estacio)
+# Appendix A4 - Data Cleaning
+*Author: SISON, Aaron Joshua Estacio*
 Standardises date formats across all 8 datasets, filters observations to the 2020-01-01 to 2025-12-31 sample period, counts missing values and duplicates, and computes daily returns for each OHLC asset.
 
 ```{r data-cleaning}
@@ -196,7 +198,8 @@ safe_kable(clean_summary, caption="Observations After Filtering, Missing Values,
 
 FRED data (CPI, DGS10, FEDFUNDS) has fewer rows due to monthly or business-daily reporting frequency. Missing values introduced by join operations are handled in Section 5.
 
-# Appendix A5 - Database Integration (SISON, Aaron Joshua Estacio)
+# Appendix A5 - Database Integration
+*Author: SISON, Aaron Joshua Estacio*
 Demonstrates all four SQL join types (left, inner, full, anti) and justifies the chosen join strategy. Assembles the final analytical dataset by combining asset data with macroeconomic series. Exports the observation reduction table for inclusion in the main report.
 
 ```{r database-integration}
@@ -283,7 +286,8 @@ library(knitr)
 cat(kable(reduction_table, format = "latex", booktabs = TRUE), file = "../reports/sections/data_cleaning_table.tex")
 ```
 
-# Appendix A6 - Master Dataset Creation & SQL Database Setup (SISON, Aaron Joshua Estacio)
+# Appendix A6 - Master Dataset Creation & SQL Database Setup
+*Author: SISON, Aaron Joshua Estacio*
 Builds the master analytical dataset by restructuring into long format (one row per asset-date combination) and saves it as a persistent SQLite database file. Pre-calculates CPI year-on-year change for inflation analysis. All subsequent SQL questions (A7-A16) query this persisted database.
 
 ```{r sql-setup}
@@ -336,7 +340,8 @@ nrow_total <- collect(fin_data) |> nrow()
 safe_kable(head(sql_long, 5), digits=4, caption=paste0("Master Dataset Preview (First 5 of ", nrow_total, " Rows)"))
 ```
 
-# Appendix A7 - SQL Question 1: Risk-Adjusted Daily Return (SISON, Aaron Joshua Estacio)
+# Appendix A7 - SQL Question 1: Risk-Adjusted Daily Return
+*Author: SISON, Aaron Joshua Estacio*
 Computes the ratio of mean daily return to standard deviation for each asset, producing a Sharpe-like measure of return efficiency. The corresponding bar chart is displayed in the Data Visualization section.
 
 ```{r q1}
@@ -357,7 +362,8 @@ spy_ratio <- q1 |> filter(Asset == "SPY") |> pull(Risk_Adjusted_Return)
 safe_kable(q1, digits=4, caption="Q1 Data Output")
 ```
 
-# Appendix A8 - SQL Question 2: COVID-19 Crash Cumulative Returns (SISON, Aaron Joshua Estacio)
+# Appendix A8 - SQL Question 2: COVID-19 Crash Cumulative Returns
+*Author: SISON, Aaron Joshua Estacio*
 Measures crisis resilience during the February to March 2020 COVID-19 market crash by computing cumulative returns for each asset.
 
 ```{r q2}
@@ -386,7 +392,8 @@ q2_summary <- q2 |>
 safe_kable(q2_summary, digits=4, caption="Q2 Summary Data Output")
 ```
 
-# Appendix A9 - SQL Question 3: Pairwise Correlation of Daily Returns (SISON, Aaron Joshua Estacio)
+# Appendix A9 - SQL Question 3: Pairwise Correlation of Daily Returns
+*Author: SISON, Aaron Joshua Estacio*
 Calculates the Pearson correlation coefficients for daily returns across all asset pairs and displays the correlation matrix.
 
 ```{r q3}
@@ -410,7 +417,8 @@ cor_long <- as.data.frame(cor_matrix) |>
 safe_kable(round(cor_matrix, 4), caption="Q3 Correlation Matrix Output")
 ```
 
-# Appendix A10 - SQL Question 4: Asset Ranking by Total Return (CRUZ, Ricardo Miguel Iñigo)
+# Appendix A10 - SQL Question 4: Asset Ranking by Total Return
+*Author: CRUZ, Ricardo Miguel Iñigo*
 Ranks assets by total price return and annualized return over the full 2020-2025 sample period.
 
 ```{r q4}
@@ -445,7 +453,8 @@ q4_plot <- q4 |>
 safe_kable(q4, digits=4, caption="Q4 Data Output")
 ```
 
-# Appendix A11 - SQL Question 5: Best and Worst Trading Days (CRUZ, Ricardo Miguel Iñigo)
+# Appendix A11 - SQL Question 5: Best and Worst Trading Days
+*Author: CRUZ, Ricardo Miguel Iñigo*
 Identifies extreme single-day gains and losses for each asset to assess tail risk.
 
 ```{r q5}
@@ -473,7 +482,8 @@ q5 <- q5_raw |>
 safe_kable(q5, digits=4, caption="Q5 Data Output")
 ```
 
-# Appendix A12 - SQL Question 6: Moving Average Crossover Analysis (CRUZ, Ricardo Miguel Iñigo)
+# Appendix A12 - SQL Question 6: Moving Average Crossover Analysis
+*Author: CRUZ, Ricardo Miguel Iñigo*
 Implements a 20-day and 60-day simple moving average crossover strategy to analyze momentum regime shifts.
 
 ```{r q6}
@@ -521,7 +531,8 @@ q6_latest_signal <- q6_ma |>
 safe_kable(q6, digits=4, caption="Q6 Data Output")
 ```
 
-# Appendix A13 - SQL Question 7: Volume and Volatility Relationship (CRUZ, Ricardo Miguel Iñigo)
+# Appendix A13 - SQL Question 7: Volume and Volatility Relationship
+*Author: CRUZ, Ricardo Miguel Iñigo*
 Tests whether elevated trading volume systematically coincides with higher volatility by partitioning days into high-volume and normal-volume regimes.
 
 ```{r q7}
@@ -574,7 +585,8 @@ q7 <- q7_raw |>
 safe_kable(q7, digits=4, caption="Q7 Data Output")
 ```
 
-# Appendix A14 - SQL Question 8: VIX Regime Analysis (SISON, Aaron Joshua Estacio)
+# Appendix A14 - SQL Question 8: VIX Regime Analysis
+*Author: SISON, Aaron Joshua Estacio*
 Assesses asset performance during periods of high versus low market fear by segregating trading days based on VIX levels.
 
 ```{r q8}
@@ -612,7 +624,8 @@ q8_plot <- q8 |>
 safe_kable(q8, digits=4, caption="Q8 Data Output")
 ```
 
-# Appendix A15 - SQL Question 9: Interest Rate Sensitivity (SISON, Aaron Joshua Estacio)
+# Appendix A15 - SQL Question 9: Interest Rate Sensitivity
+*Author: SISON, Aaron Joshua Estacio*
 Measures asset sensitivity to changes in the 10-year Treasury yield by comparing mean returns on days when yields rise versus fall.
 
 ```{r q9}
@@ -652,7 +665,8 @@ q9_plot <- q9 |>
 safe_kable(q9, digits=4, caption="Q9 Data Output")
 ```
 
-# Appendix A16 - SQL Question 10: Inflation Hedge Performance (SISON, Aaron Joshua Estacio)
+# Appendix A16 - SQL Question 10: Inflation Hedge Performance
+*Author: SISON, Aaron Joshua Estacio*
 Evaluates which assets served as effective inflation hedges during the June 2021 to February 2023 high-inflation period (CPI YoY above 5%).
 
 ```{r q10}
@@ -686,7 +700,8 @@ q10_plot <- q10 |>
 safe_kable(q10, digits=4, caption="Q10 Data Output")
 ```
 
-# Appendix A17 - Data Visualization Charts (SEBALLOS, Josiah Dweyn Panganiban)
+# Appendix A17 - Data Visualization Charts
+*Author: SEBALLOS, Josiah Dweyn Panganiban*
 Contains the ggplot code for all 10 figures corresponding to SQL Questions Q1 through Q10.
 Each figure is saved as a PDF to the reports/figures/ directory for inclusion in the main report's Data Visualization section.
 
@@ -947,7 +962,8 @@ ggplot(q10_plot, aes(x = Total_Cumulative_Return, y = Asset, fill = Asset)) +
 ggsave("../reports/figures/fig_q10.pdf", width = 7, height = 3.5, device = "pdf")
 ```
 
-# Appendix A18 - Exploratory Data Visualization (SEBALLOS, Josiah Dweyn Panganiban)
+# Appendix A18 - Exploratory Data Visualization
+*Author: SEBALLOS, Josiah Dweyn Panganiban*
 Contains 8 exploratory figures covering cumulative returns, price trends, return distributions, rolling volatility, drawdown analysis, risk-return profiles, and portfolio risk contribution. These complement the SQL-driven charts in A17.
 
 ### Viz Figure 1: Cumulative Returns by Asset
@@ -978,7 +994,7 @@ ggplot(fig1_data, aes(x = Date, y = Cumulative_Return, color = Asset)) +
         legend.position = "bottom")
 ggsave("../reports/figures/fig_viz1.pdf", width = 7, height = 4, device = "pdf")
 ```
-Viz 1: Cumulative Returns by Asset tracks the growth of USD 1 invested in each asset from 2020 to 2025. BTC shows the steepest and most volatile climb, reaching cumulative returns above 1,000% with sharp cyclical peaks and drawdowns. AAPL and SPY both trend steadily upward, with AAPL consistently outperforming the SPY benchmark. BDO remains close to the 0% line for most of the period, indicating limited net nominal gain relative to the other three assets.
+
 
 ### Viz Figure 2: Closing Price Trends by Asset
 Plots nominal closing prices on individual scales to compare price-level dynamics across assets of different magnitudes.
@@ -999,7 +1015,7 @@ ggplot(sql_long, aes(x = Date, y = Close, color = Asset)) +
         plot.subtitle = element_text(size = 9, color = "#595959"))
 ggsave("../reports/figures/fig_viz2.pdf", width = 7, height = 5, device = "pdf")
 ```
-Viz 2: Closing Price Trends by Asset plots nominal closing prices rather than normalized returns, revealing that BDO experienced meaningful price swings on its own scale despite appearing flat in Viz 1. Each asset uses its own y-axis since raw prices are not directly comparable across magnitudes.
+
 
 ### Viz Figure 3: Return Distribution with Skewness and Kurtosis
 Overlays each asset's daily return histogram against a fitted normal curve to assess distribution shape and tail risk.
@@ -1053,7 +1069,7 @@ ggplot(fig3_data, aes(x = Daily_Return)) +
         plot.subtitle = element_text(size = 9, color = "#595959"))
 ggsave("../reports/figures/fig_viz3.pdf", width = 7, height = 5, device = "pdf")
 ```
-Viz 3: Return Distribution with Skewness and Kurtosis overlays each asset's daily return distribution against a fitted normal curve. AAPL is the only asset with positive skewness (0.28), meaning its rare extreme days lean toward the upside. BTC and BDO both show negative skewness (-0.48 and -0.40 respectively), indicating tail risk weighted toward sudden losses. SPY records the highest kurtosis of all four assets (12.97) despite a comparatively mild skew (-0.26), meaning its returns are usually tightly clustered near zero but still capable of extreme shock days. All four kurtosis values exceed 3, the benchmark for a normal distribution, confirming none of these assets follow a standard bell curve.
+
 
 ### Viz Figure 4: Return Range and Spread by Asset
 Boxplot showing median, interquartile range, and outlier days for each asset.
@@ -1075,7 +1091,7 @@ ggplot(fig3_data, aes(x = Asset, y = Daily_Return, fill = Asset)) +
         plot.subtitle = element_text(size = 9, color = "#595959"))
 ggsave("../reports/figures/fig_viz4.pdf", width = 7, height = 4, device = "pdf")
 ```
-Viz 4: Return Range and Spread by Asset shows each asset's typical daily return range and outlier days. BTC has the widest box and most extreme outliers in both directions, consistent with its high kurtosis in Viz 3. SPY has the narrowest, most compressed box, reflecting diversification across 500 companies. AAPL and BDO fall in between, with BDO showing a visible skew toward downside outlier days.
+
 
 ### Viz Figure 5: 30-Day Rolling Volatility by Asset
 Tracks rolling 30-day standard deviation of daily returns to visualize volatility evolution over time.
@@ -1112,7 +1128,7 @@ ggplot(fig5_data, aes(x = Date, y = Rolling_Vol, color = Asset)) +
         legend.position = "bottom")
 ggsave("../reports/figures/fig_viz5.pdf", width = 7, height = 4, device = "pdf")
 ```
-Viz 5: 30-Day Rolling Volatility by Asset shows a sharp synchronized volatility spike across all assets in early 2020 from the COVID-19 market shock. BTC consistently maintains the highest rolling volatility baseline with visible cyclical waves from its bull and bear cycles. SPY maintains the lowest and most stable volatility floor. AAPL and BDO show occasional idiosyncratic spikes tied to specific events rather than broad macro shocks.
+
 
 ### Viz Figure 6: Drawdown from Peak by Asset
 Computes percentage decline from each asset's running historical high to visualize recovery patterns.
@@ -1142,7 +1158,7 @@ ggplot(fig6_data, aes(x = Date, y = Drawdown, color = Asset)) +
         plot.subtitle = element_text(size = 9, color = "#595959"))
 ggsave("../reports/figures/fig_viz6.pdf", width = 7, height = 5, device = "pdf")
 ```
-Viz 6: Drawdown from Peak by Asset shows each asset's percentage decline from its running historical high. BTC shows the deepest drawdowns falling well below -60% and takes longest to recover to a prior peak. SPY shows the shallowest fastest-recovering drawdowns consistent with its diversified benchmark role. BDO shows a prolonged period in negative territory indicating slower capital recovery through a downturn.
+
 
 ### Viz Figure 7: Risk vs. Return by Asset
 Scatter plot comparing mean daily return against standard deviation across all four assets.
@@ -1171,7 +1187,7 @@ ggplot(fig7_data, aes(x = SD_Return, y = Mean_Return, color = Asset)) +
         plot.subtitle = element_text(size = 9, color = "#595959"))
 ggsave("../reports/figures/fig_viz7.pdf", width = 7, height = 5, device = "pdf")
 ```
-Viz 7: Risk vs. Return by Asset plots each asset's mean daily return against standard deviation. BTC delivers the highest mean return (0.166%) but also highest risk (3.19% daily SD). AAPL offers a more efficient middle ground with 0.108% mean return at only 2.00% volatility. SPY sits at the lowest-risk end (1.31% SD) with a modest 0.0636% mean return. BDO is the weakest performer on a risk-adjusted basis, carrying similar risk to AAPL (2.26% SD) while delivering the lowest mean return (0.0295%).
+
 
 ### Viz Figure 8: Equal-Weighted Portfolio Risk Contribution
 Decomposes total portfolio variance into each asset's contribution to show that equal dollar weights do not produce equal risk.
@@ -1209,37 +1225,42 @@ ggplot(fig8_data, aes(x = Asset, y = Risk_Contribution, fill = Asset)) +
         plot.subtitle = element_text(size = 9, color = "#595959"))
 ggsave("../reports/figures/fig_viz8.pdf", width = 7, height = 4, device = "pdf")
 ```
-Viz 8: Equal-Weighted Portfolio Risk Contribution decomposes total portfolio variance under an equal one-third allocation. BTC alone contributes 55.3% of total portfolio variance despite representing only one-third of invested capital. AAPL and BDO contribute 22.8% and 21.9% respectively, roughly proportional to their capital weights. Equal-dollar allocation does not produce equal-risk allocation, supporting a reduced BTC weight to lower portfolio risk without proportional loss in expected return.
 
-## Sec 7: Descriptive Statistics -- GALEDO, Enrique Lorenzo Hermoso
+
+## Sec 7: Descriptive Statistics
+*Author: GALEDO, Enrique Lorenzo Hermoso*
 *Mean, median, variance, std dev, min, max, range, skewness, kurtosis.*
 
 ```{r descriptive-stats}
 # Sec 7: Descriptive Statistics -- compute mean, median, variance, skewness, kurtosis -- GALEDO, Enrique Lorenzo Hermoso
 ```
 
-## Sec 8: Data Visualization -- SEBALLOS, Josiah Dweyn Panganiban
+## Sec 8: Data Visualization
+*Author: SEBALLOS, Josiah Dweyn Panganiban*
 *At least 8 professional-quality figures.*
 
 ```{r data-viz-1}
 # Sec 8: Data Visualization -- create 8 professional figures with ggplot2 -- SEBALLOS, Josiah Dweyn Panganiban
 ```
 
-## Sec 9: Exploratory Analysis -- SEECHUNG, Camille Castro
+## Sec 9: Exploratory Analysis
+*Author: SEECHUNG, Camille Castro*
 *Compare returns, volatility, inflationary periods, high-VIX periods, interest-rate environments.*
 
 ```{r exploratory-analysis}
 # Sec 9: Exploratory Financial Analysis -- compare returns, volatility, inflation, VIX, interest rates -- SEECHUNG, Camille Castro
 ```
 
-## Sec 10: Investment Recommendation -- SEECHUNG, Camille Castro
+## Sec 10: Investment Recommendation
+*Author: SEECHUNG, Camille Castro*
 *Allocate USD 1,000,000.*
 
 ```{r investment-rec}
 # Sec 10: Investment Recommendation -- USD 1,000,000 allocation among AAPL, BDO, BTC, cash -- SEECHUNG, Camille Castro
 ```
 
-## Sec 11: Executive Dashboard -- CRUZ, Ricardo Miguel Iñigo
+## Sec 11: Executive Dashboard
+*Author: CRUZ, Ricardo Miguel Iñigo*
 
 ```{r dashboard-prep}
 # Sec 11: Executive Dashboard -- key stats, charts, SQL findings, recommendation summary -- CRUZ, Ricardo Miguel Iñigo
