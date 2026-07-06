@@ -85,9 +85,7 @@ jobs:
           cd scripts
           quarto render finstad_analysis.qmd --to pdf
 
-      - name: Copy appendix into reports/
-        run: cp scripts/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf
-        shell: bash
+
 
       - name: Compile report (xelatex + biber)
         run: |
@@ -137,14 +135,13 @@ jobs:
         run: |
           cp finstad-report-ubuntu-latest/finstad_report.pdf reports/finstad_report.pdf
           cp finstad-appendix-ubuntu-latest/finstad_analysis.pdf scripts/finstad_analysis.pdf
-          cp finstad-appendix-ubuntu-latest/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf
           cp finstad-figures-ubuntu-latest/fig_*.pdf reports/figures/ 2>/dev/null || true
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add reports/finstad_report.pdf scripts/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf reports/figures/fig_*.pdf
+          git add reports/finstad_report.pdf scripts/finstad_analysis.pdf reports/figures/fig_*.pdf
           if ! git diff --staged --quiet; then
             git commit -m "ci: auto-render PDFs [skip ci]"
             git push
