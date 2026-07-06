@@ -4,15 +4,7 @@ Six financial investigations were conducted using dplyr operations on the integr
 
 \subsection{Q1. Risk-Adjusted Returns}
 
-The R code used to produce these results is in Appendix~\ref{sec:appendix_a} (section~Q1). This investigation addresses a central question for portfolio construction:
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape Which asset delivered the highest return per unit of risk over the 2020 to 2025 sample period?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-To answer this, the ratio of mean daily return to standard deviation was computed for each asset, producing a Sharpe-like measure of return efficiency.
+To determine which asset delivered the highest return per unit of risk over the 2020 to 2025 sample period, the ratio of mean daily return to standard deviation was computed for each asset, producing a Sharpe-like measure of return efficiency. The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q1_snippet.tex}
 
@@ -22,15 +14,7 @@ The implication for portfolio construction is that an investor maximising risk-a
 
 \subsection{Q2. COVID Crash Analysis}
 
-The corresponding R code can be found in Appendix~\ref{sec:appendix_a} (section~Q2). The analysis was guided by this question:
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape How did each asset perform during the COVID-19 market crash of February to March 2020?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-To measure crisis resilience, cumulative returns were computed for each asset over the February to March 2020 selloff period.
+To measure crisis resilience and determine how each asset performed during the COVID-19 market crash of February to March 2020, cumulative returns were computed for each asset over the initial selloff period. The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q2_snippet.tex}
 
@@ -42,15 +26,7 @@ A notable methodological observation concerns the differing observation windows.
 
 \subsection{Q3. Cross-Asset Correlation}
 
-The code supporting this section is in Appendix~\ref{sec:appendix_a} (section~Q3). The investigation centres on a question fundamental to portfolio theory:
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape What is the pairwise correlation of daily returns across the selected assets, and what does this imply for portfolio diversification?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-Pairwise Pearson correlation coefficients were computed across all asset pairs to assess the diversification potential of the portfolio.
+To assess the diversification potential of the portfolio, pairwise Pearson correlation coefficients of daily returns were computed across all selected assets. The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q3_snippet.tex}
 
@@ -62,15 +38,7 @@ BTC occupies an intermediate position, with a correlation of 0.383 with SPY and 
 
 \subsection{Q4. Asset Ranking by Total Return}
 
-Refer to Appendix~\ref{sec:appendix_a} (section~Q4) for the R implementation.
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape How did the selected assets rank by total and annualized return from 2020 to 2025?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-To compare performance across different asset classes, total and annualized returns were computed using calendar days to normalize differing trading schedules.
+To compare performance across different asset classes, total and annualized returns were computed from 2020 to 2025 using calendar days to normalize differing trading schedules. The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q4_snippet.tex}
 
@@ -80,15 +48,7 @@ The 5.0\% total return for BDO provides a stark counterpoint to the technology r
 
 \subsection{Q5. Best and Worst Trading Days}
 
-Refer to Appendix~\ref{sec:appendix_a} (section~Q5) for the R implementation.
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape What were the most extreme single-day gains and losses for each asset?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-Extreme daily returns isolate an asset's tail risk and structural volatility. The maximum and minimum single-day returns were extracted for each instrument.
+To isolate the structural volatility and tail risk of each asset class, the maximum and minimum single-day returns were extracted for each instrument. The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q5_snippet.tex}
 
@@ -98,15 +58,7 @@ A single-day drawdown of 37.2\% in BTC reveals a market microstructure uniquely 
 
 \subsection{Q6. Moving Average Crossover Analysis}
 
-Refer to Appendix~\ref{sec:appendix_a} (section~Q6) for the R implementation.
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape How frequently do short-term price trends deviate from medium-term trends, and what signals do they generate?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-A 20-day and 60-day simple moving average crossover strategy was implemented to identify momentum regime shifts. Due to the high density of overlapping data over the six-year sample, the visualization is restricted to the 2024--2025 period.
+To quantify the stability of momentum regimes and identify how frequently short-term price trends deviate from medium-term baselines, a 20-day and 60-day simple moving average crossover strategy was implemented. The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q6_snippet.tex}
 
@@ -116,15 +68,7 @@ The high frequency of BTC crossovers signals a market dominated by sentiment sho
 
 \subsection{Q7. Volume and Volatility Relationship}
 
-Refer to Appendix~\ref{sec:appendix_a} (section~Q7) for the R implementation.
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape Does elevated trading volume systematically coincide with higher daily price volatility?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-To test the volume-volatility hypothesis, trading days were partitioned into ``High Volume (top quartile) and ``Normal Volume (bottom three quartiles). Mean absolute daily return was used as a proxy for realized volatility.
+To test the volume-volatility hypothesis and determine if elevated trading volume systematically coincides with higher daily price volatility, trading days were partitioned into high-volume and normal-volume quartiles. The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q7_snippet.tex}
 
@@ -135,15 +79,7 @@ The empirical data supports the mixture of distributions hypothesis. Trading vol
 
 \subsection{Q8. VIX Regime Analysis}
 
-Refer to Appendix~\ref{sec:appendix_a} (section~Q8) for the R implementation. This part of the study was driven by the following inquiry:
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape How do assets perform during periods of high market fear compared to periods of low market fear?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-To test whether asset behaviour changes with market fear, mean daily returns were compared across high volatility periods defined as VIX above 30 and low volatility periods defined as VIX below 20.
+To test whether asset behaviour changes with market fear, mean daily returns were compared across high volatility periods (VIX above 30) and low volatility periods (VIX below 20). The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q8_snippet.tex}
 
@@ -155,15 +91,7 @@ BDO presents the opposite profile, with the shortest blue bar in the low-fear re
 
 \subsection{Q9. Interest Rate Sensitivity}
 
-The computation for this section is detailed in Appendix~\ref{sec:appendix_a} (section~Q9). The motivating question was:
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape How sensitive are each asset's returns to daily changes in the 10-year Treasury yield?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-To measure interest rate exposure, mean daily returns were calculated conditional on whether the 10-year Treasury yield rose or fell from the previous trading day.
+To measure interest rate exposure, mean daily returns were calculated conditional on whether the 10-year Treasury yield rose or fell from the previous trading day. The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q9_snippet.tex}
 
@@ -175,15 +103,7 @@ BDO and AAPL maintained positive mean returns in both yield regimes, though the 
 
 \subsection{Q10. Inflation Hedge Performance}
 
-Appendix~\ref{sec:appendix_a} (section~Q10) contains the R code behind this analysis. The final investigation tackles a question with direct practical relevance:
-
-\vspace{0.3cm}
-\begin{quote}
-\itshape Which assets served as effective inflation hedges during the high-inflation period of 2021 to 2023?\normalfont
-\end{quote}
-\vspace{0.3cm}
-
-Total cumulative returns were computed for each asset over the high-inflation window from June 2021 to February 2023, during which CPI year-on-year readings exceeded 5\%.
+To evaluate which assets served as effective inflation hedges during the high-inflation period of 2021 to 2023, total cumulative returns were computed over the window where CPI year-on-year readings exceeded 5 percent. The underlying computational logic for this investigation is provided in Appendix~\ref{sec:appendix_a}.
 
 \input{sections/q10_snippet.tex}
 
