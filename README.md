@@ -211,23 +211,27 @@ Once the group reviews it and clicks **Merge**, your code becomes part of the of
 
 ------------------------------------------------------------------------
 
-## Our Two Main Files: The `.qmd` and The `.tex` — What's the Difference?
+## Our Project Workflow: The `.qmd` and the Modular `.tex` Structure
 
-You'll notice we have two important files in this project:
+You'll notice we have a specific file structure to avoid merge conflicts when multiple people are writing at the same time:
 
 ### `scripts/finstad_analysis.qmd` — The "Do the Work" File
 
--   **What it is:** A Quarto Markdown file (like a smart, mix-code-and-words document). Think of it as your lab notebook where you write R code, run it, see the results, and write your analysis all in one place.
--   **What it does:** You write R code inside special blocks called "code chunks." When you "render" this file, R runs all the code, generates the tables and charts, and stitches everything together into a final HTML or PDF document.
--   **When to use it:** During the analysis phase — when you're downloading data, cleaning it, merging it, running SQL queries, calculating statistics, making charts, and figuring out your findings.
+-   **What it is:** A Quarto Markdown file (like a smart, mix-code-and-words document). Think of it as your lab notebook where you write R code, run it, see the results, and test your findings.
+-   **When to use it:** During the analysis phase — downloading data, cleaning it, merging it, running SQL queries, calculating statistics, and making charts.
 
-### `reports/finstad_report.tex` — The "Make It Look Pretty" File
+### `reports/sections/*.tex` — The "Write Your Chapter" Files
 
--   **What it is:** A LaTeX file (pronounced *lah-tech*). LaTeX is a typesetting system — think of it as the professional version of Microsoft Word, but instead of clicking buttons to bold text, you type commands like `\textbf{bold text}`. It's what academics use to write papers because it handles formatting, citations, tables, and page layout perfectly every time.
--   **What it does:** It takes the final polished results from your `.qmd` file and lays them out in a beautiful APA 7th-edition formatted report with proper headings, margins, page numbers, and a table of contents. When you compile it, it produces a PDF (you can find the latest one at `reports/finstad_report.pdf`).
--   **When to use it:** After the analysis is done — when you're ready to write the final report with your introduction, methodology, results, and investment recommendation.
+-   **What they are:** Individual LaTeX files for each chapter (e.g., `06_sql_investigation.tex`, `08_data_visualization.tex`). 
+-   **What they do:** This is where you actually write your assigned portion of the paper. By keeping sections in separate files, we prevent messy Git merge conflicts when everyone pushes their work at once.
+-   **When to use it:** When you're ready to write your final text, tables, and insert your charts.
 
-### How They Work Together (The Simple Flow) {#how-they-work-together-the-simple-flow}
+### `reports/finstad_report.tex` — The "Master Assembler" File
+
+-   **What it is:** The main LaTeX document. **Do not write your essay in here.** 
+-   **What it does:** It pulls in all the individual section files from `reports/sections/`, applies the APA 7th-edition formatting, and builds the final PDF.
+
+### How They Work Together (The Simple Flow)
 
 ```         
 Step 1: Do your analysis in the .qmd file
@@ -235,16 +239,17 @@ Step 1: Do your analysis in the .qmd file
                 │
                 ▼
 Step 2: Copy your final numbers, tables, and charts 
-        into the .tex file as the "fancy report"
+        and write your essay in YOUR assigned section file 
+        (e.g., reports/sections/06_sql_investigation.tex)
                 │
                 ▼
-Step 3: Render the .tex file into a PDF 
+Step 3: Render the master finstad_report.tex file into a PDF 
         (beautiful, ready-to-submit paper)
 ```
 
-> **💡 The `.tex` file compiles into a PDF.** Every time you "render" or "compile" the LaTeX file, it produces a polished, publication-ready PDF document. You can see the latest compiled version right here in our repository at **`reports/finstad_report.pdf`** — that's the finished report ready for submission!
+> **💡 The `.tex` file compiles into a PDF.** Every time you "render" or "compile" the main LaTeX file, it pulls your modular section and produces a polished, publication-ready PDF document at **`reports/finstad_report.pdf`**.
 
-**Think of it this way:** The `.qmd` file is where you cook the meal (do the messy work, taste-test, adjust seasoning). The `.tex` file is where you plate it for the final presentation (everything neat, garnished, and ready to serve).
+**Think of it this way:** The `.qmd` file is where you cook the meal. The `.tex` files in `sections/` are where you plate the dishes. The master `finstad_report.tex` is where the final dinner is served to the reviewers.
 
 ------------------------------------------------------------------------
 
@@ -356,13 +361,13 @@ You simply: **Type that number into the .tex file** in the appropriate section. 
 
 ------------------------------------------------------------------------
 
-## Pro Tips for Working with Both Files {#pro-tips-for-working-with-both-files}
+## Pro Tips for Working with the Files
 
 1.  **Do all your heavy lifting in the .qmd** — Download data, clean it, run your 10 SQL investigations, calculate stats, make charts. The .qmd is built for this.
-2.  **Only bring the final polished results into the .tex** — Nobody needs to see your debugging code or the 15 versions of the same chart you tried. The .tex is the final draft.
-3.  **Keep your chart filenames simple** — Save as `returns.png`, `correlation.png`, `portfolio.png` so it's easy to reference in the .tex.
-4.  **Render the .tex every time you make changes** to see if the PDF looks right. If you get an error, don't panic — usually it's a missing `}` or `\\` — read the error message, fix it, and render again.
-5.  **You can render the .tex in R Studio** — Open the file, then click the "Compile PDF" button (it looks like a little PDF icon) or use the keyboard shortcut **Ctrl+Shift+K** (Windows/Linux) / **Cmd+Shift+K** (Mac).
+2.  **Write your prose in the `sections/` folder** — Never dump paragraphs of text directly into `finstad_report.tex`. Find your assigned `.tex` file in `reports/sections/` and edit that.
+3.  **Keep your chart filenames simple** — Save them in the `reports/figures/` folder (e.g. `fig_q1.pdf`, `fig_viz1.pdf`) so they are easy to reference in LaTeX.
+4.  **Render the master `.tex` every time you make changes** to see if the PDF looks right. If you get an error, usually it's a missing `}` or `\\` in your modular section file — read the error message, fix it, and render again.
+5.  **You can render the `.tex` in R Studio** — Open `finstad_report.tex`, then click the "Compile PDF" button (it looks like a little PDF icon) or use the keyboard shortcut **Ctrl+Shift+K** (Windows/Linux) / **Cmd+Shift+K** (Mac).
 
 ------------------------------------------------------------------------
 
