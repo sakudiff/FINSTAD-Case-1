@@ -29,6 +29,10 @@ execute:
   message: false
 ---
 
+# Appendix A1 - Data Loading & Library Import 
+Loads the datasets we saved in the data folder including the needed libraries for the case.
+Note data was already pulled from the sources defined in the table 1 in the data acquisition chapter.
+
 ```{r setup}
 # Load necessary libraries
 library(dplyr)
@@ -94,6 +98,8 @@ obs_original <- data.frame(
 )
 
 ```
+
+
 
 | Dataset | Original Observations |
 |---------|---------------------:|
@@ -333,12 +339,8 @@ dbWriteTable(con, "integrated_data", sql_long, overwrite = TRUE)
 fin_data <- tbl(con, "integrated_data")
 ```
 
-### Appendix A1: SQL Question 1
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To determine which asset delivered the highest return per unit of risk over the sample period.
-**Purpose of Code:** Calculates the ratio of mean daily return to standard deviation for each asset and visualizes the results.
-**Expected Output:** A risk-adjusted return ratio for each asset, presented as a bar chart.
+# Appendix A2 - SQL Question 1
+To determine which asset delivered the highest return per unit of risk over the sample period. Calculates the ratio of mean daily return to standard deviation for each asset and visualizes the results. The expected output is a risk-adjusted return ratio for each asset, presented as a bar chart.
 
 ```{r q1}
 # Q1: Risk-Adjusted Daily Return by Asset -- SISON, Aaron Joshua Estacio
@@ -380,12 +382,8 @@ ggplot(q1, aes(x = Risk_Adjusted_Return, y = reorder(Asset, Risk_Adjusted_Return
 ggsave("../reports/figures/fig_q1.pdf", width = 7, height = 3.5, device = "pdf")
 ```
 
-### Appendix A2: SQL Question 2
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To measure crisis resilience during the COVID-19 market crash.
-**Purpose of Code:** Computes the cumulative return of each asset over the February to March 2020 period.
-**Expected Output:** A line chart showing the trajectory of each asset's drawdown and recovery.
+# Appendix A3 - SQL Question 2
+To measure crisis resilience during the COVID-19 market crash. Computes the cumulative return of each asset over the February to March 2020 period. The expected output is a line chart showing the trajectory of each asset's drawdown and recovery.
 
 ```{r q2}
 # Q2: COVID-19 Crash Cumulative Returns -- SISON, Aaron Joshua Estacio
@@ -428,12 +426,8 @@ ggplot(q2, aes(x = Date, y = Cumulative_Return, color = Asset)) +
 ggsave("../reports/figures/fig_q2.pdf", width = 7, height = 4, device = "pdf")
 ```
 
-### Appendix A3: SQL Question 3
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To evaluate the cross-asset correlation of daily returns.
-**Purpose of Code:** Calculates and visualizes the pairwise Pearson correlation coefficients across the selected assets.
-**Expected Output:** A correlation heatmap matrix.
+# Appendix A4 - SQL Question 3
+To evaluate the cross-asset correlation of daily returns. Calculates and visualizes the pairwise Pearson correlation coefficients across the selected assets. The expected output is a correlation heatmap matrix.
 
 ```{r q3}
 # Q3: Pairwise Correlation of Daily Returns -- SISON, Aaron Joshua Estacio
@@ -470,12 +464,8 @@ ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
 ggsave("../reports/figures/fig_q3.pdf", width = 6, height = 4.5, device = "pdf")
 ```
 
-### Appendix A4: SQL Question 4
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To rank assets by their total price return from 2020 to 2025.
-**Purpose of Code:** Calculates the total and annualized returns for each asset across the entire sample period.
-**Expected Output:** A bar chart ranking the assets by total percentage return.
+# Appendix A5 - SQL Question 4
+To rank assets by their total price return from 2020 to 2025. Calculates the total and annualized returns for each asset across the entire sample period. The expected output is a bar chart ranking the assets by total percentage return.
 
 ```{r q4}
 # Q4: Asset Ranking by Total Return -- CRUZ, Ricardo Miguel Inigo
@@ -528,12 +518,8 @@ ggplot(q4_plot, aes(x = Total_Return, y = Asset, fill = Asset)) +
 ggsave("../reports/figures/fig_q4.pdf", width = 7, height = 3.5, device = "pdf")
 ```
 
-### Appendix A5: SQL Question 5
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To identify the extreme single-day gains and losses for each asset.
-**Purpose of Code:** Extracts the maximum and minimum daily returns for each instrument to assess tail risk.
-**Expected Output:** A grouped bar chart displaying the best and worst trading days.
+# Appendix A6 - SQL Question 5
+To identify the extreme single-day gains and losses for each asset. Extracts the maximum and minimum daily returns for each instrument to assess tail risk. The expected output is a grouped bar chart displaying the best and worst trading days.
 
 ```{r q5}
 # Q5: Best and Worst Trading Days -- CRUZ, Ricardo Miguel Inigo
@@ -587,12 +573,8 @@ ggplot(q5_plot, aes(x = Asset, y = Daily_Return, fill = Trading_Day_Type)) +
 ggsave("../reports/figures/fig_q5.pdf", width = 7, height = 4, device = "pdf")
 ```
 
-### Appendix A6: SQL Question 6
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To analyze momentum regime shifts using moving averages.
-**Purpose of Code:** Implements a 20-day and 60-day simple moving average crossover strategy.
-**Expected Output:** A multi-panel line chart showing crossover events and momentum trends.
+# Appendix A7 - SQL Question 6
+To analyze momentum regime shifts using moving averages. Implements a 20-day and 60-day simple moving average crossover strategy. The expected output is a multi-panel line chart showing crossover events and momentum trends.
 
 ```{r q6}
 # Q6: Moving Average Crossover Analysis -- CRUZ, Ricardo Miguel Inigo
@@ -655,12 +637,8 @@ ggplot(q6_plot, aes(x = Date)) +
 ggsave("../reports/figures/fig_q6.pdf", width = 7, height = 4.5, device = "pdf")
 ```
 
-### Appendix A7: SQL Question 7
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To test whether elevated trading volume systematically coincides with higher volatility.
-**Purpose of Code:** Partitions trading days into high-volume and normal-volume regimes and compares their mean absolute returns.
-**Expected Output:** A grouped bar chart comparing volatility across volume regimes.
+# Appendix A8 - SQL Question 7
+To test whether elevated trading volume systematically coincides with higher volatility. Partitions trading days into high-volume and normal-volume regimes and compares their mean absolute returns. The expected output is a grouped bar chart comparing volatility across volume regimes.
 
 ```{r q7}
 # Q7: Volume and Volatility Relationship -- CRUZ, Ricardo Miguel Inigo
@@ -737,12 +715,8 @@ ggsave("../reports/figures/fig_q7.pdf", width = 7, height = 4, device = "pdf")
 ```
 
 
-### Appendix A8: SQL Question 8
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To assess asset performance during periods of high versus low market fear.
-**Purpose of Code:** Segregates trading days based on VIX levels and calculates conditional mean daily returns.
-**Expected Output:** A grouped bar chart comparing returns under different VIX regimes.
+# Appendix A9 - SQL Question 8
+To assess asset performance during periods of high versus low market fear. Segregates trading days based on VIX levels and calculates conditional mean daily returns. The expected output is a grouped bar chart comparing returns under different vix regimes.
 
 ```{r q8}
 # Q8: VIX Regime Analysis -- SISON, Aaron Joshua Estacio
@@ -795,12 +769,8 @@ ggplot(q8_plot, aes(x = Asset, y = Mean_Daily_Return, fill = VIX_Regime)) +
 ggsave("../reports/figures/fig_q8.pdf", width = 7, height = 4, device = "pdf")
 ```
 
-### Appendix A9: SQL Question 9
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To measure asset sensitivity to changes in the 10-year Treasury yield.
-**Purpose of Code:** Calculates mean returns conditional on daily increases or decreases in the DGS10 rate.
-**Expected Output:** A grouped bar chart showing returns conditioned on yield direction.
+# Appendix A10 - SQL Question 9
+To measure asset sensitivity to changes in the 10-year Treasury yield. Calculates mean returns conditional on daily increases or decreases in the DGS10 rate. The expected output is a grouped bar chart showing returns conditioned on yield direction.
 
 ```{r q9}
 # Q9: Interest Rate Sensitivity -- SISON, Aaron Joshua Estacio
@@ -855,12 +825,8 @@ ggplot(q9_plot, aes(x = Asset, y = Mean_Daily_Return, fill = Yield_Direction)) +
 ggsave("../reports/figures/fig_q9.pdf", width = 7, height = 4, device = "pdf")
 ```
 
-### Appendix A10: SQL Question 10
-*Pertains to Section 6: SQL-Based Financial Investigation*
-
-**Objective:** To evaluate which assets served as effective inflation hedges from 2021 to 2023.
-**Purpose of Code:** Computes total cumulative returns during the high-inflation window where CPI YoY exceeded 5%.
-**Expected Output:** A horizontal bar chart of cumulative returns during the inflationary period.
+# Appendix A11 - SQL Question 10
+To evaluate which assets served as effective inflation hedges from 2021 to 2023. Computes total cumulative returns during the high-inflation window where CPI YoY exceeded 5%. The expected output is a horizontal bar chart of cumulative returns during the inflationary period.
 
 ```{r q10}
 # Q10: Inflation Hedge Performance -- SISON, Aaron Joshua Estacio
