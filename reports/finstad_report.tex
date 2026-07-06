@@ -116,6 +116,7 @@
 
 % APA 7th Edition: Headings & Indents
 \titleformat{\section}{\normalfont\Large\bfseries\centering}{\thesection.}{1em}{}
+\newcommand{\sectionbreak}{\clearpage}
 \titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{1em}{}
 \titlespacing*{\section}{0pt}{12pt}{6pt}
 \titlespacing*{\subsection}{0pt}{12pt}{6pt}
@@ -240,21 +241,6 @@
 \newpage
 \appendix
 \section{Appendix A - Complete R Code} \label{sec:appendix_a}
-
-The complete R source code is embedded below. This document was rendered from a Quarto Markdown file and contains all code chunks with their outputs organised by section. Each section is labelled with the responsible group member's name. The code blocks are as follows:
-
-\begin{itemize}
-  \item \textbf{Data loading} --- CSV imports (Enrique)
-  \item \textbf{Data cleaning} --- Date standardisation, filtering, return calculation (Aaron)
-  \item \textbf{Database integration} --- Four join types, observation reduction (Aaron)
-  \item \textbf{Q1} --- Risk-adjusted returns (Aaron)
-  \item \textbf{Q2} --- COVID crash analysis (Aaron)
-  \item \textbf{Q3} --- Cross-asset correlation (Aaron)
-  \item \textbf{Q4-Q7} --- Reserved for other group members
-  \item \textbf{Q8} --- VIX regime analysis (Aaron)
-  \item \textbf{Q9} --- Interest rate sensitivity (Aaron)
-  \item \textbf{Q10} --- Inflation hedge performance (Aaron)
-\end{itemize}
 
 \includepdf[pages=-,pagecommand={}]{finstad_analysis_appendix.pdf}
 

@@ -16,20 +16,54 @@
 
 This project has been broken down into granular tasks mapping the coding (`.qmd`) and writing (`.tex`) requirements. Please put your name next to the sections you will take on.
 
-| Section (.tex) & Appendix (.qmd) | R Code Responsibility | Paper Responsibility | Assigned To | Done? |
-|------------------|------------------|------------------|------------------|-------|
-| **Sec 1-2: Intro & Data Sources**<br>*(App A1-A3)* | Load all 8 CSVs. Generate summary table of missing values, duplicates, and initial observations. | Write **Sec 1** (Introduction) and **Sec 2** (Data Sources and Acquisition). | Enrique | [ ] |
-| **Sec 3-4: Cleaning & Integration**<br>*(App A4-A6)* | Clean data, calculate daily returns, execute `dplyr` joins, set up SQLite master database. | Write **Sec 3** (Data Cleaning) and **Sec 4** (Database Integration) including the observation reduction table. | Aaron | [ ] |
-| **Sec 5: SQL Q1-Q3**<br>*(App A7-A9)* | Write `DBI/RSQLite` queries for the first 3 financial questions. | Write **Sec 5** (SQL-Based Financial Investigation) for Q1-Q3. | Aaron | [ ] |
-| **Sec 5: SQL Q4-Q7**<br>*(App A10-A13)* | Write `DBI/RSQLite` queries for 4 more financial questions. | Write **Sec 5** (SQL-Based Financial Investigation) for Q4-Q7. | Iñigo | [ ] |
-| **Sec 5: SQL Q8-Q10**<br>*(App A14-A16)* | Write `DBI/RSQLite` queries for the last 3 financial questions. | Write **Sec 5** (SQL-Based Financial Investigation) for Q8-Q10. | Aaron | [ ] |
-| **Sec 6: Descriptive Statistics**<br>*(N/A)* | Code `summarise()` for mean, variance, skewness, kurtosis, min/max. | Write **Sec 6** (Descriptive Statistical Analysis). | Enrique | [ ] |
-| **Sec 7: Data Visualization**<br>*(App A17)* | Generate `ggplot2` charts for SQL findings. | Write **Sec 7** (Data Visualization). | Josiah | [ ] |
-| **Sec 8: Exploratory Analysis**<br>*(App A18)* | Exploratory data visualization and synthesis. | Write **Sec 8** (Exploratory Financial Analysis). | Camille | [ ] |
-| **Sec 9, 11: Recommendation & Conclusion**<br>*(N/A)* | *(No code required, relies on previous outputs)* | Write **Sec 9** (Investment Recommendation) and **Sec 11** (Conclusion). | Camille | [ ] |
-| **Sec 10: Exec Dashboard**<br>*(N/A)* | Code the 1-page dashboard layout in `.qmd` (or format in PPT). | Write **Sec 10** (Executive Dashboard) and **Executive Summary**. | Josiah | [ ] |
-| **Presentation Deck** | Migrate the best charts and tables from `.qmd` into slides. | Create the 10-minute **Presentation Deck** (Canva/PPT). | Josiah | [ ] |
-| **Lead LaTeX Editor** | Ensure the `.qmd` outputs successfully compile into the final `.pdf`. | Manage `finstad_report.tex` formatting, table layouts, and APA citations. | *\[Name\]* | [ ] |
+- [x] **Sec 1-2: Intro & Data Sources** *(App A1-A3)*
+  - **R Code:** Load all 8 CSVs. Generate summary table of missing values, duplicates, and initial observations.
+  - **Paper:** Write **Sec 1** (Introduction) and **Sec 2** (Data Sources and Acquisition).
+  - **Assignee:** Enrique
+- [x] **Sec 3-4: Cleaning & Integration** *(App A4-A6)*
+  - **R Code:** Clean data, calculate daily returns, execute `dplyr` joins, set up SQLite master database.
+  - **Paper:** Write **Sec 3** (Data Cleaning) and **Sec 4** (Database Integration) including the observation reduction table.
+  - **Assignee:** Aaron
+- [x] **Sec 5: SQL Q1-Q3** *(App A7-A9)*
+  - **R Code:** Write `DBI/RSQLite` queries for the first 3 financial questions.
+  - **Paper:** Write **Sec 5** (SQL-Based Financial Investigation) for Q1-Q3.
+  - **Assignee:** Aaron
+- [x] **Sec 5: SQL Q4-Q7** *(App A10-A13)*
+  - **R Code:** Write `DBI/RSQLite` queries for 4 more financial questions.
+  - **Paper:** Write **Sec 5** (SQL-Based Financial Investigation) for Q4-Q7.
+  - **Assignee:** Iñigo
+- [x] **Sec 5: SQL Q8-Q10** *(App A14-A16)*
+  - **R Code:** Write `DBI/RSQLite` queries for the last 3 financial questions.
+  - **Paper:** Write **Sec 5** (SQL-Based Financial Investigation) for Q8-Q10.
+  - **Assignee:** Aaron
+- [ ] **Sec 6: Descriptive Statistics** *(N/A)*
+  - **R Code:** Code `summarise()` for mean, variance, skewness, kurtosis, min/max.
+  - **Paper:** Write **Sec 6** (Descriptive Statistical Analysis).
+  - **Assignee:** Enrique
+- [x] **Sec 7: Data Visualization** *(App A17)*
+  - **R Code:** Generate `ggplot2` charts for SQL findings.
+  - **Paper:** Write **Sec 7** (Data Visualization).
+  - **Assignee:** Josiah
+- [ ] **Sec 8: Exploratory Analysis** *(App A18)*
+  - **R Code:** Exploratory data visualization and synthesis.
+  - **Paper:** Write **Sec 8** (Exploratory Financial Analysis).
+  - **Assignee:** Camille
+- [ ] **Sec 9, 11: Recommendation & Conclusion** *(N/A)*
+  - **R Code:** *(No code required, relies on previous outputs)*
+  - **Paper:** Write **Sec 9** (Investment Recommendation) and **Sec 11** (Conclusion).
+  - **Assignee:** Camille
+- [ ] **Sec 10: Exec Dashboard** *(N/A)*
+  - **R Code:** Code the 1-page dashboard layout in `.qmd` (or format in PPT).
+  - **Paper:** Write **Sec 10** (Executive Dashboard) and **Executive Summary**.
+  - **Assignee:** Josiah
+- [ ] **Presentation Deck**
+  - **R Code:** Migrate the best charts and tables from `.qmd` into slides.
+  - **Paper:** Create the 10-minute **Presentation Deck** (Canva/PPT).
+  - **Assignee:** Josiah
+- [x] **Lead LaTeX Editor**
+  - **R Code:** Ensure the `.qmd` outputs successfully compile into the final `.pdf`.
+  - **Paper:** Manage `finstad_report.tex` formatting, table layouts, and APA citations.
+  - **Assignee:** Assistant
 
 ## Table of Contents
 

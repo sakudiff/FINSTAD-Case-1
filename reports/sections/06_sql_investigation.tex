@@ -10,9 +10,7 @@ This section addresses the question:
 
 \input{sections/q1_snippet.tex}
 
-The hierarchy of risk-adjusted returns is established by the data output table above and visualized in Figure~\ref{fig:viz_q1}. AAPL occupies the high ground with a ratio of 0.0538. This position is a function of its moderate daily volatility of 2.00\% paired with a mean return of 0.11\%. BTC achieves a comparable ratio of 0.0520 but through a fundamentally different mechanism. Its raw mean return of 0.17\% is the highest in the sample, its standard deviation of 3.19\% is also the highest, and its ratio relies on raw momentum outrunning extreme variance. SPY posts 0.0486 on the lowest standard deviation of 1.31\%. This reflects its structure as a diversified index fund that aggregates beta and eliminates idiosyncratic risk. BDO occupies the lowest tier at 0.0131. Its mean daily return of 0.03\% is a fraction of the others, its volatility of 2.26\% remains elevated, and its capital efficiency is consequently poor. The data table confirms this clustering, and the SPY benchmark reference line in Figure~\ref{fig:viz_q1} provides the visual anchor for the disparity.
-
-The implication for portfolio construction is definitive. An investor maximizing risk-adjusted returns allocates away from BDO and toward AAPL or BTC. This verdict carries specific limitations. The ratio does not account for differences in liquidity, transaction costs, and regulatory constraints that bind institutional capital. The metric also assumes volatility adequately proxies risk. This assumption fails in the presence of tail dependence, skewness, and liquidity cascades that characterize modern equity and cryptocurrency markets. 
+Table~\ref{tab:q1} establishes the hierarchy of risk-adjusted returns based on the query output. AAPL occupies the top position with a ratio of 0.0538, driven by a mean daily return of 0.11\% against a volatility of 2.00\%. BTC follows at 0.0520, utilizing a high-variance mechanism where its 0.17\% mean return offsets a 3.19\% standard deviation. SPY records 0.0486 on a 1.31\% standard deviation, while BDO ranks lowest at 0.0131. The query aggregation correctly delineates asset efficiency based on raw variance.
 
 \subsection{Q2. COVID Crash Analysis}
 
@@ -22,11 +20,7 @@ This section addresses the question:
 
 \input{sections/q2_snippet.tex}
 
-The trajectory of the decline is quantified in the data output table above and plotted in Figure~\ref{fig:viz_q2}. All four assets descended steeply, the slopes varied by asset class, and the depths differed markedly. Every asset in the sample suffered a double-digit cumulative decline. The ranking of final losses aligns precisely with each asset's pre-crisis volatility profile. AAPL and SPY had the lowest pre-crisis standard deviations and lost 17.6\% and 19.4\% respectively. BDO and BTC had the highest standard deviations and lost 30.1\% and 31.1\%. This ordering confirms the claim that higher-volatility assets experience proportionally larger drawdowns during a systematic market event. Leverage, stop-loss mechanisms, and margin calls amplify downside moves in assets with wider bid-ask spreads.
-
-Figure~\ref{fig:viz_q2} maps the timing differences that the endpoint data in the table obscures. SPY and AAPL declined in near lockstep, reflecting the broad-based nature of the selloff. BTC exhibits sharp intra-period reversals that produced steeper single-day losses and sharper technical bounces. BDO shows a delayed but sustained decline that continued after US equities had begun to stabilize. This lag demonstrates the delayed transmission of global liquidity shocks to emerging market equities. The data establish that while all four assets ended the period deeply negative, the path each took carries distinct implications for risk management and capital preservation.
-
-A critical limitation exists within the observation windows. BTC recorded 60 trading days over the two-month period, AAPL and SPY recorded 41 days, and BDO recorded 40 days. Cryptocurrency exchanges operate continuously and capture weekend returns that traditional equity markets ignore. The consequence is that the cumulative loss of 31.1\% for BTC was distributed over more calendar days. The evidence in the table and Figure~\ref{fig:viz_q2} rejects the claim that cryptocurrency functions as a crisis hedge. BTC recorded the largest cumulative decline in the sample, it provided no portfolio protection, and its trajectory shows no period of sustained positive returns during the liquidity crisis.
+Table~\ref{tab:q2} quantifies the trajectory of the COVID-19 decline. All four assets descended steeply, suffering double-digit cumulative declines. The ranking of final losses aligns with pre-crisis volatility: AAPL and SPY lost 17.6\% and 19.4\% respectively, while BDO and BTC lost 30.1\% and 31.1\%. This data confirms that higher-volatility assets experience proportionally larger drawdowns during a systematic liquidity event.
 
 \subsection{Q3. Cross-Asset Correlation}
 
@@ -36,11 +30,7 @@ This section addresses the question:
 
 \input{sections/q3_snippet.tex}
 
-The correlation matrix is presented in the data output table above and visualized through the heatmap in Figure~\ref{fig:viz_q3}. The architecture of the matrix reveals the dependencies between asset classes. The intersection of AAPL and SPY produces a correlation of 0.784, the highest in the sample. Apple is the single largest component of the S\&P 500 index, its weight fluctuated between 6\% and 7\% during the sample period, and its price movements mechanically dictate index returns. The table confirms this structural coupling.
-
-BDO occupies the opposite end of the dependency spectrum. The data table shows its correlations with all other assets fall between 0.05 and 0.12. The lowest correlation is with BTC at 0.051, AAPL follows at 0.104, and SPY registers at 0.123. This isolation reflects the structural differences between the Philippine banking sector and US capital markets. BDO is driven by domestic macroeconomic conditions, Philippine monetary policy, and local net interest margin dynamics. These factors share minimal overlap with the drivers of US equity returns. BDO offers genuine diversification benefits that mathematically reduce overall portfolio variance when combined with US assets. 
-
-BTC occupies an intermediate position in the correlation landscape. The table details its correlation of 0.383 with SPY and 0.284 with AAPL. These moderate positive correlations demonstrate that Bitcoin partially behaves as a risk asset during this sample period, moving directionally with US equities while retaining substantial idiosyncratic variation. The BDO and BTC pair at 0.051 offers the strongest diversification potential in the matrix. These two assets are driven by entirely orthogonal economic forces. One responds to regulated Philippine banking dynamics, the other responds to decentralized network adoption, and their combination provides the greatest theoretical variance reduction.
+Table~\ref{tab:q3} computes the pairwise Pearson correlation matrix. The intersection of AAPL and SPY produces the highest correlation at 0.784, reflecting Apple's heavy weighting in the index. BDO's correlations with all other assets fall between 0.05 and 0.12, reflecting the structural isolation of the Philippine banking sector. BTC holds a 0.383 correlation with SPY, indicating it partially behaves as a risk asset.
 
 \subsection{Q4. Asset Ranking by Total Return}
 
@@ -50,9 +40,7 @@ This section addresses the question:
 
 \input{sections/q4_snippet.tex}
 
-The asset ranking demonstrates a severe divergence in return profiles driven by systemic liquidity events. The data output table above quantifies the absolute performance, and Figure~\ref{fig:viz_q4} presents the total returns as horizontal bars. The visual gap between the digital asset and traditional equities is definitive. Bitcoin delivered a 1,153\% total return over the six-year period. Apple returned 279\%, the S\&P 500 returned 131\%, and BDO Unibank stagnated at a 5.0\% total return. The magnitude of the outperformance exposes the mechanics of the zero-interest-rate policy era. Asset classes with zero intrinsic cash flows captured the majority of the speculative premium, investors sought maximum beta when the risk-free rate was pinned near zero, and the subsequent rate hiking cycle failed to erase these initial gains.
-
-The 5.0\% total return for BDO provides the counterpoint to the technology rally. Traditional emerging market banking sectors operate under strict capital constraints and domestic rate cycles. The Philippine rate hiking cycle compressed valuation multiples for domestic banks, the core earnings remained steady, and the equity price failed to appreciate. The contrast in the table between BTC and BDO illustrates a market environment that rewarded untested network adoption over regulated credit intermediation. The verdict for asset allocation is clear. Geographical diversification into emerging market financials offered zero capital appreciation during this period, it functioned strictly as a yield vehicle, and it failed as a growth engine.
+Table~\ref{tab:q4} ranks the assets by total absolute return from 2020 to 2025. Bitcoin delivered a 1,153\% total return over the six-year period. Apple returned 279\%, the S\&P 500 returned 131\%, and BDO Unibank stagnated at a 5.0\% total return. The query isolates the magnitude of outperformance during the zero-interest-rate policy era.
 
 \subsection{Q5. Best and Worst Trading Days}
 
@@ -62,9 +50,7 @@ This section addresses the question:
 
 \input{sections/q5_snippet.tex}
 
-The distribution of extreme daily returns isolates the structural tail risk inherent in each asset class. The data output table above provides the numerical boundaries, and Figure~\ref{fig:viz_q5} illustrates the asymmetry between upside and downside shocks. BTC recorded the widest spread between its best trading day of +18.7\% and its worst of -37.2\%. The SPY exhibited the narrowest range, oscillating between +10.5\% and -10.9\%. The extreme negative boundary for traditional equities aligns precisely with the March 2020 global market selloff. Broad indices successfully constrain idiosyncratic volatility, they buffer single-asset shocks, and they maintain tighter boundaries even during systemic panics. AAPL and BDO recorded maximum drawdowns of -12.9\% and -22.7\% respectively, proving that single equities carry substantially more left-tail risk than their constituent indices.
-
-A single-day drawdown of 37.2\% reveals a market microstructure uniquely vulnerable to liquidity cascades. Regulated equities benefit from circuit breakers, these mechanisms halt trading during panic events, and market makers use the pause to recalibrate order books. The cryptocurrency market trades continuously without structural backstops. The absence of these circuit breakers allows forced liquidations from highly levered positions to accelerate price declines into a void of liquidity. The departure for risk managers is straightforward. Position sizing models must account for single-day drawdowns that exceed the margin thresholds of traditional prime brokerage agreements, because the data table confirms this extreme tail risk is not theoretical.
+Table~\ref{tab:q5} isolates the structural tail risk by extracting the best and worst single-day returns. BTC recorded the widest spread between its best trading day of +18.7\% and its worst of -37.2\%. SPY exhibited the narrowest range (+10.5\% to -10.9\%). AAPL and BDO recorded maximum drawdowns of -12.9\% and -22.7\% respectively.
 
 \subsection{Q6. Moving Average Crossover Analysis}
 
@@ -74,9 +60,7 @@ This section addresses the question:
 
 \input{sections/q6_snippet.tex}
 
-The moving average crossovers quantify the stability of momentum regimes across the asset sample. The data output table above summarizes the mean returns conditional on the crossover signal, and Figure~\ref{fig:viz_q6} plots the overlapping averages where each intersection represents a trend reversal. Over the measured period, traditional equities displayed extended periods of directional momentum. AAPL and BDO recorded exactly 6 crossover events, SPY recorded 8 intersections, and BTC generated 15 distinct crossovers. The visual density of the intersections in the figure confirms the high-frequency regime switching in the cryptocurrency asset.
-
-The high frequency of crossovers signals a market dominated by sentiment shocks rather than institutional accumulation. A moving average strategy applied to a high-crossover asset generates severe whipsaw losses. The trader buys the false breakout, they sell the false breakdown, and they bleed capital through transaction costs. The stability of the SPY and AAPL crossovers confirms that macroeconomic trends take months to price into diversified indices and mega-cap technology stocks. The verdict for quantitative trading is absolute. Mean-reversion or high-frequency strategies are necessary to extract alpha from volatile digital assets, while traditional trend-following strategies remain mathematically viable for established equities.
+Table~\ref{tab:q6} summarizes the mean returns conditional on moving average crossover signals. AAPL and BDO recorded exactly 6 crossover events, SPY recorded 8 intersections, and BTC generated 15 distinct crossovers. The query quantifies the frequency of momentum regime switching across the asset sample.
 
 \subsection{Q7. Volume and Volatility Relationship}
 
@@ -86,9 +70,7 @@ This section addresses the question:
 
 \input{sections/q7_snippet.tex}
 
-Elevated trading volume systematically coincides with higher daily price volatility across all asset classes. The data output table above partitions the descriptive statistics by volume regime, and Figure~\ref{fig:viz_q7} presents this relationship visually. The evidence is uniform. BTC exhibited a mean absolute return of 3.05\% on high-volume days compared to 1.83\% on normal days. SPY showed a similar proportional expansion from 0.61\% to 1.60\%. The AAPL and BDO datasets confirm this positive correlation, the high-volume volatility effectively doubles the baseline normal-volume volatility, and the relationship holds across all measured assets.
-
-The empirical data supports the mixture of distributions hypothesis. Trading volume and price volatility are jointly driven by the arrival rate of new information. High-volume days do not represent benign liquidity provision by institutional block traders executing passive rebalancing. They represent aggressive repricing events, participants demand immediacy at any cost, and the market integrates macroeconomic surprises through price gapping. The portfolio implication is that liquidity in financial markets is inherently pro-cyclical. It is most expensive to trade exactly when the need to adjust positions is most urgent, and the table proves that elevated volume guarantees elevated execution variance.
+Table~\ref{tab:q7} partitions the descriptive statistics by volume regime. BTC exhibited a mean absolute return of 3.05\% on high-volume days compared to 1.83\% on normal days. SPY showed a proportional expansion from 0.61\% to 1.60\%. The data confirm that elevated trading volume systematically coincides with higher daily price volatility across all asset classes.
 
 \subsection{Q8. VIX Regime Analysis}
 
@@ -98,9 +80,7 @@ This section addresses the question:
 
 \input{sections/q8_snippet.tex}
 
-The VIX regime analysis isolates asset performance conditionally upon systemic fear. The data output table above categorizes returns into three volatility tiers, and Figure~\ref{fig:viz_q8} visualizes the asymmetry across these regimes. The data identify one asset whose behavior is qualitatively different from the rest. During high-fear periods defined by a VIX above 30, BTC stands alone. Its mean daily return of 0.16\% is the only positive value in the high-fear regime. Every other asset posted negative mean returns, ranging from -0.42\% for BDO to -0.54\% for AAPL. During low-fear periods defined by a VIX below 20, all four assets delivered positive returns. AAPL led at 0.25\%, SPY followed at 0.18\%, and BDO trailed at 0.06\%. The cross-asset ranking in calm markets is nearly the inverse of the ranking during systemic turmoil.
-
-The asymmetry between regimes carries direct portfolio implications. BTC is the only asset in the sample that produced positive expected returns during crisis periods. Bitcoin's return generating process is not merely a levered version of equity market risk, it possesses distinct drivers that become dominant during extreme volatility, and it benefits from capital flight out of traditional equities. BDO presents the opposite profile. It offers the least upside in calm markets, its low-fear returns are a fraction of the others, and it captures nearly as much downside as US equities during turmoil. The table proves that the diversification argument for BDO rests entirely on its low unconditional correlation, it provides no structural crisis resilience, and it fails to protect capital when the VIX spikes.
+Table~\ref{tab:q8} categorizes returns conditionally based on the VIX. During high-fear periods (VIX > 30), BTC was the only asset with a positive mean daily return (0.16\%). Every other asset posted negative mean returns. During low-fear periods (VIX < 20), all four assets delivered positive returns, with AAPL leading at 0.25\%.
 
 \subsection{Q9. Interest Rate Sensitivity}
 
@@ -110,9 +90,7 @@ This section addresses the question:
 
 \input{sections/q9_snippet.tex}
 
-The sensitivity analysis measures asset returns against the directional movement of the 10-year Treasury yield. The data output table above provides the conditional means, and Figure~\ref{fig:viz_q9} maps the performance across yield regimes. During periods when the 10-year yield rose, all four assets delivered positive mean daily returns. BTC led at 0.20\%, SPY followed at 0.14\%, AAPL returned 0.13\%, and BDO trailed at 0.07\%. The uniform positivity during rising yield environments contradicts the intuition that higher discount rates mechanically lower present values. Rising yields were more commonly associated with improving growth expectations, they signaled economic expansion, and they lifted equity valuations despite the higher discounting threshold.
-
-The falling-yield regime provides a sharper diagnostic signal. SPY recorded a mean return of -0.01\% during falling yield periods, making it the only asset in the sample with a negative print in this regime. The market interpreted falling yields during this period as a signal of deteriorating economic conditions rather than an accommodative policy response. When yields fall because growth expectations are revised downward, equity markets decline, the earnings component of the valuation equation dominates the discount rate component, and broad indices suffer. BDO's returns are nearly equal across both regimes at 0.07\% and 0.00\%, proving that Philippine bank stocks are largely insensitive to US interest rate movements. BTC shows the smallest relative gap, confirming that cryptocurrency valuation is driven by network adoption and speculative demand, not by traditional monetary transmission channels.
+Table~\ref{tab:q9} provides the conditional means measured against the directional movement of the 10-year Treasury yield. During periods when the yield rose, all four assets delivered positive mean daily returns. During falling-yield regimes, SPY recorded a mean return of -0.01\%, while BDO remained largely insensitive at 0.00\%.
 
 \subsection{Q10. Inflation Hedge Performance}
 
@@ -122,6 +100,4 @@ This section addresses the question:
 
 \input{sections/q10_snippet.tex}
 
-The inflation hedge performance directly challenges the prevailing market narratives of the 2021 to 2023 period. The data output table above records the cumulative returns during this high-inflation window, and Figure~\ref{fig:viz_q10} visualizes the terminal values. The ranking is the precise inverse of what cryptocurrency advocates predicted. BDO generated a cumulative return of 43.9\%, AAPL gained 19.5\%, SPY lost 3.2\%, and BTC collapsed by 38.0\%. The asset universally marketed as digital gold delivered the worst performance, it functioned as a high-beta risk asset, and it failed entirely to preserve purchasing power. The asset least associated with inflation hedging, a Philippine commercial bank, delivered the supreme defense.
-
-The mechanism behind BDO's performance is grounded in the structural features of banking sector pass-through. Philippine banks in a rising rate environment widen their net interest margins, their floating-rate corporate loans reprice upward immediately, and their deposit rates remain sluggish. This structural asymmetry allows banks to capture a larger share of the interest rate spread during tightening cycles. AAPL's resilience reflects pricing power embedded in its product ecosystem. The firm passes cost increases to consumers, brand loyalty suppresses demand destruction, and the equity defends its real value. The verdict is established by the table and the figure. Attributing inflation-hedging properties to cryptocurrency requires ignoring the empirical evidence from the most severe inflationary episode in four decades.
+Table~\ref{tab:q10} records the cumulative returns during the high-inflation window of June 2021 to February 2023. BDO generated a cumulative return of 43.9\%, AAPL gained 19.5\%, SPY lost 3.2\%, and BTC collapsed by 38.0\%. The data query directly challenges prevailing market narratives regarding digital inflation hedges.

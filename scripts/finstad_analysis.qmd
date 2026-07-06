@@ -967,7 +967,7 @@ ggplot(fig1_data, aes(x = Date, y = Cumulative_Return, color = Asset)) +
   scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
                                  BTC = "#F7931A", SPY = "#00733E")) +
   scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Viz 1: Cumulative Returns by Asset",
+  labs(title = "Cumulative Returns by Asset",
        subtitle = "Growth of $1 invested, 2020 to 2025",
        x = "Date", y = "Cumulative Return", color = "Asset") +
   theme_minimal(base_size = 11) +
@@ -976,7 +976,7 @@ ggplot(fig1_data, aes(x = Date, y = Cumulative_Return, color = Asset)) +
         plot.title = element_text(face = "bold", size = 13),
         plot.subtitle = element_text(size = 9, color = "#595959"),
         legend.position = "bottom")
-ggsave("../reports/fig_viz1.pdf", width = 7, height = 4, device = "pdf")
+ggsave("../reports/figures/fig_viz1.pdf", width = 7, height = 4, device = "pdf")
 ```
 Viz 1: Cumulative Returns by Asset tracks the growth of USD 1 invested in each asset from 2020 to 2025. BTC shows the steepest and most volatile climb, reaching cumulative returns above 1,000% with sharp cyclical peaks and drawdowns. AAPL and SPY both trend steadily upward, with AAPL consistently outperforming the SPY benchmark. BDO remains close to the 0% line for most of the period, indicating limited net nominal gain relative to the other three assets.
 
@@ -989,7 +989,7 @@ ggplot(sql_long, aes(x = Date, y = Close, color = Asset)) +
   facet_wrap(~ Asset, scales = "free_y", ncol = 2) +
   scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
                                 BTC = "#F7931A", SPY = "#00733E")) +
-  labs(title = "Viz 2: Closing Price Trends by Asset",
+  labs(title = "Closing Price Trends by Asset",
        subtitle = "2020 to 2025",
        x = "Date", y = "Closing Price") +
   theme_minimal(base_size = 11) +
@@ -997,7 +997,7 @@ ggplot(sql_long, aes(x = Date, y = Close, color = Asset)) +
         axis.ticks = element_blank(),
         plot.title = element_text(face = "bold", size = 13),
         plot.subtitle = element_text(size = 9, color = "#595959"))
-ggsave("../reports/fig_viz2.pdf", width = 7, height = 5, device = "pdf")
+ggsave("../reports/figures/fig_viz2.pdf", width = 7, height = 5, device = "pdf")
 ```
 Viz 2: Closing Price Trends by Asset plots nominal closing prices rather than normalized returns, revealing that BDO experienced meaningful price swings on its own scale despite appearing flat in Viz 1. Each asset uses its own y-axis since raw prices are not directly comparable across magnitudes.
 
@@ -1043,7 +1043,7 @@ ggplot(fig3_data, aes(x = Daily_Return)) +
   scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
                                 BTC = "#F7931A", SPY = "#00733E")) +
   scale_x_continuous(labels = scales::percent_format()) +
-  labs(title = "Viz 3: Return Distribution with Skewness & Kurtosis",
+  labs(title = "Return Distribution with Skewness & Kurtosis",
        subtitle = "Daily returns vs. fitted normal distribution (black line), 2020 to 2025",
        x = "Daily Return", y = "Density") +
   theme_minimal(base_size = 11) +
@@ -1051,7 +1051,7 @@ ggplot(fig3_data, aes(x = Daily_Return)) +
         axis.ticks = element_blank(),
         plot.title = element_text(face = "bold", size = 13),
         plot.subtitle = element_text(size = 9, color = "#595959"))
-ggsave("../reports/fig_viz3.pdf", width = 7, height = 5, device = "pdf")
+ggsave("../reports/figures/fig_viz3.pdf", width = 7, height = 5, device = "pdf")
 ```
 Viz 3: Return Distribution with Skewness and Kurtosis overlays each asset's daily return distribution against a fitted normal curve. AAPL is the only asset with positive skewness (0.28), meaning its rare extreme days lean toward the upside. BTC and BDO both show negative skewness (-0.48 and -0.40 respectively), indicating tail risk weighted toward sudden losses. SPY records the highest kurtosis of all four assets (12.97) despite a comparatively mild skew (-0.26), meaning its returns are usually tightly clustered near zero but still capable of extreme shock days. All four kurtosis values exceed 3, the benchmark for a normal distribution, confirming none of these assets follow a standard bell curve.
 
@@ -1064,7 +1064,7 @@ ggplot(fig3_data, aes(x = Asset, y = Daily_Return, fill = Asset)) +
   scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
                                 BTC = "#F7931A", SPY = "#00733E")) +
   scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Viz 4: Return Range & Spread by Asset",
+  labs(title = "Return Range & Spread by Asset",
        subtitle = "Median, interquartile range, and outlier days, 2020 to 2025",
        x = NULL, y = "Daily Return") +
   theme_minimal(base_size = 11) +
@@ -1073,7 +1073,7 @@ ggplot(fig3_data, aes(x = Asset, y = Daily_Return, fill = Asset)) +
         axis.ticks = element_blank(),
         plot.title = element_text(face = "bold", size = 13),
         plot.subtitle = element_text(size = 9, color = "#595959"))
-ggsave("../reports/fig_viz4.pdf", width = 7, height = 4, device = "pdf")
+ggsave("../reports/figures/fig_viz4.pdf", width = 7, height = 4, device = "pdf")
 ```
 Viz 4: Return Range and Spread by Asset shows each asset's typical daily return range and outlier days. BTC has the widest box and most extreme outliers in both directions, consistent with its high kurtosis in Viz 3. SPY has the narrowest, most compressed box, reflecting diversification across 500 companies. AAPL and BDO fall in between, with BDO showing a visible skew toward downside outlier days.
 
@@ -1101,7 +1101,7 @@ ggplot(fig5_data, aes(x = Date, y = Rolling_Vol, color = Asset)) +
   scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
                                  BTC = "#F7931A", SPY = "#00733E")) +
   scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Viz 5: 30-Day Rolling Volatility by Asset",
+  labs(title = "30-Day Rolling Volatility by Asset",
        subtitle = "Rolling standard deviation of daily returns, 2020 to 2025",
        x = "Date", y = "30-Day Rolling Volatility", color = "Asset") +
   theme_minimal(base_size = 11) +
@@ -1110,7 +1110,7 @@ ggplot(fig5_data, aes(x = Date, y = Rolling_Vol, color = Asset)) +
         plot.title = element_text(face = "bold", size = 13),
         plot.subtitle = element_text(size = 9, color = "#595959"),
         legend.position = "bottom")
-ggsave("../reports/fig_viz5.pdf", width = 7, height = 4, device = "pdf")
+ggsave("../reports/figures/fig_viz5.pdf", width = 7, height = 4, device = "pdf")
 ```
 Viz 5: 30-Day Rolling Volatility by Asset shows a sharp synchronized volatility spike across all assets in early 2020 from the COVID-19 market shock. BTC consistently maintains the highest rolling volatility baseline with visible cyclical waves from its bull and bear cycles. SPY maintains the lowest and most stable volatility floor. AAPL and BDO show occasional idiosyncratic spikes tied to specific events rather than broad macro shocks.
 
@@ -1131,7 +1131,7 @@ ggplot(fig6_data, aes(x = Date, y = Drawdown, color = Asset)) +
   scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
                                  BTC = "#F7931A", SPY = "#00733E")) +
   scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Viz 6: Drawdown from Peak by Asset",
+  labs(title = "Drawdown from Peak by Asset",
        subtitle = "Percentage decline from running maximum value, 2020 to 2025",
        x = "Date", y = "Drawdown") +
   theme_minimal(base_size = 11) +
@@ -1140,7 +1140,7 @@ ggplot(fig6_data, aes(x = Date, y = Drawdown, color = Asset)) +
         legend.position = "none",
         plot.title = element_text(face = "bold", size = 13),
         plot.subtitle = element_text(size = 9, color = "#595959"))
-ggsave("../reports/fig_viz6.pdf", width = 7, height = 5, device = "pdf")
+ggsave("../reports/figures/fig_viz6.pdf", width = 7, height = 5, device = "pdf")
 ```
 Viz 6: Drawdown from Peak by Asset shows each asset's percentage decline from its running historical high. BTC shows the deepest drawdowns falling well below -60% and takes longest to recover to a prior peak. SPY shows the shallowest fastest-recovering drawdowns consistent with its diversified benchmark role. BDO shows a prolonged period in negative territory indicating slower capital recovery through a downturn.
 
@@ -1160,7 +1160,7 @@ ggplot(fig7_data, aes(x = SD_Return, y = Mean_Return, color = Asset)) +
                                  BTC = "#F7931A", SPY = "#00733E")) +
   scale_x_continuous(labels = scales::percent_format()) +
   scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Viz 7: Risk vs. Return by Asset",
+  labs(title = "Risk vs. Return by Asset",
        subtitle = "Mean daily return vs. standard deviation, 2020 to 2025",
        x = "Risk (Std. Dev. of Daily Return)", y = "Mean Daily Return") +
   theme_minimal(base_size = 11) +
@@ -1169,7 +1169,7 @@ ggplot(fig7_data, aes(x = SD_Return, y = Mean_Return, color = Asset)) +
         legend.position = "none",
         plot.title = element_text(face = "bold", size = 13),
         plot.subtitle = element_text(size = 9, color = "#595959"))
-ggsave("../reports/fig_viz7.pdf", width = 7, height = 5, device = "pdf")
+ggsave("../reports/figures/fig_viz7.pdf", width = 7, height = 5, device = "pdf")
 ```
 Viz 7: Risk vs. Return by Asset plots each asset's mean daily return against standard deviation. BTC delivers the highest mean return (0.166%) but also highest risk (3.19% daily SD). AAPL offers a more efficient middle ground with 0.108% mean return at only 2.00% volatility. SPY sits at the lowest-risk end (1.31% SD) with a modest 0.0636% mean return. BDO is the weakest performer on a risk-adjusted basis, carrying similar risk to AAPL (2.26% SD) while delivering the lowest mean return (0.0295%).
 
@@ -1198,7 +1198,7 @@ ggplot(fig8_data, aes(x = Asset, y = Risk_Contribution, fill = Asset)) +
             vjust = -0.5, size = 3.5) +
   scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B", BTC = "#F7931A")) +
   scale_y_continuous(labels = scales::percent_format(), expand = expansion(mult = c(0, 0.15))) +
-  labs(title = "Viz 8: Equal-Weighted Portfolio Risk Contribution",
+  labs(title = "Equal-Weighted Portfolio Risk Contribution",
        subtitle = "Share of total portfolio variance contributed by each asset",
        x = NULL, y = "Share of Portfolio Risk") +
   theme_minimal(base_size = 11) +
@@ -1207,7 +1207,7 @@ ggplot(fig8_data, aes(x = Asset, y = Risk_Contribution, fill = Asset)) +
         axis.ticks = element_blank(),
         plot.title = element_text(face = "bold", size = 13),
         plot.subtitle = element_text(size = 9, color = "#595959"))
-ggsave("../reports/fig_viz8.pdf", width = 7, height = 4, device = "pdf")
+ggsave("../reports/figures/fig_viz8.pdf", width = 7, height = 4, device = "pdf")
 ```
 Viz 8: Equal-Weighted Portfolio Risk Contribution decomposes total portfolio variance under an equal one-third allocation. BTC alone contributes 55.3% of total portfolio variance despite representing only one-third of invested capital. AAPL and BDO contribute 22.8% and 21.9% respectively, roughly proportional to their capital weights. Equal-dollar allocation does not produce equal-risk allocation, supporting a reduced BTC weight to lower portfolio risk without proportional loss in expected return.
 
