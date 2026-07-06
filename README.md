@@ -55,7 +55,7 @@ This project has been broken down into granular tasks mapping the coding (`.qmd`
 - [ ] **Sec 10: Exec Dashboard** *(N/A)*
   - **R Code:** Code the 1-page dashboard layout in `.qmd` (or format in PPT).
   - **Paper:** Write **Sec 10** (Executive Dashboard) and **Executive Summary**.
-  - **Assignee:** Josiah
+  - **Assignee:** Josiah & Aaron
 - [ ] **Presentation Deck**
   - **R Code:** Migrate the best charts and tables from `.qmd` into slides.
   - **Paper:** Create the 10-minute **Presentation Deck** (Canva/PPT).
