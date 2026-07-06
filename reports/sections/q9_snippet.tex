@@ -1,12 +1,7 @@
 \label{appendix-a9-sql-question-9}
 
-\emph{Pertains to Section 6: SQL-Based Financial Investigation}
 
-\textbf{Objective:} To measure asset sensitivity to changes in the
-10-year Treasury yield. \textbf{Purpose of Code:} Calculates mean
-returns conditional on daily increases or decreases in the DGS10 rate.
-\textbf{Expected Output:} A grouped bar chart showing returns
-conditioned on yield direction.
+
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -62,7 +57,28 @@ conditioned on yield direction.
 \end{Highlighting}
 \end{Shaded}
 
-
+\begin{table}[H]
+\centering
+\caption{Q9 Data Output}
+\begin{tabular}{llrrr}
+\toprule
+Asset & Yield\_Direction & Mean\_Daily\_Return & SD\_Daily\_Return & Obs \\
+\midrule
+AAPL & No Change      & 0.0019 & 0.0195 & 103 \\
+AAPL & Yields Falling & 0.0005 & 0.0200 & 684 \\
+AAPL & Yields Rising  & 0.0013 & 0.0201 & 712 \\
+BDO  & No Change      & -0.0020 & 0.0208 & 103 \\
+BDO  & Yields Falling & 0.0000 & 0.0253 & 684 \\
+BDO  & Yields Rising  & 0.0007 & 0.0201 & 712 \\
+BTC  & No Change      & 0.0028 & 0.0372 & 103 \\
+BTC  & Yields Falling & 0.0017 & 0.0343 & 684 \\
+BTC  & Yields Rising  & 0.0020 & 0.0363 & 712 \\
+SPY  & No Change      & -0.0001 & 0.0101 & 103 \\
+SPY  & Yields Falling & -0.0001 & 0.0130 & 684 \\
+SPY  & Yields Rising  & 0.0014 & 0.0135 & 712 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{Shaded}
 \begin{Highlighting}[]

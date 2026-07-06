@@ -1,12 +1,7 @@
 \label{appendix-a5-sql-question-5}
 
-\emph{Pertains to Section 6: SQL-Based Financial Investigation}
 
-\textbf{Objective:} To identify the extreme single-day gains and losses
-for each asset. \textbf{Purpose of Code:} Extracts the maximum and
-minimum daily returns for each instrument to assess tail risk.
-\textbf{Expected Output:} A grouped bar chart displaying the best and
-worst trading days.
+
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -61,7 +56,20 @@ worst trading days.
 \end{Highlighting}
 \end{Shaded}
 
-
+\begin{table}[H]
+\centering
+\caption{Q5 Data Output}
+\begin{tabular}{lllrrrr}
+\toprule
+Asset & Best\_Date & Best\_Daily\_Return & Worst\_Date & Worst\_Daily\_Return & Return\_Range & Obs \\
+\midrule
+BTC  & 2021-02-08 & 0.1875 & 2020-03-12 & -0.3717 & 0.5592 & 2191 \\
+BDO  & 2020-03-26 & 0.1570 & 2020-03-19 & -0.2272 & 0.3842 & 1467 \\
+AAPL & 2025-04-09 & 0.1533 & 2020-03-16 & -0.1286 & 0.2819 & 1507 \\
+SPY  & 2025-04-09 & 0.1050 & 2020-03-16 & -0.1094 & 0.2144 & 1507 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{Shaded}
 \begin{Highlighting}[]

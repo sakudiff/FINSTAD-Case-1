@@ -1,12 +1,7 @@
 \label{appendix-a7-sql-question-7}
 
-\emph{Pertains to Section 6: SQL-Based Financial Investigation}
 
-\textbf{Objective:} To test whether elevated trading volume
-systematically coincides with higher volatility. \textbf{Purpose of
-Code:} Partitions trading days into high-volume and normal-volume
-regimes and compares their mean absolute returns. \textbf{Expected
-Output:} A grouped bar chart comparing volatility across volume regimes.
+
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -60,21 +55,24 @@ Output:} A grouped bar chart comparing volatility across volume regimes.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-# A tibble: 8 x 7
-  Asset Volume_Regime      Observations Mean_Daily_Return
-  <chr> <chr>                     <int>             <dbl>
-1 AAPL  High Volume Days            377         0.00155  
-2 AAPL  Normal Volume Days         1130         0.000921 
-3 BDO   High Volume Days            367        -0.0000981
-4 BDO   Normal Volume Days         1100         0.000426 
-5 BTC   High Volume Days            548         0.00168  
-6 BTC   Normal Volume Days         1643         0.00165  
-7 SPY   High Volume Days            377        -0.00292  
-8 SPY   Normal Volume Days         1130         0.00182  
-# i 3 more variables: Mean_Absolute_Return <dbl>, Volatility <dbl>,
-#   Average_Volume <dbl>
-\end{verbatim}
+\begin{table}[H]
+\centering
+\caption{Q7 Data Output}
+\begin{tabular}{llrrrrr}
+\toprule
+Asset & Volume\_Regime & Obs & Mean\_Daily\_Return & Mean\_Abs\_Return & Volatility & Avg\_Volume \\
+\midrule
+AAPL & High Volume Days   & 377  & 0.0015 & 0.0240 & 0.0323 & 152332404 \\
+AAPL & Normal Volume Days & 1130 & 0.0009 & 0.0105 & 0.0137 & 61873902 \\
+BDO  & High Volume Days   & 367  & -0.0001 & 0.0230 & 0.0322 & 6581172 \\
+BDO  & Normal Volume Days & 1100 & 0.0004 & 0.0136 & 0.0183 & 2551276 \\
+BTC  & High Volume Days   & 548  & 0.0017 & 0.0305 & 0.0450 & 65153421094 \\
+BTC  & Normal Volume Days & 1643 & 0.0016 & 0.0183 & 0.0261 & 26930318305 \\
+SPY  & High Volume Days   & 377  & -0.0029 & 0.0160 & 0.0220 & 129389767 \\
+SPY  & Normal Volume Days & 1130 & 0.0018 & 0.0061 & 0.0078 & 63711998 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{Shaded}
 \begin{Highlighting}[]

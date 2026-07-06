@@ -8,59 +8,51 @@ Table~\ref{tab:join_compare} summarises each join type and its row count.
 
 \begin{table}[H]
   \centering
-  \begin{safetable}
-    \begin{threeparttable}
-      \caption{Join Comparison}
-      \label{tab:join_compare}
-      \begin{tabular}{
-        l
-        S[table-format=4.0]
-        p{9cm}
-      }
-        \toprule
-        Join Type & {Rows} & {Description} \\
-        \midrule
-        left\_join  & 2192 & Preserves all asset dates; macro NA on non-trading days \\
-        inner\_join & 46   & Only dates common to all eight datasets \\
-        full\_join  & 2192 & Union including macro-only periods \\
-        anti\_join  & 2121 & Asset dates missing CPI, reflecting weekend and holiday gaps \\
-        \bottomrule
-      \end{tabular}
-    \end{threeparttable}
-  \end{safetable}
+  \caption{Join Comparison}
+  \label{tab:join_compare}
+  \begin{tabular}{
+    l
+    S[table-format=4.0]
+    p{9cm}
+  }
+    \toprule
+    Join Type & {Rows} & {Description} \\
+    \midrule
+    left\_join  & 2192 & Preserves all asset dates; macro NA on non-trading days \\
+    inner\_join & 46   & Only dates common to all eight datasets \\
+    full\_join  & 2192 & Union including macro-only periods \\
+    anti\_join  & 2121 & Asset dates missing CPI, reflecting weekend and holiday gaps \\
+    \bottomrule
+  \end{tabular}
 \end{table}
 
 The final dataset was constructed using a \texttt{left\_join} with the asset table as the base, yielding \num{2192} rows and 13 columns. This strategy retained the maximum number of observable trading days while allowing macroeconomic series to populate only where data existed. Table~\ref{tab:obs_reduction} traces the observation counts through each processing stage.
 
 \begin{table}[H]
   \centering
-  \begin{safetable}
-    \begin{threeparttable}
-      \caption{Observation Reduction Across Processing Stages}
-      \label{tab:obs_reduction}
-      \begin{tabular}{
-        l
-        S[table-format=5.0]
-        S[table-format=4.0]
-        S[table-format=4.0]
-      }
-        \toprule
-        Dataset & {Original} & {After Cleaning} & {Final} \\
-        \midrule
-        AAPL     & 2512  & 1508 & {---} \\
-        BDO      & 2441  & 1468 & {---} \\
-        BTC      & 3652  & 2192 & {---} \\
-        SPY      & 2514  & 1508 & {---} \\
-        CPI      & 952   & 71   & {---} \\
-        DGS10    & 16105 & 1500 & {---} \\
-        FEDFUNDS & 863   & 72   & {---} \\
-        VIX      & 9216  & 1535 & {---} \\
-        \addlinespace
-        Final Dataset & {---} & {---} & 2192 \\
-        \bottomrule
-      \end{tabular}
-    \end{threeparttable}
-  \end{safetable}
+  \caption{Observation Reduction Across Processing Stages}
+  \label{tab:obs_reduction}
+  \begin{tabular}{
+    l
+    S[table-format=5.0]
+    S[table-format=4.0]
+    S[table-format=4.0]
+  }
+    \toprule
+    Dataset & {Original} & {After Cleaning} & {Final} \\
+    \midrule
+    AAPL     & 2512  & 1508 & {---} \\
+    BDO      & 2441  & 1468 & {---} \\
+    BTC      & 3652  & 2192 & {---} \\
+    SPY      & 2514  & 1508 & {---} \\
+    CPI      & 952   & 71   & {---} \\
+    DGS10    & 16105 & 1500 & {---} \\
+    FEDFUNDS & 863   & 72   & {---} \\
+    VIX      & 9216  & 1535 & {---} \\
+    \addlinespace
+    Final Dataset & {---} & {---} & 2192 \\
+    \bottomrule
+  \end{tabular}
 \end{table}
 
 The sharp reduction from 952 to 71 observations for CPI reflects the monthly reporting frequency of the Consumer Price Index. The final row count of \num{2192} is driven by the asset with the most trading days, BTC, which trades continuously on cryptocurrency exchanges. The observation reduction is therefore explained by two factors: non-trading days that remove weekend and holiday observations in equities, and the lower reporting frequency of macroeconomic indicators.

@@ -1,12 +1,7 @@
 \label{appendix-a8-sql-question-8}
 
-\emph{Pertains to Section 6: SQL-Based Financial Investigation}
 
-\textbf{Objective:} To assess asset performance during periods of high
-versus low market fear. \textbf{Purpose of Code:} Segregates trading
-days based on VIX levels and calculates conditional mean daily returns.
-\textbf{Expected Output:} A grouped bar chart comparing returns under
-different VIX regimes.
+
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -60,7 +55,28 @@ different VIX regimes.
 \end{Highlighting}
 \end{Shaded}
 
-
+\begin{table}[H]
+\centering
+\caption{Q8 Data Output}
+\begin{tabular}{llrrr}
+\toprule
+Asset & VIX\_Regime & Mean\_Daily\_Return & SD\_Daily\_Return & Obs \\
+\midrule
+AAPL & High Volatility (VIX $>$ 30) & -0.0054 & 0.0389 & 148 \\
+AAPL & Low Volatility (VIX $<$ 20)  & 0.0025 & 0.0134 & 859 \\
+AAPL & Moderate (20 $\leq$ VIX $\leq$ 30) & 0.0007 & 0.0208 & 528 \\
+BDO  & High Volatility (VIX $>$ 30) & -0.0042 & 0.0411 & 148 \\
+BDO  & Low Volatility (VIX $<$ 20)  & 0.0006 & 0.0185 & 859 \\
+BDO  & Moderate (20 $\leq$ VIX $\leq$ 30) & 0.0011 & 0.0213 & 528 \\
+BTC  & High Volatility (VIX $>$ 30) & 0.0016 & 0.0550 & 148 \\
+BTC  & Low Volatility (VIX $<$ 20)  & 0.0022 & 0.0288 & 859 \\
+BTC  & Moderate (20 $\leq$ VIX $\leq$ 30) & 0.0020 & 0.0380 & 528 \\
+SPY  & High Volatility (VIX $>$ 30) & -0.0044 & 0.0303 & 148 \\
+SPY  & Low Volatility (VIX $<$ 20)  & 0.0018 & 0.0069 & 859 \\
+SPY  & Moderate (20 $\leq$ VIX $\leq$ 30) & 0.0002 & 0.0123 & 528 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{Shaded}
 \begin{Highlighting}[]

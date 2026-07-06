@@ -1,12 +1,7 @@
 \label{appendix-a10-sql-question-10}
 
-\emph{Pertains to Section 6: SQL-Based Financial Investigation}
 
-\textbf{Objective:} To evaluate which assets served as effective
-inflation hedges from 2021 to 2023. \textbf{Purpose of Code:} Computes
-total cumulative returns during the high-inflation window where CPI YoY
-exceeded 5\%. \textbf{Expected Output:} A horizontal bar chart of
-cumulative returns during the inflationary period.
+
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -58,65 +53,23 @@ cumulative returns during the inflationary period.
 \end{Highlighting}
 \end{Shaded}
 
-
+\begin{table}[H]
+\centering
+\caption{Q10 Data Output}
+\begin{tabular}{lllrrrrr}
+\toprule
+Asset & Start\_Date & End\_Date & Start\_CPI\_YoY & End\_CPI\_YoY & Total\_Cumul\_Return & Mean\_Daily\_Return & Obs \\
+\midrule
+BDO  & 2021-06-01 & 2023-02-28 & 0.053 & 0.0596 & 0.4391 & 0.0010 & 435 \\
+AAPL & 2021-06-01 & 2023-02-28 & 0.053 & 0.0596 & 0.1952 & 0.0006 & 440 \\
+SPY  & 2021-06-01 & 2023-02-28 & 0.053 & 0.0596 & -0.0317 & 0.0000 & 440 \\
+BTC  & 2021-06-01 & 2023-02-28 & 0.053 & 0.0596 & -0.3800 & -0.0002 & 638 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{ggsave}\NormalTok{(}\StringTok{"../reports/figures/fig\_q10.pdf"}\NormalTok{, }\AttributeTok{width =} \DecValTok{7}\NormalTok{, }\AttributeTok{height =} \FloatTok{3.5}\NormalTok{, }\AttributeTok{device =} \StringTok{"pdf"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\subsection{Sec 7: Descriptive Statistics -- GALEDO, Enrique Lorenzo
-Hermoso}\label{sec-7-descriptive-statistics-galedo-enrique-lorenzo-hermoso}
-
-\emph{Mean, median, variance, std dev, min, max, range, skewness,
-kurtosis.}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Sec 7: Descriptive Statistics {-}{-} compute mean, median, variance, skewness, kurtosis {-}{-} GALEDO, Enrique Lorenzo Hermoso}
-\end{Highlighting}
-\end{Shaded}
-
-\subsection{Sec 8: Data Visualization -- SEBALLOS, Josiah Dweyn
-Panganiban}\label{sec-8-data-visualization-seballos-josiah-dweyn-panganiban}
-
-\emph{At least 8 professional-quality figures.}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Sec 8: Data Visualization {-}{-} create 8 professional figures with ggplot2 {-}{-} SEBALLOS, Josiah Dweyn Panganiban}
-\end{Highlighting}
-\end{Shaded}
-
-\subsection{Sec 9: Exploratory Analysis -- SEECHUNG, Camille
-Castro}\label{sec-9-exploratory-analysis-seechung-camille-castro}
-
-\emph{Compare returns, volatility, inflationary periods, high-VIX
-periods, interest-rate environments.}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Sec 9: Exploratory Financial Analysis {-}{-} compare returns, volatility, inflation, VIX, interest rates {-}{-} SEECHUNG, Camille Castro}
-\end{Highlighting}
-\end{Shaded}
-
-\subsection{Sec 10: Investment Recommendation -- SEECHUNG, Camille
-Castro}\label{sec-10-investment-recommendation-seechung-camille-castro}
-
-\emph{Allocate USD 1,000,000.}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Sec 10: Investment Recommendation {-}{-} USD 1,000,000 allocation among AAPL, BDO, BTC, cash {-}{-} SEECHUNG, Camille Castro}
-\end{Highlighting}
-\end{Shaded}
-
-\subsection{Sec 11: Executive Dashboard -- CRUZ, Ricardo Miguel
-Iñigo}\label{sec-11-executive-dashboard-cruz-ricardo-miguel-iuxf1igo}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Sec 11: Executive Dashboard {-}{-} key stats, charts, SQL findings, recommendation summary {-}{-} CRUZ, Ricardo Miguel Iñigo}
 \end{Highlighting}
 \end{Shaded}

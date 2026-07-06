@@ -1,12 +1,7 @@
 \label{appendix-a1-sql-question-1}
 
-\emph{Pertains to Section 6: SQL-Based Financial Investigation}
 
-\textbf{Objective:} To determine which asset delivered the highest
-return per unit of risk over the sample period. \textbf{Purpose of
-Code:} Calculates the ratio of mean daily return to standard deviation
-for each asset and visualizes the results. \textbf{Expected Output:} A
-risk-adjusted return ratio for each asset, presented as a bar chart.
+
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -49,7 +44,20 @@ risk-adjusted return ratio for each asset, presented as a bar chart.
 \end{Highlighting}
 \end{Shaded}
 
-
+\begin{table}[H]
+\centering
+\caption{Q1 Data Output}
+\begin{tabular}{lrrr}
+\toprule
+Asset & Mean\_Daily\_Return & SD\_Daily\_Return & Risk\_Adjusted\_Return \\
+\midrule
+AAPL & 0.0011 & 0.0200 & 0.0538 \\
+BTC  & 0.0017 & 0.0319 & 0.0520 \\
+SPY  & 0.0006 & 0.0131 & 0.0486 \\
+BDO  & 0.0003 & 0.0226 & 0.0131 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{Shaded}
 \begin{Highlighting}[]

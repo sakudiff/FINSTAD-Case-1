@@ -149,6 +149,14 @@
 \newcommand{\safeincludegraphics}[2][]{% \adjustimage{max width=\textwidth, #1}{#2}%
 }
 
+\usepackage{etoolbox}
+\AtBeginEnvironment{Shaded}{\singlespacing}
+\AtBeginEnvironment{lstlisting}{\singlespacing}
+
+% Automatically scale tabular environments down if they exceed page margins
+\BeforeBeginEnvironment{tabular}{\begin{adjustbox}{max width=\textwidth}}
+\AfterEndEnvironment{tabular}{\end{adjustbox}}
+
 \AtBeginBibliography{\singlespacing}
 
 \begin{document}
@@ -218,7 +226,6 @@
 \input{sections/00_executive_summary.tex}
 \input{sections/01_introduction.tex}
 \input{sections/02_data_sources.tex}
-\input{sections/03_data_acquisition.tex}
 \input{sections/04_data_cleaning.tex}
 \input{sections/05_database_integration.tex}
 \input{sections/06_sql_investigation.tex}
@@ -252,6 +259,9 @@ The complete R source code is embedded below. This document was rendered from a 
 \includepdf[pages=-,pagecommand={}]{finstad_analysis_appendix.pdf}
 
 \section{Appendix B - Additional Tables and Figures} \label{sec:appendix_b}
-{} [Include supplementary outputs that are too large for the main report.]
+
+The following tables and figures present the full sequence of data extraction, cleaning, integration, and quantitative analysis (Q1-Q10) in chronological order.
+
+\input{sections/appendix_b_content.tex}
 
 \end{document}

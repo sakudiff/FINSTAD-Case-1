@@ -24,14 +24,17 @@ include-in-header:
       \RecustomVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,breakanywhere=true,commandchars=\\\{\}}
       \let\verbatim\Verbatim
       \let\endverbatim\endVerbatim
+      \pagenumbering{gobble}
 execute:
   warning: false
   message: false
 ---
 
-# Appendix A1 - Data Loading & Library Import 
-Loads the datasets we saved in the data folder including the needed libraries for the case.
-Note data was already pulled from the sources defined in the table 1 in the data acquisition chapter.
+\thispagestyle{empty}
+\pagestyle{empty}
+# Appendix A1 - Setup & Library Import
+Loads the required R libraries (dplyr, tidyr, lubridate, ggplot2, etc.) and defines global helper functions used throughout the analysis.
+The working directory is resolved automatically to ensure data file paths work regardless of whether the script runs from the project root or the scripts/ folder.
 
 ```{r setup}
 # Load necessary libraries
@@ -42,6 +45,14 @@ library(DBI)
 library(RSQLite)
 library(ggplot2)
 library(scales)
+library(kableExtra)
+
+# Safe table formatter for PDF to prevent overlapping columns and overflowing margins
+safe_kable <- function(data, caption = NULL, digits = 4) {
+  knitr::kable(data, caption = caption, digits = digits, format = "latex", booktabs = TRUE) %>%
+    kable_styling(font_size = 8, latex_options = c("scale_down", "HOLD_position")) %>%
+    column_spec(1:ncol(data), width_min = "1.5cm")
+}
 
 # Set working directory to project root so data paths resolve consistently
 # Ensure data paths resolve correctly regardless of working directory
@@ -66,6 +77,9 @@ parse_bdo_volume <- function(x) {
 }
 ```
 
+# Appendix A2 - Ticker Definitions
+Defines the asset ticker symbols used throughout the case: AAPL (US equity), BDO.PS (Philippine bank stock), and BTC-USD (cryptocurrency).
+
 ```{r data-sources}
 # Define tickers
 us_asset <- "AAPL"
@@ -73,9 +87,9 @@ ph_asset <- "BDO.PS"
 crypto <- "BTC-USD"
 ```
 
-## Sec 4: Data Cleaning -- GALEDO, Enrique Lorenzo Hermoso (data loading) and SISON, Aaron Joshua Estacio (cleaning)
-
-*Data cleaning operations: standardise dates, filter 2020-2025, count missing/duplicates, calculate daily returns.*
+# Appendix A3 - Data Loading (GALEDO, Enrique Lorenzo Hermoso)
+Loads all 8 CSV datasets from the data/ directory into R data frames. Records the original observation count for each dataset before any cleaning operations.
+Datasets include 4 asset price series (AAPL, BDO, BTC, SPY) and 4 FRED macroeconomic series (CPI, DGS10, FEDFUNDS, VIX).
 
 ```{r data-loading}
 # Data Loading -- GALEDO, Enrique Lorenzo Hermoso (Sec 3: Data Acquisition)
@@ -97,20 +111,11 @@ obs_original <- data.frame(
                    nrow(cpi), nrow(dgs10), nrow(fedfunds), nrow(vix))
 )
 
+safe_kable(obs_original, caption="Original Observations per Dataset")
 ```
 
-
-
-| Dataset | Original Observations |
-|---------|---------------------:|
-| AAPL | 2,512 |
-| BDO | 2,441 |
-| BTC | 3,652 |
-| SPY | 2,514 |
-| CPI | 952 |
-| DGS10 | 16,105 |
-| FEDFUNDS | 863 |
-| VIX | 9,216 |
+# Appendix A4 - Data Cleaning (SISON, Aaron Joshua Estacio)
+Standardises date formats across all 8 datasets, filters observations to the 2020-01-01 to 2025-12-31 sample period, counts missing values and duplicates, and computes daily returns for each OHLC asset.
 
 ```{r data-cleaning}
 # Sec 4: Data Cleaning -- SISON, Aaron Joshua Estacio
@@ -182,23 +187,17 @@ spy  <- spy  |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
 # Note: BDO's Change. column can be used to verify Daily_Return computation
 # The first observation of each asset will have NA for Daily_Return (no prior day)
 
+# Combine cleaning summaries into one display table
+clean_summary <- obs_filtered |>
+  left_join(missing_summary, by = "Dataset") |>
+  left_join(dup_summary, by = "Dataset")
+safe_kable(clean_summary, caption="Observations After Filtering, Missing Values, and Duplicates")
 ```
-
-| Dataset | After Filtering | Missing | Duplicates |
-|---------|----------------:|-------:|----------:|
-| AAPL | 1,508 | 0 | 0 |
-| BDO | 1,468 | 0 | 0 |
-| BTC | 2,192 | 0 | 0 |
-| SPY | 1,508 | 0 | 0 |
-| CPI | 71 | 0 | 0 |
-| DGS10 | 1,500 | 0 | 0 |
-| FEDFUNDS | 72 | 0 | 0 |
-| VIX | 1,535 | 0 | 0 |
 
 FRED data (CPI, DGS10, FEDFUNDS) has fewer rows due to monthly or business-daily reporting frequency. Missing values introduced by join operations are handled in Section 5.
 
-## Sec 5: Database Integration -- SISON, Aaron Joshua Estacio
-*Perform joins and justify strategy.*
+# Appendix A5 - Database Integration (SISON, Aaron Joshua Estacio)
+Demonstrates all four SQL join types (left, inner, full, anti) and justifies the chosen join strategy. Assembles the final analytical dataset by combining asset data with macroeconomic series. Exports the observation reduction table for inclusion in the main report.
 
 ```{r database-integration}
 # Sec 5: Database Integration -- SISON, Aaron Joshua Estacio
@@ -279,26 +278,20 @@ reduction_table <- data.frame(
   After_Joins = c(rep(NA, 8), NA, nrow(final_dataset))
 )
 
-```
-
-### Data Cleaning Summary
-
-The following table presents a summary of the data dimensions before and after the cleaning and join operations, tracking the number of rows, columns, and missing values.
-
-```{r data-cleaning-summary}
-#| eval: true
-#| results: asis
+knitr::kable(reduction_table, caption="Observation Counts Across Processing Stages")
 library(knitr)
 cat(kable(reduction_table, format = "latex", booktabs = TRUE), file = "../reports/sections/data_cleaning_table.tex")
 ```
 
-## Sec 6: SQL-Based Financial Investigation -- SISON, Aaron Joshua Estacio (Q1-Q3, Q8-Q10)
-*10 meaningful financial questions using select, filter, mutate, arrange, group_by, summarise.*
+# Appendix A6 - Master Dataset Creation & SQL Database Setup (SISON, Aaron Joshua Estacio)
+Builds the master analytical dataset by restructuring into long format (one row per asset-date combination) and saves it as a persistent SQLite database file. Pre-calculates CPI year-on-year change for inflation analysis. All subsequent SQL questions (A7-A16) query this persisted database.
 
 ```{r sql-setup}
-# SQLite database setup for SQL-based investigations
+# SQLite database setup — creates persisted master dataset
 
-con <- dbConnect(RSQLite::SQLite(), ":memory:")
+db_path <- "../data/master_dataset.sqlite"
+unlink(db_path)
+con <- dbConnect(RSQLite::SQLite(), db_path)
 
 # Build long-format analytical dataset for SQL queries
 # Each row is one asset-date combination with macro variables attached
@@ -337,10 +330,14 @@ sql_long <- sql_long |>
 
 dbWriteTable(con, "integrated_data", sql_long, overwrite = TRUE)
 fin_data <- tbl(con, "integrated_data")
+
+# Show first 5 rows of the master dataset as a preview
+nrow_total <- collect(fin_data) |> nrow()
+safe_kable(head(sql_long, 5), digits=4, caption=paste0("Master Dataset Preview (First 5 of ", nrow_total, " Rows)"))
 ```
 
-# Appendix A2 - SQL Question 1
-To determine which asset delivered the highest return per unit of risk over the sample period. Calculates the ratio of mean daily return to standard deviation for each asset and visualizes the results. The expected output is a risk-adjusted return ratio for each asset, presented as a bar chart.
+# Appendix A7 - SQL Question 1: Risk-Adjusted Daily Return (SISON, Aaron Joshua Estacio)
+Computes the ratio of mean daily return to standard deviation for each asset, producing a Sharpe-like measure of return efficiency. The corresponding bar chart is displayed in the Data Visualization section.
 
 ```{r q1}
 # Q1: Risk-Adjusted Daily Return by Asset -- SISON, Aaron Joshua Estacio
@@ -357,35 +354,11 @@ q1 <- fin_data |>
 
 spy_ratio <- q1 |> filter(Asset == "SPY") |> pull(Risk_Adjusted_Return)
 
-print(knitr::kable(q1, digits=4, caption="Q1 Data Output"))
-
-ggplot(q1, aes(x = Risk_Adjusted_Return, y = reorder(Asset, Risk_Adjusted_Return),
-                fill = Asset)) +
-  geom_col(width = 0.6, show.legend = FALSE) +
-  geom_vline(xintercept = spy_ratio, linetype = "dashed",
-             color = "#B3B3B3", linewidth = 0.4) +
-  geom_text(aes(x = Risk_Adjusted_Return / 2,
-                label = sprintf("%.4f", Risk_Adjusted_Return)),
-            hjust = 0.5, size = 3.2, color = "white", fontface = "bold") +
-  annotate("text", x = spy_ratio, y = 4.5, label = "SPY benchmark",
-           size = 2.8, color = "#595959", hjust = -0.1) +
-  scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
-                                BTC = "#F7931A", SPY = "#00733E")) +
-  labs(title = "Risk-Adjusted Daily Return by Asset",
-       subtitle = "Mean return divided by standard deviation, 2020 to 2025",
-       x = "Risk-Adjusted Return", y = NULL) +
-  xlim(0, 0.07) +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.major.y = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        plot.title = element_text(face = "bold", size = 13),
-        plot.subtitle = element_text(size = 9, color = "#595959"))
-ggsave("../reports/figures/fig_q1.pdf", width = 7, height = 3.5, device = "pdf")
+safe_kable(q1, digits=4, caption="Q1 Data Output")
 ```
 
-# Appendix A3 - SQL Question 2
-To measure crisis resilience during the COVID-19 market crash. Computes the cumulative return of each asset over the February to March 2020 period. The expected output is a line chart showing the trajectory of each asset's drawdown and recovery.
+# Appendix A8 - SQL Question 2: COVID-19 Crash Cumulative Returns (SISON, Aaron Joshua Estacio)
+Measures crisis resilience during the February to March 2020 COVID-19 market crash by computing cumulative returns for each asset.
 
 ```{r q2}
 # Q2: COVID-19 Crash Cumulative Returns -- SISON, Aaron Joshua Estacio
@@ -410,28 +383,11 @@ q2_summary <- q2 |>
     Observations = n()
   )
 
-print(knitr::kable(q2_summary, digits=4, caption="Q2 Summary Data Output"))
-
-ggplot(q2, aes(x = Date, y = Cumulative_Return, color = Asset)) +
-  geom_line(linewidth = 0.8) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "#B3B3B3", linewidth = 0.3) +
-  scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
-                                 BTC = "#F7931A", SPY = "#00733E")) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Cumulative Returns During the COVID-19 Crash",
-       subtitle = "February to March 2020, indexed to 100% at period start",
-       x = "Date", y = "Cumulative Return", color = "Asset") +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        plot.title = element_text(face = "bold", size = 13),
-        plot.subtitle = element_text(size = 9, color = "#595959"),
-        legend.position = "bottom")
-ggsave("../reports/figures/fig_q2.pdf", width = 7, height = 4, device = "pdf")
+safe_kable(q2_summary, digits=4, caption="Q2 Summary Data Output")
 ```
 
-# Appendix A4 - SQL Question 3
-To evaluate the cross-asset correlation of daily returns. Calculates and visualizes the pairwise Pearson correlation coefficients across the selected assets. The expected output is a correlation heatmap matrix.
+# Appendix A9 - SQL Question 3: Pairwise Correlation of Daily Returns (SISON, Aaron Joshua Estacio)
+Calculates the Pearson correlation coefficients for daily returns across all asset pairs and displays the correlation matrix.
 
 ```{r q3}
 # Q3: Pairwise Correlation of Daily Returns -- SISON, Aaron Joshua Estacio
@@ -451,27 +407,11 @@ cor_long <- as.data.frame(cor_matrix) |>
   mutate(Asset1 = factor(Asset1, levels = rev(c("AAPL", "BDO", "BTC", "SPY"))),
          Asset2 = factor(Asset2, levels = c("AAPL", "BDO", "BTC", "SPY")))
 
-print(knitr::kable(round(cor_matrix, 4), caption="Q3 Correlation Matrix Output"))
-
-ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
-  geom_tile(color = "white", linewidth = 1) +
-  geom_text(aes(label = sprintf("%.3f", Correlation)), size = 3.5) +
-  scale_fill_gradient2(low = "#1DC9A4", mid = "#F2F2F2", high = "#2E45B8",
-                       midpoint = 0.4, limits = c(0, 1)) +
-  labs(title = "Pairwise Correlation of Daily Returns",
-       subtitle = "Pearson correlation coefficients, 2020 to 2025",
-       x = NULL, y = NULL, fill = "Correlation") +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid = element_blank(),
-        axis.ticks = element_blank(),
-        plot.title = element_text(face = "bold", size = 13),
-        plot.subtitle = element_text(size = 9, color = "#595959"),
-        legend.position = "right")
-ggsave("../reports/figures/fig_q3.pdf", width = 6, height = 4.5, device = "pdf")
+safe_kable(round(cor_matrix, 4), caption="Q3 Correlation Matrix Output")
 ```
 
-# Appendix A5 - SQL Question 4
-To rank assets by their total price return from 2020 to 2025. Calculates the total and annualized returns for each asset across the entire sample period. The expected output is a bar chart ranking the assets by total percentage return.
+# Appendix A10 - SQL Question 4: Asset Ranking by Total Return (CRUZ, Ricardo Miguel Iñigo)
+Ranks assets by total price return and annualized return over the full 2020-2025 sample period.
 
 ```{r q4}
 # Q4: Asset Ranking by Total Return -- CRUZ, Ricardo Miguel Inigo
@@ -502,32 +442,11 @@ q4 <- q4_raw |>
 q4_plot <- q4 |>
   mutate(Asset = factor(Asset, levels = q4$Asset[order(q4$Total_Return)]))
 
-print(knitr::kable(q4, digits=4, caption="Q4 Data Output"))
-
-ggplot(q4_plot, aes(x = Total_Return, y = Asset, fill = Asset)) +
-  geom_col(width = 0.6, show.legend = FALSE) +
-  geom_vline(xintercept = 0, linewidth = 0.3, color = "#595959") +
-  geom_text(aes(x = Total_Return / 2,
-                label = sprintf("%+.1f%%", Total_Return * 100)),
-            hjust = 0.5, size = 3.2, color = "white", fontface = "bold") +
-  scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
-                                BTC = "#F7931A", SPY = "#00733E")) +
-  scale_x_continuous(labels = scales::percent_format(),
-                     expand = expansion(mult = c(0.15, 0.15))) +
-  labs(title = "Asset Ranking by Total Return",
-       subtitle = "Total price return from 2020 to 2025",
-       x = "Total Return", y = NULL) +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.major.y = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        plot.title = element_text(face = "bold", size = 13),
-        plot.subtitle = element_text(size = 9, color = "#595959"))
-ggsave("../reports/figures/fig_q4.pdf", width = 7, height = 3.5, device = "pdf")
+safe_kable(q4, digits=4, caption="Q4 Data Output")
 ```
 
-# Appendix A6 - SQL Question 5
-To identify the extreme single-day gains and losses for each asset. Extracts the maximum and minimum daily returns for each instrument to assess tail risk. The expected output is a grouped bar chart displaying the best and worst trading days.
+# Appendix A11 - SQL Question 5: Best and Worst Trading Days (CRUZ, Ricardo Miguel Iñigo)
+Identifies extreme single-day gains and losses for each asset to assess tail risk.
 
 ```{r q5}
 # Q5: Best and Worst Trading Days -- CRUZ, Ricardo Miguel Inigo
@@ -551,40 +470,11 @@ q5 <- q5_raw |>
   ) |>
   arrange(Worst_Daily_Return)
 
-q5_plot <- q5 |>
-  select(Asset, Best_Daily_Return, Worst_Daily_Return) |>
-  pivot_longer(cols = c(Best_Daily_Return, Worst_Daily_Return),
-               names_to = "Trading_Day_Type",
-               values_to = "Daily_Return") |>
-  mutate(
-    Trading_Day_Type = recode(Trading_Day_Type,
-                              Best_Daily_Return = "Best Trading Day",
-                              Worst_Daily_Return = "Worst Trading Day")
-  )
-
-print(knitr::kable(q5, digits=4, caption="Q5 Data Output"))
-
-ggplot(q5_plot, aes(x = Asset, y = Daily_Return, fill = Trading_Day_Type)) +
-  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
-  geom_hline(yintercept = 0, linewidth = 0.3, color = "#595959") +
-  scale_fill_manual(values = c("Best Trading Day" = "#2E45B8",
-                                "Worst Trading Day" = "#C91D42")) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Best and Worst Single-Day Returns",
-       subtitle = "Largest one-day gains and losses by asset, 2020 to 2025",
-       x = NULL, y = "Daily Return", fill = NULL) +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.major.x = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        plot.title = element_text(face = "bold", size = 13),
-        plot.subtitle = element_text(size = 9, color = "#595959"),
-        legend.position = "bottom")
-ggsave("../reports/figures/fig_q5.pdf", width = 7, height = 4, device = "pdf")
+safe_kable(q5, digits=4, caption="Q5 Data Output")
 ```
 
-# Appendix A7 - SQL Question 6
-To analyze momentum regime shifts using moving averages. Implements a 20-day and 60-day simple moving average crossover strategy. The expected output is a multi-panel line chart showing crossover events and momentum trends.
+# Appendix A12 - SQL Question 6: Moving Average Crossover Analysis (CRUZ, Ricardo Miguel Iñigo)
+Implements a 20-day and 60-day simple moving average crossover strategy to analyze momentum regime shifts.
 
 ```{r q6}
 # Q6: Moving Average Crossover Analysis -- CRUZ, Ricardo Miguel Inigo
@@ -628,29 +518,11 @@ q6_latest_signal <- q6_ma |>
   select(Asset, Date, Close, MA_20, MA_60, Signal) |>
   arrange(Asset)
 
-q6_plot <- q6_ma |>
-  filter(Date >= as.Date("2024-01-01"))
-
-print(knitr::kable(q6, digits=4, caption="Q6 Data Output"))
-
-ggplot(q6_plot, aes(x = Date)) +
-  geom_line(aes(y = Close), linewidth = 0.4, color = "#595959") +
-  geom_line(aes(y = MA_20), linewidth = 0.5, color = "#2E45B8") +
-  geom_line(aes(y = MA_60), linewidth = 0.5, color = "#C91D42") +
-  facet_wrap(~ Asset, scales = "free_y") +
-  labs(title = "20-Day and 60-Day Moving Average Crossover",
-       subtitle = "Bullish signal when 20-day MA is above 60-day MA, 2024 to 2025",
-       x = NULL, y = "Closing Price") +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        plot.title = element_text(face = "bold", size = 13),
-        plot.subtitle = element_text(size = 9, color = "#595959"))
-ggsave("../reports/figures/fig_q6.pdf", width = 7, height = 4.5, device = "pdf")
+safe_kable(q6, digits=4, caption="Q6 Data Output")
 ```
 
-# Appendix A8 - SQL Question 7
-To test whether elevated trading volume systematically coincides with higher volatility. Partitions trading days into high-volume and normal-volume regimes and compares their mean absolute returns. The expected output is a grouped bar chart comparing volatility across volume regimes.
+# Appendix A13 - SQL Question 7: Volume and Volatility Relationship (CRUZ, Ricardo Miguel Iñigo)
+Tests whether elevated trading volume systematically coincides with higher volatility by partitioning days into high-volume and normal-volume regimes.
 
 ```{r q7}
 # Q7: Volume and Volatility Relationship -- CRUZ, Ricardo Miguel Inigo
@@ -699,38 +571,11 @@ q7 <- q7_raw |>
   ) |>
   arrange(Asset, Volume_Regime)
 
-q7
-
-print(knitr::kable(q7, digits=4, caption="Q7 Data Output"))
-
-ggplot(q7, aes(x = Asset, y = Mean_Absolute_Return, fill = Volume_Regime)) +
-  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(
-    title = "Volume and Volatility Relationship",
-    subtitle = "Mean absolute daily return during high-volume versus normal-volume days, 2020 to 2025",
-    x = NULL,
-    y = "Mean Absolute Daily Return",
-    fill = NULL
-  ) +
-  theme_minimal(base_size = 11) +
-  theme(
-    panel.grid.major.x = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.ticks = element_blank(),
-    plot.title = element_text(face = "bold", size = 13),
-    plot.subtitle = element_text(size = 9, color = "#595959"),
-    legend.position = "bottom"
-  )
-
-dir.create("../reports/figures", recursive = TRUE, showWarnings = FALSE)
-
-ggsave("../reports/figures/fig_q7.pdf", width = 7, height = 4, device = "pdf")
+safe_kable(q7, digits=4, caption="Q7 Data Output")
 ```
 
-
-# Appendix A9 - SQL Question 8
-To assess asset performance during periods of high versus low market fear. Segregates trading days based on VIX levels and calculates conditional mean daily returns. The expected output is a grouped bar chart comparing returns under different vix regimes.
+# Appendix A14 - SQL Question 8: VIX Regime Analysis (SISON, Aaron Joshua Estacio)
+Assesses asset performance during periods of high versus low market fear by segregating trading days based on VIX levels.
 
 ```{r q8}
 # Q8: VIX Regime Analysis -- SISON, Aaron Joshua Estacio
@@ -764,29 +609,11 @@ q8_plot <- q8 |>
     "High Volatility (VIX > 30)" = "VIX > 30 (High Fear)",
     "Low Volatility (VIX < 20)" = "VIX < 20 (Low Fear)"))
 
-print(knitr::kable(q8, digits=4, caption="Q8 Data Output"))
-
-ggplot(q8_plot, aes(x = Asset, y = Mean_Daily_Return, fill = VIX_Regime)) +
-  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
-  geom_hline(yintercept = 0, linewidth = 0.3, color = "#595959") +
-  scale_fill_manual(values = c("VIX > 30 (High Fear)" = "#C91D42",
-                                "VIX < 20 (Low Fear)" = "#2E45B8")) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Mean Daily Return by VIX Regime",
-       subtitle = "Comparing asset performance under high versus low market fear, 2020 to 2025",
-       x = NULL, y = "Mean Daily Return", fill = NULL) +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.major.x = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        plot.title = element_text(face = "bold", size = 13),
-        plot.subtitle = element_text(size = 9, color = "#595959"),
-        legend.position = "bottom")
-ggsave("../reports/figures/fig_q8.pdf", width = 7, height = 4, device = "pdf")
+safe_kable(q8, digits=4, caption="Q8 Data Output")
 ```
 
-# Appendix A10 - SQL Question 9
-To measure asset sensitivity to changes in the 10-year Treasury yield. Calculates mean returns conditional on daily increases or decreases in the DGS10 rate. The expected output is a grouped bar chart showing returns conditioned on yield direction.
+# Appendix A15 - SQL Question 9: Interest Rate Sensitivity (SISON, Aaron Joshua Estacio)
+Measures asset sensitivity to changes in the 10-year Treasury yield by comparing mean returns on days when yields rise versus fall.
 
 ```{r q9}
 # Q9: Interest Rate Sensitivity -- SISON, Aaron Joshua Estacio
@@ -822,29 +649,11 @@ q9 <- q9_raw |>
 q9_plot <- q9 |>
   filter(Yield_Direction %in% c("Yields Rising", "Yields Falling"))
 
-print(knitr::kable(q9, digits=4, caption="Q9 Data Output"))
-
-ggplot(q9_plot, aes(x = Asset, y = Mean_Daily_Return, fill = Yield_Direction)) +
-  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
-  geom_hline(yintercept = 0, linewidth = 0.3, color = "#595959") +
-  scale_fill_manual(values = c("Yields Rising" = "#F97A1F",
-                                "Yields Falling" = "#2E45B8")) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Mean Daily Return by 10-Year Treasury Yield Direction",
-       subtitle = "Asset returns conditional on daily yield changes, 2020 to 2025",
-       x = NULL, y = "Mean Daily Return", fill = NULL) +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.major.x = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.ticks = element_blank(),
-        plot.title = element_text(face = "bold", size = 13),
-        plot.subtitle = element_text(size = 9, color = "#595959"),
-        legend.position = "bottom")
-ggsave("../reports/figures/fig_q9.pdf", width = 7, height = 4, device = "pdf")
+safe_kable(q9, digits=4, caption="Q9 Data Output")
 ```
 
-# Appendix A11 - SQL Question 10
-To evaluate which assets served as effective inflation hedges from 2021 to 2023. Computes total cumulative returns during the high-inflation window where CPI YoY exceeded 5%. The expected output is a horizontal bar chart of cumulative returns during the inflationary period.
+# Appendix A16 - SQL Question 10: Inflation Hedge Performance (SISON, Aaron Joshua Estacio)
+Evaluates which assets served as effective inflation hedges during the June 2021 to February 2023 high-inflation period (CPI YoY above 5%).
 
 ```{r q10}
 # Q10: Inflation Hedge Performance -- SISON, Aaron Joshua Estacio
@@ -874,8 +683,249 @@ q10 <- q10_raw |>
 q10_plot <- q10 |>
   mutate(Asset = factor(Asset, levels = q10$Asset[order(q10$Total_Cumulative_Return)]))
 
-print(knitr::kable(q10, digits=4, caption="Q10 Data Output"))
+safe_kable(q10, digits=4, caption="Q10 Data Output")
+```
 
+# Appendix A17 - Data Visualization Charts (SEBALLOS, Josiah Dweyn Panganiban)
+Contains the ggplot code for all 10 figures corresponding to SQL Questions Q1 through Q10.
+Each figure is saved as a PDF to the reports/figures/ directory for inclusion in the main report's Data Visualization section.
+
+```{r dir-setup}
+# Create figures directory if it does not exist
+dir.create("../reports/figures", recursive = TRUE, showWarnings = FALSE)
+```
+
+### Figure 1: Risk-Adjusted Daily Return by Asset
+Bar chart showing the ratio of mean daily return to standard deviation for each asset. The dashed reference line marks SPY's ratio.
+
+```{r viz-q1}
+ggplot(q1, aes(x = Risk_Adjusted_Return, y = reorder(Asset, Risk_Adjusted_Return),
+                fill = Asset)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  geom_vline(xintercept = spy_ratio, linetype = "dashed",
+             color = "#B3B3B3", linewidth = 0.4) +
+  geom_text(aes(x = Risk_Adjusted_Return / 2,
+                label = sprintf("%.4f", Risk_Adjusted_Return)),
+            hjust = 0.5, size = 3.2, color = "white", fontface = "bold") +
+  annotate("text", x = spy_ratio, y = 4.5, label = "SPY benchmark",
+           size = 2.8, color = "#595959", hjust = -0.1) +
+  scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                BTC = "#F7931A", SPY = "#00733E")) +
+  labs(title = "Risk-Adjusted Daily Return by Asset",
+       subtitle = "Mean return divided by standard deviation, 2020 to 2025",
+       x = "Risk-Adjusted Return", y = NULL) +
+  xlim(0, 0.07) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/figures/fig_q1.pdf", width = 7, height = 3.5, device = "pdf")
+```
+
+### Figure 2: Cumulative Returns During the COVID-19 Crash
+Line chart tracking each asset's cumulative return from February to March 2020, indexed to 100% at period start.
+
+```{r viz-q2}
+ggplot(q2, aes(x = Date, y = Cumulative_Return, color = Asset)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "#B3B3B3", linewidth = 0.3) +
+  scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                 BTC = "#F7931A", SPY = "#00733E")) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Cumulative Returns During the COVID-19 Crash",
+       subtitle = "February to March 2020, indexed to 100% at period start",
+       x = "Date", y = "Cumulative Return", color = "Asset") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"),
+        legend.position = "bottom")
+ggsave("../reports/figures/fig_q2.pdf", width = 7, height = 4, device = "pdf")
+```
+
+### Figure 3: Pairwise Correlation Heatmap
+Heatmap matrix of Pearson correlation coefficients for daily returns across the four assets.
+
+```{r viz-q3}
+ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
+  geom_tile(color = "white", linewidth = 1) +
+  geom_text(aes(label = sprintf("%.3f", Correlation)), size = 3.5) +
+  scale_fill_gradient2(low = "#1DC9A4", mid = "#F2F2F2", high = "#2E45B8",
+                       midpoint = 0.4, limits = c(0, 1)) +
+  labs(title = "Pairwise Correlation of Daily Returns",
+       subtitle = "Pearson correlation coefficients, 2020 to 2025",
+       x = NULL, y = NULL, fill = "Correlation") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"),
+        legend.position = "right")
+ggsave("../reports/figures/fig_q3.pdf", width = 6, height = 4.5, device = "pdf")
+```
+
+### Figure 4: Asset Ranking by Total Return
+Horizontal bar chart ranking assets by total percentage price return from 2020 to 2025.
+
+```{r viz-q4}
+ggplot(q4_plot, aes(x = Total_Return, y = Asset, fill = Asset)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  geom_vline(xintercept = 0, linewidth = 0.3, color = "#595959") +
+  geom_text(aes(x = Total_Return / 2,
+                label = sprintf("%+.1f%%", Total_Return * 100)),
+            hjust = 0.5, size = 3.2, color = "white", fontface = "bold") +
+  scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                BTC = "#F7931A", SPY = "#00733E")) +
+  scale_x_continuous(labels = scales::percent_format(),
+                     expand = expansion(mult = c(0.15, 0.15))) +
+  labs(title = "Asset Ranking by Total Return",
+       subtitle = "Total price return from 2020 to 2025",
+       x = "Total Return", y = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/figures/fig_q4.pdf", width = 7, height = 3.5, device = "pdf")
+```
+
+### Figure 5: Best and Worst Single-Day Returns
+Grouped bar chart comparing the largest single-day gain and loss for each asset.
+
+```{r viz-q5}
+q5_plot <- q5 |>
+  select(Asset, Best_Daily_Return, Worst_Daily_Return) |>
+  pivot_longer(cols = c(Best_Daily_Return, Worst_Daily_Return),
+               names_to = "Trading_Day_Type",
+               values_to = "Daily_Return") |>
+  mutate(
+    Trading_Day_Type = recode(Trading_Day_Type,
+                              Best_Daily_Return = "Best Trading Day",
+                              Worst_Daily_Return = "Worst Trading Day")
+  )
+
+ggplot(q5_plot, aes(x = Asset, y = Daily_Return, fill = Trading_Day_Type)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  geom_hline(yintercept = 0, linewidth = 0.3, color = "#595959") +
+  scale_fill_manual(values = c("Best Trading Day" = "#2E45B8",
+                                "Worst Trading Day" = "#C91D42")) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Best and Worst Single-Day Returns",
+       subtitle = "Largest one-day gains and losses by asset, 2020 to 2025",
+       x = NULL, y = "Daily Return", fill = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"),
+        legend.position = "bottom")
+ggsave("../reports/figures/fig_q5.pdf", width = 7, height = 4, device = "pdf")
+```
+
+### Figure 6: 20-Day and 60-Day Moving Average Crossover
+Multi-panel faceted line chart showing closing prices with 20-day and 60-day moving averages from 2024 to 2025.
+
+```{r viz-q6}
+q6_plot <- q6_ma |>
+  filter(Date >= as.Date("2024-01-01"))
+
+ggplot(q6_plot, aes(x = Date)) +
+  geom_line(aes(y = Close), linewidth = 0.4, color = "#595959") +
+  geom_line(aes(y = MA_20), linewidth = 0.5, color = "#2E45B8") +
+  geom_line(aes(y = MA_60), linewidth = 0.5, color = "#C91D42") +
+  facet_wrap(~ Asset, scales = "free_y") +
+  labs(title = "20-Day and 60-Day Moving Average Crossover",
+       subtitle = "Bullish signal when 20-day MA is above 60-day MA, 2024 to 2025",
+       x = NULL, y = "Closing Price") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/figures/fig_q6.pdf", width = 7, height = 4.5, device = "pdf")
+```
+
+### Figure 7: Volume and Volatility Relationship
+Grouped bar chart comparing mean absolute daily return during high-volume versus normal-volume days.
+
+```{r viz-q7}
+ggplot(q7, aes(x = Asset, y = Mean_Absolute_Return, fill = Volume_Regime)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Volume and Volatility Relationship",
+    subtitle = "Mean absolute daily return during high-volume versus normal-volume days, 2020 to 2025",
+    x = NULL,
+    y = "Mean Absolute Daily Return",
+    fill = NULL
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(size = 9, color = "#595959"),
+    legend.position = "bottom"
+  )
+ggsave("../reports/figures/fig_q7.pdf", width = 7, height = 4, device = "pdf")
+```
+
+### Figure 8: Mean Daily Return by VIX Regime
+Grouped bar chart comparing asset returns during high-fear (VIX > 30) versus low-fear (VIX < 20) regimes.
+
+```{r viz-q8}
+ggplot(q8_plot, aes(x = Asset, y = Mean_Daily_Return, fill = VIX_Regime)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  geom_hline(yintercept = 0, linewidth = 0.3, color = "#595959") +
+  scale_fill_manual(values = c("VIX > 30 (High Fear)" = "#C91D42",
+                                "VIX < 20 (Low Fear)" = "#2E45B8")) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Mean Daily Return by VIX Regime",
+       subtitle = "Comparing asset performance under high versus low market fear, 2020 to 2025",
+       x = NULL, y = "Mean Daily Return", fill = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"),
+        legend.position = "bottom")
+ggsave("../reports/figures/fig_q8.pdf", width = 7, height = 4, device = "pdf")
+```
+
+### Figure 9: Mean Daily Return by 10-Year Treasury Yield Direction
+Grouped bar chart showing asset returns conditional on whether daily yields are rising or falling.
+
+```{r viz-q9}
+ggplot(q9_plot, aes(x = Asset, y = Mean_Daily_Return, fill = Yield_Direction)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  geom_hline(yintercept = 0, linewidth = 0.3, color = "#595959") +
+  scale_fill_manual(values = c("Yields Rising" = "#F97A1F",
+                                "Yields Falling" = "#2E45B8")) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Mean Daily Return by 10-Year Treasury Yield Direction",
+       subtitle = "Asset returns conditional on daily yield changes, 2020 to 2025",
+       x = NULL, y = "Mean Daily Return", fill = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"),
+        legend.position = "bottom")
+ggsave("../reports/figures/fig_q9.pdf", width = 7, height = 4, device = "pdf")
+```
+
+### Figure 10: Cumulative Return During High Inflation Period
+Horizontal bar chart showing total cumulative returns during the period when CPI year-on-year exceeded 5%.
+
+```{r viz-q10}
 ggplot(q10_plot, aes(x = Total_Cumulative_Return, y = Asset, fill = Asset)) +
   geom_col(width = 0.6, show.legend = FALSE) +
   geom_text(aes(x = Total_Cumulative_Return / 2,
@@ -896,6 +946,270 @@ ggplot(q10_plot, aes(x = Total_Cumulative_Return, y = Asset, fill = Asset)) +
         plot.subtitle = element_text(size = 9, color = "#595959"))
 ggsave("../reports/figures/fig_q10.pdf", width = 7, height = 3.5, device = "pdf")
 ```
+
+# Appendix A18 - Exploratory Data Visualization (SEBALLOS, Josiah Dweyn Panganiban)
+Contains 8 exploratory figures covering cumulative returns, price trends, return distributions, rolling volatility, drawdown analysis, risk-return profiles, and portfolio risk contribution. These complement the SQL-driven charts in A17.
+
+### Viz Figure 1: Cumulative Returns by Asset
+Tracks the growth of USD 1 invested in each asset from 2020 to 2025, indexed to 100% at the start.
+
+```{r viz-j1}
+fig1_data <- sql_long |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(Cumulative_Return = cumprod(1 + Daily_Return) - 1) |>
+  ungroup()
+
+ggplot(fig1_data, aes(x = Date, y = Cumulative_Return, color = Asset)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "#B3B3B3", linewidth = 0.3) +
+  scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                 BTC = "#F7931A", SPY = "#00733E")) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Viz 1: Cumulative Returns by Asset",
+       subtitle = "Growth of $1 invested, 2020 to 2025",
+       x = "Date", y = "Cumulative Return", color = "Asset") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"),
+        legend.position = "bottom")
+ggsave("../reports/fig_viz1.pdf", width = 7, height = 4, device = "pdf")
+```
+Viz 1: Cumulative Returns by Asset tracks the growth of USD 1 invested in each asset from 2020 to 2025. BTC shows the steepest and most volatile climb, reaching cumulative returns above 1,000% with sharp cyclical peaks and drawdowns. AAPL and SPY both trend steadily upward, with AAPL consistently outperforming the SPY benchmark. BDO remains close to the 0% line for most of the period, indicating limited net nominal gain relative to the other three assets.
+
+### Viz Figure 2: Closing Price Trends by Asset
+Plots nominal closing prices on individual scales to compare price-level dynamics across assets of different magnitudes.
+
+```{r viz-j2}
+ggplot(sql_long, aes(x = Date, y = Close, color = Asset)) +
+  geom_line(linewidth = 0.7, show.legend = FALSE, na.rm = TRUE) +
+  facet_wrap(~ Asset, scales = "free_y", ncol = 2) +
+  scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                BTC = "#F7931A", SPY = "#00733E")) +
+  labs(title = "Viz 2: Closing Price Trends by Asset",
+       subtitle = "2020 to 2025",
+       x = "Date", y = "Closing Price") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/fig_viz2.pdf", width = 7, height = 5, device = "pdf")
+```
+Viz 2: Closing Price Trends by Asset plots nominal closing prices rather than normalized returns, revealing that BDO experienced meaningful price swings on its own scale despite appearing flat in Viz 1. Each asset uses its own y-axis since raw prices are not directly comparable across magnitudes.
+
+### Viz Figure 3: Return Distribution with Skewness and Kurtosis
+Overlays each asset's daily return histogram against a fitted normal curve to assess distribution shape and tail risk.
+
+```{r viz-j3}
+fig3_data <- sql_long |> filter(!is.na(Daily_Return))
+
+calc_skew <- function(x) {
+  n <- length(x); m <- mean(x)
+  (sum((x - m)^3) / n) / (sd(x)^3)
+}
+calc_kurt <- function(x) {
+  n <- length(x); m <- mean(x)
+  (sum((x - m)^4) / n) / (sd(x)^2)^2 - 3
+}
+
+fig3_stats <- fig3_data |>
+  group_by(Asset) |>
+  summarise(
+    Mean = mean(Daily_Return), SD = sd(Daily_Return),
+    Skewness = calc_skew(Daily_Return), Kurtosis = calc_kurt(Daily_Return),
+    .groups = "drop"
+  ) |>
+  mutate(label = sprintf("Skew: %.2f | Kurt: %.2f", Skewness, Kurtosis))
+
+normal_curves <- fig3_stats |>
+  rowwise() |>
+  reframe(
+    Asset = Asset,
+    x = seq(Mean - 4 * SD, Mean + 4 * SD, length.out = 200),
+    y = dnorm(x, mean = Mean, sd = SD)
+  )
+
+ggplot(fig3_data, aes(x = Daily_Return)) +
+  geom_histogram(aes(y = after_stat(density), fill = Asset), bins = 60,
+                  alpha = 0.75, show.legend = FALSE) +
+  geom_line(data = normal_curves, aes(x = x, y = y), color = "black", linewidth = 0.5) +
+  geom_text(data = fig3_stats, aes(x = -Inf, y = Inf, label = label),
+            hjust = -0.05, vjust = 1.5, size = 2.8) +
+  facet_wrap(~ Asset, scales = "free", ncol = 2) +
+  scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                BTC = "#F7931A", SPY = "#00733E")) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(title = "Viz 3: Return Distribution with Skewness & Kurtosis",
+       subtitle = "Daily returns vs. fitted normal distribution (black line), 2020 to 2025",
+       x = "Daily Return", y = "Density") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/fig_viz3.pdf", width = 7, height = 5, device = "pdf")
+```
+Viz 3: Return Distribution with Skewness and Kurtosis overlays each asset's daily return distribution against a fitted normal curve. AAPL is the only asset with positive skewness (0.28), meaning its rare extreme days lean toward the upside. BTC and BDO both show negative skewness (-0.48 and -0.40 respectively), indicating tail risk weighted toward sudden losses. SPY records the highest kurtosis of all four assets (12.97) despite a comparatively mild skew (-0.26), meaning its returns are usually tightly clustered near zero but still capable of extreme shock days. All four kurtosis values exceed 3, the benchmark for a normal distribution, confirming none of these assets follow a standard bell curve.
+
+### Viz Figure 4: Return Range and Spread by Asset
+Boxplot showing median, interquartile range, and outlier days for each asset.
+
+```{r viz-j4}
+ggplot(fig3_data, aes(x = Asset, y = Daily_Return, fill = Asset)) +
+  geom_boxplot(show.legend = FALSE, outlier.size = 0.8, outlier.alpha = 0.4) +
+  scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                BTC = "#F7931A", SPY = "#00733E")) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Viz 4: Return Range & Spread by Asset",
+       subtitle = "Median, interquartile range, and outlier days, 2020 to 2025",
+       x = NULL, y = "Daily Return") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/fig_viz4.pdf", width = 7, height = 4, device = "pdf")
+```
+Viz 4: Return Range and Spread by Asset shows each asset's typical daily return range and outlier days. BTC has the widest box and most extreme outliers in both directions, consistent with its high kurtosis in Viz 3. SPY has the narrowest, most compressed box, reflecting diversification across 500 companies. AAPL and BDO fall in between, with BDO showing a visible skew toward downside outlier days.
+
+### Viz Figure 5: 30-Day Rolling Volatility by Asset
+Tracks rolling 30-day standard deviation of daily returns to visualize volatility evolution over time.
+
+```{r viz-j5}
+rolling_sd <- function(x, n = 30) {
+  sapply(seq_along(x), function(i) {
+    if (i < n) return(NA)
+    sd(x[(i - n + 1):i], na.rm = TRUE)
+  })
+}
+
+fig5_data <- sql_long |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(Rolling_Vol = rolling_sd(Daily_Return, 30)) |>
+  ungroup() |>
+  filter(!is.na(Rolling_Vol))
+
+ggplot(fig5_data, aes(x = Date, y = Rolling_Vol, color = Asset)) +
+  geom_line(linewidth = 0.7) +
+  scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                 BTC = "#F7931A", SPY = "#00733E")) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Viz 5: 30-Day Rolling Volatility by Asset",
+       subtitle = "Rolling standard deviation of daily returns, 2020 to 2025",
+       x = "Date", y = "30-Day Rolling Volatility", color = "Asset") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"),
+        legend.position = "bottom")
+ggsave("../reports/fig_viz5.pdf", width = 7, height = 4, device = "pdf")
+```
+Viz 5: 30-Day Rolling Volatility by Asset shows a sharp synchronized volatility spike across all assets in early 2020 from the COVID-19 market shock. BTC consistently maintains the highest rolling volatility baseline with visible cyclical waves from its bull and bear cycles. SPY maintains the lowest and most stable volatility floor. AAPL and BDO show occasional idiosyncratic spikes tied to specific events rather than broad macro shocks.
+
+### Viz Figure 6: Drawdown from Peak by Asset
+Computes percentage decline from each asset's running historical high to visualize recovery patterns.
+
+```{r viz-j6}
+fig6_data <- fig1_data |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(Running_Max = cummax(1 + Cumulative_Return),
+         Drawdown = (1 + Cumulative_Return) / Running_Max - 1) |>
+  ungroup()
+
+ggplot(fig6_data, aes(x = Date, y = Drawdown, color = Asset)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~ Asset, ncol = 2) +
+  scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                 BTC = "#F7931A", SPY = "#00733E")) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Viz 6: Drawdown from Peak by Asset",
+       subtitle = "Percentage decline from running maximum value, 2020 to 2025",
+       x = "Date", y = "Drawdown") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        legend.position = "none",
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/fig_viz6.pdf", width = 7, height = 5, device = "pdf")
+```
+Viz 6: Drawdown from Peak by Asset shows each asset's percentage decline from its running historical high. BTC shows the deepest drawdowns falling well below -60% and takes longest to recover to a prior peak. SPY shows the shallowest fastest-recovering drawdowns consistent with its diversified benchmark role. BDO shows a prolonged period in negative territory indicating slower capital recovery through a downturn.
+
+### Viz Figure 7: Risk vs. Return by Asset
+Scatter plot comparing mean daily return against standard deviation across all four assets.
+
+```{r viz-j7}
+fig7_data <- sql_long |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  summarise(Mean_Return = mean(Daily_Return), SD_Return = sd(Daily_Return), .groups = "drop")
+
+ggplot(fig7_data, aes(x = SD_Return, y = Mean_Return, color = Asset)) +
+  geom_point(size = 4) +
+  geom_text(aes(label = Asset), vjust = -1.2, size = 3.5, show.legend = FALSE) +
+  scale_color_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                 BTC = "#F7931A", SPY = "#00733E")) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Viz 7: Risk vs. Return by Asset",
+       subtitle = "Mean daily return vs. standard deviation, 2020 to 2025",
+       x = "Risk (Std. Dev. of Daily Return)", y = "Mean Daily Return") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        legend.position = "none",
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/fig_viz7.pdf", width = 7, height = 5, device = "pdf")
+```
+Viz 7: Risk vs. Return by Asset plots each asset's mean daily return against standard deviation. BTC delivers the highest mean return (0.166%) but also highest risk (3.19% daily SD). AAPL offers a more efficient middle ground with 0.108% mean return at only 2.00% volatility. SPY sits at the lowest-risk end (1.31% SD) with a modest 0.0636% mean return. BDO is the weakest performer on a risk-adjusted basis, carrying similar risk to AAPL (2.26% SD) while delivering the lowest mean return (0.0295%).
+
+### Viz Figure 8: Equal-Weighted Portfolio Risk Contribution
+Decomposes total portfolio variance into each asset's contribution to show that equal dollar weights do not produce equal risk.
+
+```{r viz-j8}
+returns_matrix <- sql_long |>
+  filter(Asset %in% c("AAPL", "BDO", "BTC"), !is.na(Daily_Return)) |>
+  select(Date, Asset, Daily_Return) |>
+  pivot_wider(names_from = Asset, values_from = Daily_Return) |>
+  select(AAPL, BDO, BTC) |>
+  na.omit()
+
+cov_matrix <- cov(returns_matrix)
+weights <- c(AAPL = 1/3, BDO = 1/3, BTC = 1/3)
+port_var <- as.numeric(t(weights) %*% cov_matrix %*% weights)
+marginal_contrib <- cov_matrix %*% weights
+risk_contrib <- as.numeric(weights * marginal_contrib / port_var)
+
+fig8_data <- data.frame(Asset = names(weights), Risk_Contribution = risk_contrib)
+
+ggplot(fig8_data, aes(x = Asset, y = Risk_Contribution, fill = Asset)) +
+  geom_col(width = 0.5, show.legend = FALSE) +
+  geom_text(aes(label = scales::percent(Risk_Contribution, accuracy = 0.1)),
+            vjust = -0.5, size = 3.5) +
+  scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B", BTC = "#F7931A")) +
+  scale_y_continuous(labels = scales::percent_format(), expand = expansion(mult = c(0, 0.15))) +
+  labs(title = "Viz 8: Equal-Weighted Portfolio Risk Contribution",
+       subtitle = "Share of total portfolio variance contributed by each asset",
+       x = NULL, y = "Share of Portfolio Risk") +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(face = "bold", size = 13),
+        plot.subtitle = element_text(size = 9, color = "#595959"))
+ggsave("../reports/fig_viz8.pdf", width = 7, height = 4, device = "pdf")
+```
+Viz 8: Equal-Weighted Portfolio Risk Contribution decomposes total portfolio variance under an equal one-third allocation. BTC alone contributes 55.3% of total portfolio variance despite representing only one-third of invested capital. AAPL and BDO contribute 22.8% and 21.9% respectively, roughly proportional to their capital weights. Equal-dollar allocation does not produce equal-risk allocation, supporting a reduced BTC weight to lower portfolio risk without proportional loss in expected return.
 
 ## Sec 7: Descriptive Statistics -- GALEDO, Enrique Lorenzo Hermoso
 *Mean, median, variance, std dev, min, max, range, skewness, kurtosis.*

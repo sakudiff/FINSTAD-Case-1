@@ -16,61 +16,45 @@
 
 This project has been broken down into granular tasks mapping the coding (`.qmd`) and writing (`.tex`) requirements. Please put your name next to the sections you will take on.
 
-| Task Category (Paper Section) | `.qmd` Responsibility (R Code) | `.tex` Responsibility (Paper) | Assigned To |
-|------------------|------------------|------------------|------------------|
-| **Sec 1-3: Intro & Data Sources** | Load all 8 CSVs. Generate summary table of missing values, duplicates, and initial observations. | Write **Sec 1** (Intro), **Sec 2** (Data Sources), and **Sec 3** (Data Acquisition). | Enrique |
-| **Sec 4-5: Cleaning & Integration** | Clean data, calculate daily returns, execute `dplyr` joins to merge all 8 datasets into one. | Write **Sec 4** (Cleaning) and **Sec 5** (Integration) including the observation reduction table. | Aaron |
-| **Sec 6: SQL Investigations (Q1-Q3)** | Write `dplyr` code/queries for the first 3 financial questions. | Write **Sec 6 (Q1-Q3)** and their financial interpretations. | Aaron |
-| **Sec 6: SQL Investigations (Q4-Q7)** | Write `dplyr` code/queries for 4 more financial questions. | Write **Sec 6 (Q4-Q7)** and their financial interpretations. | Inigo |
-| **Sec 6: SQL Investigations (Q8-Q10)** | Write `dplyr` code/queries for the last 3 financial questions. | Write **Sec 6 (Q8-Q10)** and their financial interpretations. | Aaron |
-| **Sec 7: Descriptive Statistics** | Code `summarise()` for mean, variance, skewness, kurtosis, min/max. | Write **Sec 7** (Descriptive Statistics) & interpretations. | Enrique |
-| ~~**Sec 8: Data Visualization**~~ | *(Visualizations merged into Sec 6 to maintain narrative flow)* | *(Omitted from report)* | \- |
-| **Sec 9: Exploratory Analysis** | *(No code required, relies on previous outputs)* | Write **Sec 9** (Exploratory Financial Analysis). | Camille |
-| **Sec 10 & 12: Recommendation & Conclusion** | *(No code required, relies on previous outputs)* | Write **Sec 10** (Investment Recommendation) and **Sec 12** (Conclusion). | Camille |
-| **Exec Summary & Sec 11: Dashboard** | Code the 1-page dashboard layout in `.qmd` (or format in PPT). | Write **Sec 11** (Executive Dashboard) and **Executive Summary**. | Josiah |
-| **Presentation Deck** | Migrate the best charts and tables from `.qmd` into slides. | Create the 10-minute **Presentation Deck** (Canva/PPT). | Josiah |
-| **Lead LaTeX Editor** | Ensure the `.qmd` outputs successfully compile into the final `.pdf`. | Manage `finstad_report.tex` formatting, table layouts, and APA citations. | *\[Name\]* |
-
-### Note for Josiah: The Executive Dashboard
-Since Section 8 (Data Visualization) was merged directly into the SQL investigations, your primary tasks are now the **Presentation Deck** and **Section 11: Executive Dashboard**. 
-
-**What is the Executive Dashboard?**
-The rubric strictly mandates a 1-page visual summary containing: the selected assets, key descriptive statistics, 3–5 important charts, major SQL findings, and the final investment recommendation. It is essentially an infographic for an executive who won't read the 20-page paper. 
-
-**How to build it:**
-No Canva, no PowerPoint, no "microslop" allowed. You must use one of the following:
-1. **The HTML/Quarto Way:** Build it in a standalone `.qmd` or `.html` file using custom CSS/HTML grids to arrange the dashboard.
-2. **The Native LaTeX Way:** Build a custom `twocolumn` or `minipage` layout directly in `finstad_report.tex`. 
-3. **The Figma Way (Last Resort):** If you absolutely must use a visual design tool, use Figma and export it as a 1-page PDF file (`dashboard.pdf`).
-
-If you get stuck on the code or layout, ask the group for help.
-
-------------------------------------------------------------------------
+| Section (.tex) & Appendix (.qmd) | R Code Responsibility | Paper Responsibility | Assigned To | Done? |
+|------------------|------------------|------------------|------------------|-------|
+| **Sec 1-2: Intro & Data Sources**<br>*(App A1-A3)* | Load all 8 CSVs. Generate summary table of missing values, duplicates, and initial observations. | Write **Sec 1** (Introduction) and **Sec 2** (Data Sources and Acquisition). | Enrique | [ ] |
+| **Sec 3-4: Cleaning & Integration**<br>*(App A4-A6)* | Clean data, calculate daily returns, execute `dplyr` joins, set up SQLite master database. | Write **Sec 3** (Data Cleaning) and **Sec 4** (Database Integration) including the observation reduction table. | Aaron | [ ] |
+| **Sec 5: SQL Q1-Q3**<br>*(App A7-A9)* | Write `DBI/RSQLite` queries for the first 3 financial questions. | Write **Sec 5** (SQL-Based Financial Investigation) for Q1-Q3. | Aaron | [ ] |
+| **Sec 5: SQL Q4-Q7**<br>*(App A10-A13)* | Write `DBI/RSQLite` queries for 4 more financial questions. | Write **Sec 5** (SQL-Based Financial Investigation) for Q4-Q7. | Iñigo | [ ] |
+| **Sec 5: SQL Q8-Q10**<br>*(App A14-A16)* | Write `DBI/RSQLite` queries for the last 3 financial questions. | Write **Sec 5** (SQL-Based Financial Investigation) for Q8-Q10. | Aaron | [ ] |
+| **Sec 6: Descriptive Statistics**<br>*(N/A)* | Code `summarise()` for mean, variance, skewness, kurtosis, min/max. | Write **Sec 6** (Descriptive Statistical Analysis). | Enrique | [ ] |
+| **Sec 7: Data Visualization**<br>*(App A17)* | Generate `ggplot2` charts for SQL findings. | Write **Sec 7** (Data Visualization). | Josiah | [ ] |
+| **Sec 8: Exploratory Analysis**<br>*(App A18)* | Exploratory data visualization and synthesis. | Write **Sec 8** (Exploratory Financial Analysis). | Camille | [ ] |
+| **Sec 9, 11: Recommendation & Conclusion**<br>*(N/A)* | *(No code required, relies on previous outputs)* | Write **Sec 9** (Investment Recommendation) and **Sec 11** (Conclusion). | Camille | [ ] |
+| **Sec 10: Exec Dashboard**<br>*(N/A)* | Code the 1-page dashboard layout in `.qmd` (or format in PPT). | Write **Sec 10** (Executive Dashboard) and **Executive Summary**. | Josiah | [ ] |
+| **Presentation Deck** | Migrate the best charts and tables from `.qmd` into slides. | Create the 10-minute **Presentation Deck** (Canva/PPT). | Josiah | [ ] |
+| **Lead LaTeX Editor** | Ensure the `.qmd` outputs successfully compile into the final `.pdf`. | Manage `finstad_report.tex` formatting, table layouts, and APA citations. | *\[Name\]* | [ ] |
 
 ## Table of Contents
 
-- [Project Structure](#project-structure)
-- [Welcome to GitHub! (A Guide for Beginners)](#welcome-to-github-a-guide-for-beginners)
-  - [Navigating the GitHub Website](#navigating-the-github-website)
-- [How to Get this Code into R Studio (Cloning)](#how-to-get-this-code-into-r-studio-cloning)
-- [How to Contribute & Save Your Work (The Pull Request Workflow)](#how-to-contribute--save-your-work-the-pull-request-workflow)
-  - [What is a Branch?](#what-is-a-branch)
-  - [What is a Pull Request (PR)?](#what-is-a-pull-request-pr)
-  - [A Quick Tour of R Studio — Where Do I Type What?](#a-quick-tour-of-r-studio--where-do-i-type-what)
-  - [The Step-by-Step Workflow](#the-step-by-step-workflow)
-- [Our Two Main Files: The .qmd and The .tex — What's the Difference?](#our-two-main-files-the-qmd-and-the-tex--whats-the-difference)
-  - [How They Work Together](#how-they-work-together-the-simple-flow)
-- [LaTeX Basics: How to Add Content to Your .tex File](#latex-basics-how-to-add-content-to-your-tex-file)
-  - [Adding Regular Text](#adding-regular-text)
-  - [Making Text Bold, Italic, or Underlined](#making-text-bold-italic-or-underlined)
-  - [Adding Section Headings](#adding-section-headings)
-  - [Adding a Table](#adding-a-table)
-  - [Adding an Image (Chart / Figure)](#adding-an-image-chart--figure)
-  - [Adding a Bullet List](#adding-a-bullet-list)
-  - [Adding a Numbered List](#adding-a-numbered-list)
-  - [Adding Math (If Needed)](#adding-math-if-needed)
-  - [How to Put Your R Output Into the .tex](#how-to-put-your-r-output-into-the-tex)
-- [Pro Tips for Working with Both Files](#pro-tips-for-working-with-both-files)
+-   [Project Structure](#project-structure)
+-   [Welcome to GitHub! (A Guide for Beginners)](#welcome-to-github-a-guide-for-beginners)
+    -   [Navigating the GitHub Website](#navigating-the-github-website)
+-   [How to Get this Code into R Studio (Cloning)](#how-to-get-this-code-into-r-studio-cloning)
+-   [How to Contribute & Save Your Work (The Pull Request Workflow)](#how-to-contribute--save-your-work-the-pull-request-workflow)
+    -   [What is a Branch?](#what-is-a-branch)
+    -   [What is a Pull Request (PR)?](#what-is-a-pull-request-pr)
+    -   [A Quick Tour of R Studio — Where Do I Type What?](#a-quick-tour-of-r-studio--where-do-i-type-what)
+    -   [The Step-by-Step Workflow](#the-step-by-step-workflow)
+-   [Our Two Main Files: The .qmd and The .tex — What's the Difference?](#our-two-main-files-the-qmd-and-the-tex--whats-the-difference)
+    -   [How They Work Together](#how-they-work-together-the-simple-flow)
+-   [LaTeX Basics: How to Add Content to Your .tex File](#latex-basics-how-to-add-content-to-your-tex-file)
+    -   [Adding Regular Text](#adding-regular-text)
+    -   [Making Text Bold, Italic, or Underlined](#making-text-bold-italic-or-underlined)
+    -   [Adding Section Headings](#adding-section-headings)
+    -   [Adding a Table](#adding-a-table)
+    -   [Adding an Image (Chart / Figure)](#adding-an-image-chart--figure)
+    -   [Adding a Bullet List](#adding-a-bullet-list)
+    -   [Adding a Numbered List](#adding-a-numbered-list)
+    -   [Adding Math (If Needed)](#adding-math-if-needed)
+    -   [How to Put Your R Output Into the .tex](#how-to-put-your-r-output-into-the-tex)
+-   [Pro Tips for Working with Both Files](#pro-tips-for-working-with-both-files)
 
 ------------------------------------------------------------------------
 
@@ -78,11 +62,11 @@ If you get stuck on the code or layout, ask the group for help.
 
 Here is how our project files are organized:
 
-- `/data/` — Where we will store our downloaded datasets (CSV, Excel). This includes our chosen US Asset, PH Asset, Crypto, SPY, and FRED macroeconomic data.
-- `/scripts/` — Where our analysis code lives. The main file here is `finstad_analysis.qmd` (a Quarto Markdown file) — this is where we write R code, run analysis, make charts, and test our findings.
-- `/reports/` — Where our formatted report lives. The main file here is `finstad_report.tex` (a LaTeX file) — this is where we assemble the final APA-formatted PDF paper using the polished results from our analysis.
-- `/presentations/` — Where we will store our presentation slide deck and Executive Dashboard.
-- `guidelines.md` — The project requirements and rubric provided by the instructor.
+-   `/data/` — Where we will store our downloaded datasets (CSV, Excel). This includes our chosen US Asset, PH Asset, Crypto, SPY, and FRED macroeconomic data.
+-   `/scripts/` — Where our analysis code lives. The main file here is `finstad_analysis.qmd` (a Quarto Markdown file) — this is where we write R code, run analysis, make charts, and test our findings.
+-   `/reports/` — Where our formatted report lives. The main file here is `finstad_report.tex` (a LaTeX file) — this is where we assemble the final APA-formatted PDF paper using the polished results from our analysis.
+-   `/presentations/` — Where we will store our presentation slide deck and Executive Dashboard.
+-   `guidelines.md` — The project requirements and rubric provided by the instructor.
 
 ------------------------------------------------------------------------
 
@@ -130,16 +114,16 @@ A Pull Request is how you ask the group to review your work before it gets added
 
 If you open R Studio, you'll see a few different panels. Here's what each one is for:
 
-- **Source Editor (top-left)** — This is like a Word document for your code. You can write R scripts, open the `.qmd` file, edit this README, and save your work here. When you type code in the Source Editor, it doesn't run until you click the **Run** button or press **Ctrl+Enter**. Think of it as your notebook where you draft your analysis before "publishing" it.
+-   **Source Editor (top-left)** — This is like a Word document for your code. You can write R scripts, open the `.qmd` file, edit this README, and save your work here. When you type code in the Source Editor, it doesn't run until you click the **Run** button or press **Ctrl+Enter**. Think of it as your notebook where you draft your analysis before "publishing" it.
 
-- **Console / Terminal (bottom-left)** — This is where commands actually get executed. There are actually *two* tabs here:
+-   **Console / Terminal (bottom-left)** — This is where commands actually get executed. There are actually *two* tabs here:
 
-  - The **Console** tab — This is for running R code line by line. If you type `2 + 2` here and press Enter, R calculates it immediately.
-  - The **Terminal** tab — This is for system commands like Git. **When the instructions below say "type these commands in the Terminal,"** click the **Terminal** tab first (next to the Console tab). Then type your `git` commands there.
+    -   The **Console** tab — This is for running R code line by line. If you type `2 + 2` here and press Enter, R calculates it immediately.
+    -   The **Terminal** tab — This is for system commands like Git. **When the instructions below say "type these commands in the Terminal,"** click the **Terminal** tab first (next to the Console tab). Then type your `git` commands there.
 
-- **Environment / History (top-right)** — This shows all the data and variables you've loaded into R. If you import a dataset, it will appear here.
+-   **Environment / History (top-right)** — This shows all the data and variables you've loaded into R. If you import a dataset, it will appear here.
 
-- **Files / Plots / Packages / Help (bottom-right)** — This shows your project files, any charts you make, installed packages, and help documentation.
+-   **Files / Plots / Packages / Help (bottom-right)** — This shows your project files, any charts you make, installed packages, and help documentation.
 
 **The golden rule:** Write your R analysis code in the **Source Editor** (top-left), and type your Git commands in the **Terminal** tab (bottom-left).
 
@@ -199,15 +183,15 @@ You'll notice we have two important files in this project:
 
 ### `scripts/finstad_analysis.qmd` — The "Do the Work" File
 
-- **What it is:** A Quarto Markdown file (like a smart, mix-code-and-words document). Think of it as your lab notebook where you write R code, run it, see the results, and write your analysis all in one place.
-- **What it does:** You write R code inside special blocks called "code chunks." When you "render" this file, R runs all the code, generates the tables and charts, and stitches everything together into a final HTML or PDF document.
-- **When to use it:** During the analysis phase — when you're downloading data, cleaning it, merging it, running SQL queries, calculating statistics, making charts, and figuring out your findings.
+-   **What it is:** A Quarto Markdown file (like a smart, mix-code-and-words document). Think of it as your lab notebook where you write R code, run it, see the results, and write your analysis all in one place.
+-   **What it does:** You write R code inside special blocks called "code chunks." When you "render" this file, R runs all the code, generates the tables and charts, and stitches everything together into a final HTML or PDF document.
+-   **When to use it:** During the analysis phase — when you're downloading data, cleaning it, merging it, running SQL queries, calculating statistics, making charts, and figuring out your findings.
 
 ### `reports/finstad_report.tex` — The "Make It Look Pretty" File
 
-- **What it is:** A LaTeX file (pronounced *lah-tech*). LaTeX is a typesetting system — think of it as the professional version of Microsoft Word, but instead of clicking buttons to bold text, you type commands like `\textbf{bold text}`. It's what academics use to write papers because it handles formatting, citations, tables, and page layout perfectly every time.
-- **What it does:** It takes the final polished results from your `.qmd` file and lays them out in a beautiful APA 7th-edition formatted report with proper headings, margins, page numbers, and a table of contents. When you compile it, it produces a PDF (you can find the latest one at `reports/finstad_report.pdf`).
-- **When to use it:** After the analysis is done — when you're ready to write the final report with your introduction, methodology, results, and investment recommendation.
+-   **What it is:** A LaTeX file (pronounced *lah-tech*). LaTeX is a typesetting system — think of it as the professional version of Microsoft Word, but instead of clicking buttons to bold text, you type commands like `\textbf{bold text}`. It's what academics use to write papers because it handles formatting, citations, tables, and page layout perfectly every time.
+-   **What it does:** It takes the final polished results from your `.qmd` file and lays them out in a beautiful APA 7th-edition formatted report with proper headings, margins, page numbers, and a table of contents. When you compile it, it produces a PDF (you can find the latest one at `reports/finstad_report.pdf`).
+-   **When to use it:** After the analysis is done — when you're ready to write the final report with your introduction, methodology, results, and investment recommendation.
 
 ### How They Work Together (The Simple Flow) {#how-they-work-together-the-simple-flow}
 

@@ -1,0 +1,317 @@
+\begin{table}[H]
+  \centering
+  \caption{Data Acquisition Summary}
+  \label{app:tab:data_acq}
+  \begin{tabular}{l l r r r}
+    \toprule
+    Dataset & Source & {Original Observations} & {Missing Values} & {Duplicates} \\
+    \midrule
+    AAPL   & Yahoo Finance  & 2512 & 0 & 0 \\
+    BDO    & Investing.com  & 2441 & 0 & 0 \\
+    BTC    & Yahoo Finance  & 3652 & 0 & 0 \\
+    SPY    & Yahoo Finance  & 2514 & 0 & 0 \\
+    CPI    & FRED           & 952  & 0 & 0 \\
+    DGS10  & FRED           & 16105 & 0 & 0 \\
+    FEDFUNDS & FRED         & 863  & 0 & 0 \\
+    VIX    & FRED           & 9216 & 0 & 0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{Data Acquisition and Cleaning Summary}
+  \label{app:tab:clean_summary}
+  \input{sections/data_cleaning_table.tex}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{Join Comparison}
+  \label{app:tab:join_compare}
+  \begin{tabular}{
+    l
+    S[table-format=4.0]
+    p{9cm}
+  }
+    \toprule
+    Join Type & {Rows} & {Description} \\
+    \midrule
+    left\_join  & 2192 & Preserves all asset dates; macro NA on non-trading days \\
+    inner\_join & 46   & Only dates common to all eight datasets \\
+    full\_join  & 2192 & Union including macro-only periods \\
+    anti\_join  & 2121 & Asset dates missing CPI, reflecting weekend and holiday gaps \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{Observation Reduction Across Processing Stages}
+  \label{app:tab:obs_reduction}
+  \begin{tabular}{
+    l
+    S[table-format=5.0]
+    S[table-format=4.0]
+    S[table-format=4.0]
+  }
+    \toprule
+    Dataset & {Original} & {After Cleaning} & {Final} \\
+    \midrule
+    AAPL     & 2512  & 1508 & {---} \\
+    BDO      & 2441  & 1468 & {---} \\
+    BTC      & 3652  & 2192 & {---} \\
+    SPY      & 2514  & 1508 & {---} \\
+    CPI      & 952   & 71   & {---} \\
+    DGS10    & 16105 & 1500 & {---} \\
+    FEDFUNDS & 863   & 72   & {---} \\
+    VIX      & 9216  & 1535 & {---} \\
+    \addlinespace
+    Final Dataset & {---} & {---} & 2192 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Q1 Data Output}
+\begin{tabular}{lrrr}
+\toprule
+Asset & Mean\_Daily\_Return & SD\_Daily\_Return & Risk\_Adjusted\_Return \\
+\midrule
+AAPL & 0.0011 & 0.0200 & 0.0538 \\
+BTC  & 0.0017 & 0.0319 & 0.0520 \\
+SPY  & 0.0006 & 0.0131 & 0.0486 \\
+BDO  & 0.0003 & 0.0226 & 0.0131 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_q1.pdf}
+  \caption{Risk-adjusted daily return by asset. Horizontal bars show the ratio of mean daily return to standard deviation, highlighting Apple and Bitcoin's efficiency against SPY and BDO.}
+  \label{app:fig:viz_q1}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Q2 Summary Data Output}
+\begin{tabular}{llrrr}
+\toprule
+Asset & Start\_Date & End\_Date & Total\_Cumulative\_Return & Observations \\
+\midrule
+AAPL & 2020-02-03 & 2020-03-31 & -0.1764 & 41 \\
+BDO  & 2020-02-03 & 2020-03-31 & -0.3006 & 40 \\
+BTC  & 2020-02-01 & 2020-03-31 & -0.3114 & 60 \\
+SPY  & 2020-02-03 & 2020-03-31 & -0.1941 & 41 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_q2.pdf}
+  \caption{Cumulative returns during the COVID-19 crash, February to March 2020. Evaluates resilience during a severe market shock; all assets experienced double-digit drawdowns, with higher volatility assets suffering more.}
+  \label{app:fig:viz_q2}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Q3 Correlation Matrix Output}
+\begin{tabular}{lrrrr}
+\toprule
+      & AAPL   & BDO    & BTC    & SPY \\
+\midrule
+AAPL & 1.0000 & 0.1044 & 0.2836 & 0.7839 \\
+BDO  & 0.1044 & 1.0000 & 0.0507 & 0.1235 \\
+BTC  & 0.2836 & 0.0507 & 1.0000 & 0.3825 \\
+SPY  & 0.7839 & 0.1235 & 0.3825 & 1.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{fig_q3.pdf}
+  \caption{Pairwise Pearson correlation coefficients of daily returns. Values closer to 1 indicate stronger positive co-movement. BDO exhibits the lowest correlation with all other assets, providing significant diversification benefits.}
+  \label{app:fig:viz_q3}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Q4 Data Output}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+Asset & Start\_Date & End\_Date & Start\_Close & End\_Close & Total\_Return & Annualized\_Return & Mean\_Daily\_Return & SD\_Daily\_Return & Obs \\
+\midrule
+BTC  & 2020-01-02 & 2025-12-31 & 6985.47 & 87508.83 & 11.5273 & 0.5244 & 0.0017 & 0.0319 & 2191 \\
+AAPL & 2020-01-03 & 2025-12-31 & 71.63  & 271.36  & 2.7884 & 0.2489 & 0.0011 & 0.0200 & 1507 \\
+SPY  & 2020-01-03 & 2025-12-31 & 293.88 & 678.32  & 1.3082 & 0.1498 & 0.0006 & 0.0131 & 1507 \\
+BDO  & 2020-01-03 & 2025-12-29 & 128.17 & 134.60  & 0.0502 & 0.0082 & 0.0003 & 0.0226 & 1467 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_q4.pdf}
+  \caption{Asset ranking by total price return from 2020 to 2025. Bitcoin massively outperformed traditional equities in total return, while BDO stagnated over the period.}
+  \label{app:fig:viz_q4}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Q5 Data Output}
+\begin{tabular}{lllrrrr}
+\toprule
+Asset & Best\_Date & Best\_Daily\_Return & Worst\_Date & Worst\_Daily\_Return & Return\_Range & Obs \\
+\midrule
+BTC  & 2021-02-08 & 0.1875 & 2020-03-12 & -0.3717 & 0.5592 & 2191 \\
+BDO  & 2020-03-26 & 0.1570 & 2020-03-19 & -0.2272 & 0.3842 & 1467 \\
+AAPL & 2025-04-09 & 0.1533 & 2020-03-16 & -0.1286 & 0.2819 & 1507 \\
+SPY  & 2025-04-09 & 0.1050 & 2020-03-16 & -0.1094 & 0.2144 & 1507 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_q5.pdf}
+  \caption{Best and worst single-day returns by asset, 2020 to 2025. Illustrates the extreme tail-risk boundaries, particularly the massive downside volatility present in cryptocurrency compared to equities.}
+  \label{app:fig:viz_q5}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Q6 Data Output}
+\begin{tabular}{llrrr}
+\toprule
+Asset & Signal & Mean\_Daily\_Return & SD\_Daily\_Return & Obs \\
+\midrule
+AAPL & Bullish & 0.0015 & 0.0168 & 892 \\
+AAPL & Bearish & 0.0008 & 0.0212 & 557 \\
+BDO  & Bullish & 0.0006 & 0.0195 & 667 \\
+BDO  & Bearish & 0.0003 & 0.0211 & 742 \\
+BTC  & Bullish & 0.0028 & 0.0300 & 1182 \\
+BTC  & Bearish & 0.0002 & 0.0343 & 951 \\
+SPY  & Bearish & 0.0013 & 0.0162 & 361 \\
+SPY  & Bullish & 0.0006 & 0.0092 & 1088 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_q6.pdf}
+  \caption{20-day and 60-day moving average crossovers, 2024 to 2025. Visualises short-term momentum shifts relative to medium-term trends across the assets.}
+  \label{app:fig:viz_q6}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Q7 Data Output}
+\begin{tabular}{llrrrrr}
+\toprule
+Asset & Volume\_Regime & Obs & Mean\_Daily\_Return & Mean\_Abs\_Return & Volatility & Avg\_Volume \\
+\midrule
+AAPL & High Volume Days   & 377  & 0.0015 & 0.0240 & 0.0323 & 152332404 \\
+AAPL & Normal Volume Days & 1130 & 0.0009 & 0.0105 & 0.0137 & 61873902 \\
+BDO  & High Volume Days   & 367  & -0.0001 & 0.0230 & 0.0322 & 6581172 \\
+BDO  & Normal Volume Days & 1100 & 0.0004 & 0.0136 & 0.0183 & 2551276 \\
+BTC  & High Volume Days   & 548  & 0.0017 & 0.0305 & 0.0450 & 65153421094 \\
+BTC  & Normal Volume Days & 1643 & 0.0016 & 0.0183 & 0.0261 & 26930318305 \\
+SPY  & High Volume Days   & 377  & -0.0029 & 0.0160 & 0.0220 & 129389767 \\
+SPY  & Normal Volume Days & 1130 & 0.0018 & 0.0061 & 0.0078 & 63711998 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_q7.pdf}
+  \caption{Mean absolute daily return during high-volume versus normal-volume days, 2020 to 2025. Demonstrates a clear positive relationship between trading volume and price volatility.}
+  \label{app:fig:viz_q7}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Q8 Data Output}
+\begin{tabular}{llrrr}
+\toprule
+Asset & VIX\_Regime & Mean\_Daily\_Return & SD\_Daily\_Return & Obs \\
+\midrule
+AAPL & High Volatility (VIX $>$ 30) & -0.0054 & 0.0389 & 148 \\
+AAPL & Low Volatility (VIX $<$ 20)  & 0.0025 & 0.0134 & 859 \\
+AAPL & Moderate (20 $\leq$ VIX $\leq$ 30) & 0.0007 & 0.0208 & 528 \\
+BDO  & High Volatility (VIX $>$ 30) & -0.0042 & 0.0411 & 148 \\
+BDO  & Low Volatility (VIX $<$ 20)  & 0.0006 & 0.0185 & 859 \\
+BDO  & Moderate (20 $\leq$ VIX $\leq$ 30) & 0.0011 & 0.0213 & 528 \\
+BTC  & High Volatility (VIX $>$ 30) & 0.0016 & 0.0550 & 148 \\
+BTC  & Low Volatility (VIX $<$ 20)  & 0.0022 & 0.0288 & 859 \\
+BTC  & Moderate (20 $\leq$ VIX $\leq$ 30) & 0.0020 & 0.0380 & 528 \\
+SPY  & High Volatility (VIX $>$ 30) & -0.0044 & 0.0303 & 148 \\
+SPY  & Low Volatility (VIX $<$ 20)  & 0.0018 & 0.0069 & 859 \\
+SPY  & Moderate (20 $\leq$ VIX $\leq$ 30) & 0.0002 & 0.0123 & 528 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_q8.pdf}
+  \caption{Mean daily return by VIX regime. Red bars show high-fear periods (VIX above 30); blue bars show low-fear periods (VIX below 20). Bitcoin uniquely displayed positive expected returns during market turmoil.}
+  \label{app:fig:viz_q8}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Q9 Data Output}
+\begin{tabular}{llrrr}
+\toprule
+Asset & Yield\_Direction & Mean\_Daily\_Return & SD\_Daily\_Return & Obs \\
+\midrule
+AAPL & No Change      & 0.0019 & 0.0195 & 103 \\
+AAPL & Yields Falling & 0.0005 & 0.0200 & 684 \\
+AAPL & Yields Rising  & 0.0013 & 0.0201 & 712 \\
+BDO  & No Change      & -0.0020 & 0.0208 & 103 \\
+BDO  & Yields Falling & 0.0000 & 0.0253 & 684 \\
+BDO  & Yields Rising  & 0.0007 & 0.0201 & 712 \\
+BTC  & No Change      & 0.0028 & 0.0372 & 103 \\
+BTC  & Yields Falling & 0.0017 & 0.0343 & 684 \\
+BTC  & Yields Rising  & 0.0020 & 0.0363 & 712 \\
+SPY  & No Change      & -0.0001 & 0.0101 & 103 \\
+SPY  & Yields Falling & -0.0001 & 0.0130 & 684 \\
+SPY  & Yields Rising  & 0.0014 & 0.0135 & 712 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_q9.pdf}
+  \caption{Mean daily return by 10-year Treasury yield direction. Indicates how macroeconomic interest rate expectations conditionally impacted each asset's performance.}
+  \label{app:fig:viz_q9}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Q10 Data Output}
+\begin{tabular}{lllrrrrr}
+\toprule
+Asset & Start\_Date & End\_Date & Start\_CPI\_YoY & End\_CPI\_YoY & Total\_Cumul\_Return & Mean\_Daily\_Return & Obs \\
+\midrule
+BDO  & 2021-06-01 & 2023-02-28 & 0.053 & 0.0596 & 0.4391 & 0.0010 & 435 \\
+AAPL & 2021-06-01 & 2023-02-28 & 0.053 & 0.0596 & 0.1952 & 0.0006 & 440 \\
+SPY  & 2021-06-01 & 2023-02-28 & 0.053 & 0.0596 & -0.0317 & 0.0000 & 440 \\
+BTC  & 2021-06-01 & 2023-02-28 & 0.053 & 0.0596 & -0.3800 & -0.0002 & 638 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig_q10.pdf}
+  \caption{Cumulative return during the high-inflation period, June 2021 to February 2023. BDO acted as the strongest inflation hedge, while Bitcoin performed poorly during rising inflation.}
+  \label{app:fig:viz_q10}
+\end{figure}

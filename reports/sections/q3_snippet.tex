@@ -1,11 +1,7 @@
 \label{appendix-a3-sql-question-3}
 
-\emph{Pertains to Section 6: SQL-Based Financial Investigation}
 
-\textbf{Objective:} To evaluate the cross-asset correlation of daily
-returns. \textbf{Purpose of Code:} Calculates and visualizes the
-pairwise Pearson correlation coefficients across the selected assets.
-\textbf{Expected Output:} A correlation heatmap matrix.
+
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -43,7 +39,20 @@ pairwise Pearson correlation coefficients across the selected assets.
 \end{Highlighting}
 \end{Shaded}
 
-
+\begin{table}[H]
+\centering
+\caption{Q3 Correlation Matrix Output}
+\begin{tabular}{lrrrr}
+\toprule
+      & AAPL   & BDO    & BTC    & SPY \\
+\midrule
+AAPL & 1.0000 & 0.1044 & 0.2836 & 0.7839 \\
+BDO  & 0.1044 & 1.0000 & 0.0507 & 0.1235 \\
+BTC  & 0.2836 & 0.0507 & 1.0000 & 0.3825 \\
+SPY  & 0.7839 & 0.1235 & 0.3825 & 1.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{Shaded}
 \begin{Highlighting}[]

@@ -1,12 +1,7 @@
 \label{appendix-a2-sql-question-2}
 
-\emph{Pertains to Section 6: SQL-Based Financial Investigation}
 
-\textbf{Objective:} To measure crisis resilience during the COVID-19
-market crash. \textbf{Purpose of Code:} Computes the cumulative return
-of each asset over the February to March 2020 period. \textbf{Expected
-Output:} A line chart showing the trajectory of each asset's drawdown
-and recovery.
+
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -50,7 +45,20 @@ and recovery.
 \end{Highlighting}
 \end{Shaded}
 
-
+\begin{table}[H]
+\centering
+\caption{Q2 Summary Data Output}
+\begin{tabular}{llrrr}
+\toprule
+Asset & Start\_Date & End\_Date & Total\_Cumulative\_Return & Observations \\
+\midrule
+AAPL & 2020-02-03 & 2020-03-31 & -0.1764 & 41 \\
+BDO  & 2020-02-03 & 2020-03-31 & -0.3006 & 40 \\
+BTC  & 2020-02-01 & 2020-03-31 & -0.3114 & 60 \\
+SPY  & 2020-02-03 & 2020-03-31 & -0.1941 & 41 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{Shaded}
 \begin{Highlighting}[]

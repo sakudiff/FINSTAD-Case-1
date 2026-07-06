@@ -12,6 +12,9 @@
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+*.xdv
+*.bak
+*SAVE-ERROR
 
 # R / R Studio
 .Rproj.user
@@ -24,6 +27,8 @@
 Thumbs.db
 .pi
 
+context.md
+
 # Quarto build artifacts
 scripts/finstad_analysis.html
 scripts/finstad_analysis_files/
@@ -35,5 +40,10 @@ scripts/*.utf8.md
 /fig_q*.pdf
 /scripts/fig_q*.pdf
 
-# AI Agent Spec files
+# Spec files
 docs/grill-me-*
+
+# Scratch files
+*.py
+TODO.md
+reports/fig_viz*.pdf
