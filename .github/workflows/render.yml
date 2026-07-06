@@ -112,6 +112,12 @@ jobs:
           name: finstad-appendix-${{ matrix.os }}
           path: scripts/finstad_analysis.pdf
 
+      - name: Upload figures
+        uses: actions/upload-artifact@v4
+        with:
+          name: finstad-figures-${{ matrix.os }}
+          path: reports/figures/fig_*.pdf
+
   commit-pdf:
     name: Commit rendered PDFs to repo
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -132,12 +138,13 @@ jobs:
           cp finstad-report-ubuntu-latest/finstad_report.pdf reports/finstad_report.pdf
           cp finstad-appendix-ubuntu-latest/finstad_analysis.pdf scripts/finstad_analysis.pdf
           cp finstad-appendix-ubuntu-latest/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf
+          cp finstad-figures-ubuntu-latest/fig_*.pdf reports/figures/ 2>/dev/null || true
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add reports/finstad_report.pdf scripts/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf
+          git add reports/finstad_report.pdf scripts/finstad_analysis.pdf reports/finstad_analysis_appendix.pdf reports/figures/fig_*.pdf
           if ! git diff --staged --quiet; then
             git commit -m "ci: auto-render PDFs [skip ci]"
             git push

@@ -1,0 +1,22 @@
+\section{Data Cleaning}
+
+Eight CSV files were loaded into R using base \texttt{read.csv} with \texttt{stringsAsFactors} set to FALSE throughout. Each dataset was initially inspected for structural anomalies before being restricted to the January 1, 2020 to December 31, 2025 analysis window. The restriction served two purposes: it ensured uniform temporal coverage across assets trading on different calendars and it eliminated the need to extrapolate or impute macroeconomic readings for periods where certain series had no observations.
+
+Date standardisation required three distinct parsing strategies, a direct consequence of the heterogeneity across data sources. The AAPL, BTC, and SPY exports from Yahoo Finance used POSIXct-formatted timestamps with timezone offsets which required \texttt{ymd\_hms} coercion followed by conversion to Date objects. The BDO series from Investing.com used MM/DD/YYYY format which demanded \texttt{mdy} parsing from the lubridate package. All four FRED series used ISO 8601 YYYY-MM-DD format which R parsed natively via \texttt{ymd}. BDO additionally contained a byte-order-mark character prepended to the first column header, a comma-separated volume field expressed in 2.50M notation, and a closing price column labelled Price rather than Close. The byte-order-mark was handled by reading the file with UTF-8-BOM encoding, the volume field was parsed through a custom regular expression that converted suffixed values to numeric equivalents, and the Price column was remapped to Close for internal consistency. These adjustments were made transparently and did not alter any observed price or return values.
+
+No missing values or duplicate rows were detected in any dataset after the initial load. The absence of missingness is attributable to the nature of the sources: Yahoo Finance and Investing.com report complete historical price records without gaps, and FRED series are reported only on their scheduled release dates, meaning every observation in the raw download is a valid reading. The cleaning burden therefore fell entirely on format normalisation rather than imputation or row removal, which simplifies the subsequent analysis by removing the need for missing data handling techniques such as last-observation-carried-forward or interpolation.
+
+Daily returns were calculated as the simple percentage change in closing price from the previous trading day, expressed as $(\text{Close} / \operatorname{lag}(\text{Close})) - 1$. This formulation was applied consistently across all four assets, with BDO using the Price column as its close. The first observation of each asset produced a missing return by construction, as no prior price existed. These initial NA values were retained in the dataset and excluded from all subsequent statistical computations through the use of na.rm arguments, which is functionally equivalent to a drop but preserves the row count for temporal alignment.
+
+Table~\ref{tab:clean_summary} reports the observation counts at each processing stage. The reduction from original to after-cleaning counts reflects the date restriction alone, not any data quality issue. The most extreme reduction occurred for DGS10, which fell from 16,105 to 1,500 observations, and for VIX, which fell from 9,216 to 1,535 observations, both because FRED provides several decades of historical data that extend well before the 2020 start date. The CPI reduction from 952 to 71 observations is a consequence of its monthly reporting frequency.
+
+\begin{table}[H]
+  \centering
+  \begin{safetable}
+    \begin{threeparttable}
+      \caption{Data Acquisition and Cleaning Summary}
+      \label{tab:clean_summary}
+      \input{sections/data_cleaning_table.tex}
+    \end{threeparttable}
+  \end{safetable}
+\end{table}

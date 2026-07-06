@@ -1,0 +1,59 @@
+\label{appendix-a2-sql-question-2}
+
+\emph{Pertains to Section 6: SQL-Based Financial Investigation}
+
+\textbf{Objective:} To measure crisis resilience during the COVID-19
+market crash. \textbf{Purpose of Code:} Computes the cumulative return
+of each asset over the February to March 2020 period. \textbf{Expected
+Output:} A line chart showing the trajectory of each asset's drawdown
+and recovery.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Q2: COVID{-}19 Crash Cumulative Returns {-}{-} SISON, Aaron Joshua Estacio}
+
+\NormalTok{q2\_raw }\OtherTok{\textless{}{-}}\NormalTok{ fin\_data }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{select}\NormalTok{(Date, Asset, Daily\_Return) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{collect}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Date =} \FunctionTok{as.Date}\NormalTok{(Date))}
+
+\NormalTok{q2 }\OtherTok{\textless{}{-}}\NormalTok{ q2\_raw }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(Date }\SpecialCharTok{\textgreater{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2020{-}02{-}01"}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ Date }\SpecialCharTok{\textless{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2020{-}03{-}31"}\NormalTok{)) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(Daily\_Return)) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{group\_by}\NormalTok{(Asset) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{arrange}\NormalTok{(Date) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Cumulative\_Return =} \FunctionTok{cumprod}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ Daily\_Return) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+
+\NormalTok{q2\_summary }\OtherTok{\textless{}{-}}\NormalTok{ q2 }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Start\_Date =} \FunctionTok{min}\NormalTok{(Date),}
+    \AttributeTok{End\_Date =} \FunctionTok{max}\NormalTok{(Date),}
+    \AttributeTok{Total\_Cumulative\_Return =} \FunctionTok{last}\NormalTok{(Cumulative\_Return),}
+    \AttributeTok{Observations =} \FunctionTok{n}\NormalTok{()}
+\NormalTok{  )}
+
+\FunctionTok{ggplot}\NormalTok{(q2, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Date, }\AttributeTok{y =}\NormalTok{ Cumulative\_Return, }\AttributeTok{color =}\NormalTok{ Asset)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{linewidth =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#B3B3B3"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\AttributeTok{AAPL =} \StringTok{"\#555555"}\NormalTok{, }\AttributeTok{BDO =} \StringTok{"\#003D6B"}\NormalTok{,}
+                                 \AttributeTok{BTC =} \StringTok{"\#F7931A"}\NormalTok{, }\AttributeTok{SPY =} \StringTok{"\#00733E"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =}\NormalTok{ scales}\SpecialCharTok{::}\FunctionTok{percent\_format}\NormalTok{()) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Cumulative Returns During the COVID{-}19 Crash"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"February to March 2020, indexed to 100\% at period start"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Date"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Cumulative Return"}\NormalTok{, }\AttributeTok{color =} \StringTok{"Asset"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{11}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{panel.grid.minor =} \FunctionTok{element\_blank}\NormalTok{(),}
+        \AttributeTok{axis.ticks =} \FunctionTok{element\_blank}\NormalTok{(),}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{13}\NormalTok{),}
+        \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{9}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#595959"}\NormalTok{),}
+        \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"../reports/figures/fig\_q2.pdf"}\NormalTok{, }\AttributeTok{width =} \DecValTok{7}\NormalTok{, }\AttributeTok{height =} \DecValTok{4}\NormalTok{, }\AttributeTok{device =} \StringTok{"pdf"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}

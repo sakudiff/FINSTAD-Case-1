@@ -1,0 +1,31 @@
+\section{Data Acquisition}
+
+Each dataset was downloaded from its respective source in CSV format and imported into R for processing. Asset price data for AAPL, BTC, and SPY were obtained from Yahoo Finance \parencite{yahoo_finance}. BDO data were sourced from Investing.com \parencite{investingcom}, as the Philippine stock data available through Yahoo Finance did not provide sufficient historical coverage for the required sample period. All four macroeconomic series were downloaded from the FRED database website \parencite{fred_data} using their native CSV export functionality. Table~\ref{tab:data_acq} summarises the acquisition details for each dataset.
+
+The sample period of January 1, 2020 to December 31, 2025 was chosen to capture three distinct financial market regimes. The first was the COVID-19 crash and subsequent recovery from February to December 2020, which produced the sharpest equity drawdown since the 2008 financial crisis and a rapid recovery driven by monetary and fiscal intervention. The second was the inflation surge from 2021 through early 2023, during which US CPI year-on-year readings exceeded 5\% and peaked at approximately 9\%, a level not observed since the early 1980s. The third was the interest rate tightening cycle beginning in March 2022, during which the Federal Reserve raised the federal funds rate from near zero to over 5\%, the most aggressive hiking cycle in four decades. This tripartite regime structure provides a natural experiment for examining asset behaviour under contrasting macroeconomic conditions.
+
+\begin{table}[H]
+  \centering
+  \begin{safetable}
+    \begin{threeparttable}
+      \caption{Data Acquisition Summary}
+      \label{tab:data_acq}
+      \begin{tabular}{l l S[table-format=4.0] S[table-format=1.0] S[table-format=1.0]}
+        \toprule
+        Dataset & Source & {Observations} & {Missing} & {Duplicates} \\
+        \midrule
+        AAPL   & Yahoo Finance  & 2512 & 0 & 0 \\
+        BDO    & Investing.com  & 2441 & 0 & 0 \\
+        BTC    & Yahoo Finance  & 3652 & 0 & 0 \\
+        SPY    & Yahoo Finance  & 2514 & 0 & 0 \\
+        CPI    & FRED           & 952  & 0 & 0 \\
+        DGS10  & FRED           & 16105 & 0 & 0 \\
+        FEDFUNDS & FRED         & 863  & 0 & 0 \\
+        VIX    & FRED           & 9216 & 0 & 0 \\
+        \bottomrule
+      \end{tabular}
+    \end{threeparttable}
+  \end{safetable}
+\end{table}
+
+The full sample period for each series extends from its earliest available observation through mid-2026. All series were subsequently restricted to the January 1, 2020 to December 31, 2025 analysis window during the data cleaning phase. No missing values or duplicate rows were detected in the raw downloads.

@@ -32,8 +32,8 @@ scripts/*.knit.md
 scripts/*.utf8.md
 
 # Stale figure PDFs (ggsave copies, not the reports/ originals)
-fig_q*.pdf
-scripts/fig_q*.pdf
+/fig_q*.pdf
+/scripts/fig_q*.pdf
 
 # AI Agent Spec files
 docs/grill-me-*

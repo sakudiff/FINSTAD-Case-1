@@ -1,0 +1,69 @@
+\label{appendix-a8-sql-question-8}
+
+\emph{Pertains to Section 6: SQL-Based Financial Investigation}
+
+\textbf{Objective:} To assess asset performance during periods of high
+versus low market fear. \textbf{Purpose of Code:} Segregates trading
+days based on VIX levels and calculates conditional mean daily returns.
+\textbf{Expected Output:} A grouped bar chart comparing returns under
+different VIX regimes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Q8: VIX Regime Analysis {-}{-} SISON, Aaron Joshua Estacio}
+
+\NormalTok{q8\_raw }\OtherTok{\textless{}{-}}\NormalTok{ fin\_data }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(VIX)) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{select}\NormalTok{(Asset, Date, Daily\_Return, VIX) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{collect}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Date =} \FunctionTok{as.Date}\NormalTok{(Date))}
+
+\NormalTok{q8 }\OtherTok{\textless{}{-}}\NormalTok{ q8\_raw }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{VIX\_Regime =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      VIX }\SpecialCharTok{\textgreater{}} \DecValTok{30} \SpecialCharTok{\textasciitilde{}} \StringTok{"High Volatility (VIX \textgreater{} 30)"}\NormalTok{,}
+\NormalTok{      VIX }\SpecialCharTok{\textless{}} \DecValTok{20} \SpecialCharTok{\textasciitilde{}} \StringTok{"Low Volatility (VIX \textless{} 20)"}\NormalTok{,}
+      \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{"Moderate (20 \textless{}= VIX \textless{}= 30)"}
+\NormalTok{    )}
+\NormalTok{  ) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{group\_by}\NormalTok{(Asset, VIX\_Regime) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Mean\_Daily\_Return =} \FunctionTok{mean}\NormalTok{(Daily\_Return, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{SD\_Daily\_Return =} \FunctionTok{sd}\NormalTok{(Daily\_Return, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Observations =} \FunctionTok{n}\NormalTok{(),}
+    \AttributeTok{.groups =} \StringTok{"drop"}
+\NormalTok{  ) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{arrange}\NormalTok{(Asset, VIX\_Regime)}
+
+\NormalTok{q8\_plot }\OtherTok{\textless{}{-}}\NormalTok{ q8 }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(VIX\_Regime }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"High Volatility (VIX \textgreater{} 30)"}\NormalTok{, }\StringTok{"Low Volatility (VIX \textless{} 20)"}\NormalTok{)) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{VIX\_Regime =} \FunctionTok{recode}\NormalTok{(VIX\_Regime,}
+    \StringTok{"High Volatility (VIX \textgreater{} 30)"} \OtherTok{=} \StringTok{"VIX \textgreater{} 30 (High Fear)"}\NormalTok{,}
+    \StringTok{"Low Volatility (VIX \textless{} 20)"} \OtherTok{=} \StringTok{"VIX \textless{} 20 (Low Fear)"}\NormalTok{))}
+
+\FunctionTok{ggplot}\NormalTok{(q8\_plot, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Asset, }\AttributeTok{y =}\NormalTok{ Mean\_Daily\_Return, }\AttributeTok{fill =}\NormalTok{ VIX\_Regime)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.7}\NormalTok{), }\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.3}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#595959"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"VIX \textgreater{} 30 (High Fear)"} \OtherTok{=} \StringTok{"\#C91D42"}\NormalTok{,}
+                                \StringTok{"VIX \textless{} 20 (Low Fear)"} \OtherTok{=} \StringTok{"\#2E45B8"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =}\NormalTok{ scales}\SpecialCharTok{::}\FunctionTok{percent\_format}\NormalTok{()) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Mean Daily Return by VIX Regime"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Comparing asset performance under high versus low market fear, 2020 to 2025"}\NormalTok{,}
+       \AttributeTok{x =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{y =} \StringTok{"Mean Daily Return"}\NormalTok{, }\AttributeTok{fill =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{11}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{panel.grid.major.x =} \FunctionTok{element\_blank}\NormalTok{(),}
+        \AttributeTok{panel.grid.minor =} \FunctionTok{element\_blank}\NormalTok{(),}
+        \AttributeTok{axis.ticks =} \FunctionTok{element\_blank}\NormalTok{(),}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{13}\NormalTok{),}
+        \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{9}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#595959"}\NormalTok{),}
+        \AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"../reports/figures/fig\_q8.pdf"}\NormalTok{, }\AttributeTok{width =} \DecValTok{7}\NormalTok{, }\AttributeTok{height =} \DecValTok{4}\NormalTok{, }\AttributeTok{device =} \StringTok{"pdf"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}

@@ -1,0 +1,111 @@
+\label{appendix-a7-sql-question-7}
+
+\emph{Pertains to Section 6: SQL-Based Financial Investigation}
+
+\textbf{Objective:} To test whether elevated trading volume
+systematically coincides with higher volatility. \textbf{Purpose of
+Code:} Partitions trading days into high-volume and normal-volume
+regimes and compares their mean absolute returns. \textbf{Expected
+Output:} A grouped bar chart comparing volatility across volume regimes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Q7: Volume and Volatility Relationship {-}{-} CRUZ, Ricardo Miguel Inigo}
+
+\NormalTok{volume\_lookup }\OtherTok{\textless{}{-}}\NormalTok{ assets\_all }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{select}\NormalTok{(Date, Asset, Volume) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Date =} \FunctionTok{as.Date}\NormalTok{(Date),}
+    \AttributeTok{Volume =} \FunctionTok{as.numeric}\NormalTok{(Volume)}
+\NormalTok{  )}
+
+\NormalTok{q7\_raw }\OtherTok{\textless{}{-}}\NormalTok{ fin\_data }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{select}\NormalTok{(Date, Asset, Daily\_Return) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{collect}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Date =} \FunctionTok{as.Date}\NormalTok{(Date),}
+    \AttributeTok{Daily\_Return =} \FunctionTok{as.numeric}\NormalTok{(Daily\_Return)}
+\NormalTok{  ) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{left\_join}\NormalTok{(volume\_lookup, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"Date"}\NormalTok{, }\StringTok{"Asset"}\NormalTok{)) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(}
+    \SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(Daily\_Return),}
+    \SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(Volume),}
+\NormalTok{    Volume }\SpecialCharTok{\textgreater{}} \DecValTok{0}
+\NormalTok{  )}
+
+\NormalTok{q7 }\OtherTok{\textless{}{-}}\NormalTok{ q7\_raw }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{group\_by}\NormalTok{(Asset) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Volume\_Threshold =} \FunctionTok{quantile}\NormalTok{(Volume, }\FloatTok{0.75}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Volume\_Regime =} \FunctionTok{if\_else}\NormalTok{(}
+\NormalTok{      Volume }\SpecialCharTok{\textgreater{}=}\NormalTok{ Volume\_Threshold,}
+      \StringTok{"High Volume Days"}\NormalTok{,}
+      \StringTok{"Normal Volume Days"}
+\NormalTok{    ),}
+    \AttributeTok{Absolute\_Return =} \FunctionTok{abs}\NormalTok{(Daily\_Return)}
+\NormalTok{  ) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{ungroup}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{group\_by}\NormalTok{(Asset, Volume\_Regime) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Observations =} \FunctionTok{n}\NormalTok{(),}
+    \AttributeTok{Mean\_Daily\_Return =} \FunctionTok{mean}\NormalTok{(Daily\_Return, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Mean\_Absolute\_Return =} \FunctionTok{mean}\NormalTok{(Absolute\_Return, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Volatility =} \FunctionTok{sd}\NormalTok{(Daily\_Return, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Average\_Volume =} \FunctionTok{mean}\NormalTok{(Volume, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{.groups =} \StringTok{"drop"}
+\NormalTok{  ) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{arrange}\NormalTok{(Asset, Volume\_Regime)}
+
+\NormalTok{q7}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 8 x 7
+  Asset Volume_Regime      Observations Mean_Daily_Return
+  <chr> <chr>                     <int>             <dbl>
+1 AAPL  High Volume Days            377         0.00155  
+2 AAPL  Normal Volume Days         1130         0.000921 
+3 BDO   High Volume Days            367        -0.0000981
+4 BDO   Normal Volume Days         1100         0.000426 
+5 BTC   High Volume Days            548         0.00168  
+6 BTC   Normal Volume Days         1643         0.00165  
+7 SPY   High Volume Days            377        -0.00292  
+8 SPY   Normal Volume Days         1130         0.00182  
+# i 3 more variables: Mean_Absolute_Return <dbl>, Volatility <dbl>,
+#   Average_Volume <dbl>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(q7, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Asset, }\AttributeTok{y =}\NormalTok{ Mean\_Absolute\_Return, }\AttributeTok{fill =}\NormalTok{ Volume\_Regime)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.7}\NormalTok{), }\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =}\NormalTok{ scales}\SpecialCharTok{::}\FunctionTok{percent\_format}\NormalTok{()) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Volume and Volatility Relationship"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"Mean absolute daily return during high{-}volume versus normal{-}volume days, 2020 to 2025"}\NormalTok{,}
+    \AttributeTok{x =} \ConstantTok{NULL}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Mean Absolute Daily Return"}\NormalTok{,}
+    \AttributeTok{fill =} \ConstantTok{NULL}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{11}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{panel.grid.major.x =} \FunctionTok{element\_blank}\NormalTok{(),}
+    \AttributeTok{panel.grid.minor =} \FunctionTok{element\_blank}\NormalTok{(),}
+    \AttributeTok{axis.ticks =} \FunctionTok{element\_blank}\NormalTok{(),}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{13}\NormalTok{),}
+    \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{9}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#595959"}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"bottom"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dir.create}\NormalTok{(}\StringTok{"../reports/figures"}\NormalTok{, }\AttributeTok{recursive =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{showWarnings =} \ConstantTok{FALSE}\NormalTok{)}
+
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"../reports/figures/fig\_q7.pdf"}\NormalTok{, }\AttributeTok{width =} \DecValTok{7}\NormalTok{, }\AttributeTok{height =} \DecValTok{4}\NormalTok{, }\AttributeTok{device =} \StringTok{"pdf"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
