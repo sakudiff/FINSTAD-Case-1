@@ -4,66 +4,42 @@
 
 ### Group Members:
 
-1.  CRUZ, Ricardo Miguel Iñigo
-2.  GALEDO, Enrique Lorenzo Hermoso
-3.  SEBALLOS, Josiah Dweyn Panganiban
-4.  SEECHUNG, Camille Castro
-5.  SISON, Aaron Joshua Estacio
+1. CRUZ, Ricardo Miguel Iñigo
+2. GALEDO, Enrique Lorenzo Hermoso
+3. SEBALLOS, Josiah Dweyn Panganiban
+4. SEECHUNG, Camille Castro
+5. SISON, Aaron Joshua Estacio
 
 ------------------------------------------------------------------------
 
-### Task Sign-Up Sheet
+### Section Status (Updated per Approved Revisions)
 
-This project has been broken down into granular tasks mapping the coding (`.qmd`) and writing (`.tex`) requirements. Please put your name next to the sections you will take on.
+| # | Section | Status | Assignee |
+|---|---------|--------|----------|
+| 00 | Executive Summary | Not written | TBD |
+| 01 | Introduction | Not written | Enrique |
+| 02 | Data Sources | Complete | Enrique |
+| 03 | Data Cleaning | Complete | Aaron |
+| 04 | Database Integration | Complete | Aaron |
+| 05 | SQL Financial Investigation (Q1-Q10) | Complete | Aaron, Inigo |
+| 06 | Descriptive Statistics & Data Visualizations | Partial (Viz done, Stats placeholder) | Enrique, Josiah |
+| 07 | Investment Recommendation | Not written | Camille |
+| 08 | Conclusion | Not written | Camille |
+| 09 | References | Complete | All |
+| 10 | Appendix A (QMD PDF) | Rendered | Assistant |
+| 11 | Appendix B (Tables, Figures, GitHub) | Complete | Assistant |
+| - | Executive Dashboard | TBD | Josiah & Aaron |
+| - | Presentation Deck | TBD | Josiah |
 
-- [x] **Sec 1-2: Intro & Data Sources** *(App A1-A3)*
-  - **R Code:** Load all 8 CSVs. Generate summary table of missing values, duplicates, and initial observations.
-  - **Paper:** Write **Sec 1** (Introduction) and **Sec 2** (Data Sources and Acquisition).
-  - **Assignee:** Enrique
-- [x] **Sec 3-4: Cleaning & Integration** *(App A4-A6)*
-  - **R Code:** Clean data, calculate daily returns, execute `dplyr` joins, set up SQLite master database.
-  - **Paper:** Write **Sec 3** (Data Cleaning) and **Sec 4** (Database Integration) including the observation reduction table.
-  - **Assignee:** Aaron
-- [x] **Sec 5: SQL Q1-Q3** *(App A7-A9)*
-  - **R Code:** Write `DBI/RSQLite` queries for the first 3 financial questions.
-  - **Paper:** Write **Sec 5** (SQL-Based Financial Investigation) for Q1-Q3.
-  - **Assignee:** Aaron
-- [x] **Sec 5: SQL Q4-Q7** *(App A10-A13)*
-  - **R Code:** Write `DBI/RSQLite` queries for 4 more financial questions.
-  - **Paper:** Write **Sec 5** (SQL-Based Financial Investigation) for Q4-Q7.
-  - **Assignee:** Iñigo
-- [x] **Sec 5: SQL Q8-Q10** *(App A14-A16)*
-  - **R Code:** Write `DBI/RSQLite` queries for the last 3 financial questions.
-  - **Paper:** Write **Sec 5** (SQL-Based Financial Investigation) for Q8-Q10.
-  - **Assignee:** Aaron
-- [ ] **Sec 6: Descriptive Statistics** *(N/A)*
-  - **R Code:** Code `summarise()` for mean, variance, skewness, kurtosis, min/max.
-  - **Paper:** Write **Sec 6** (Descriptive Statistical Analysis).
-  - **Assignee:** Enrique
-- [x] **Sec 7: Data Visualization** *(App A17)*
-  - **R Code:** Generate `ggplot2` charts for SQL findings.
-  - **Paper:** Write **Sec 7** (Data Visualization).
-  - **Assignee:** Josiah
-- [ ] **Sec 8: Exploratory Analysis** *(App A18)*
-  - **R Code:** Exploratory data visualization and synthesis.
-  - **Paper:** Write **Sec 8** (Exploratory Financial Analysis).
-  - **Assignee:** Camille
-- [ ] **Sec 9, 11: Recommendation & Conclusion** *(N/A)*
-  - **R Code:** *(No code required, relies on previous outputs)*
-  - **Paper:** Write **Sec 9** (Investment Recommendation) and **Sec 11** (Conclusion).
-  - **Assignee:** Camille
-- [ ] **Sec 10: Exec Dashboard** *(N/A)*
-  - **R Code:** Code the 1-page dashboard layout in `.qmd` (or format in PPT).
-  - **Paper:** Write **Sec 10** (Executive Dashboard) and **Executive Summary**.
-  - **Assignee:** Josiah & Aaron
-- [ ] **Presentation Deck**
-  - **R Code:** Migrate the best charts and tables from `.qmd` into slides.
-  - **Paper:** Create the 10-minute **Presentation Deck** (Canva/PPT).
-  - **Assignee:** Josiah
-- [x] **Lead LaTeX Editor**
-  - **R Code:** Ensure the `.qmd` outputs successfully compile into the final `.pdf`.
-  - **Paper:** Manage `finstad_report.tex` formatting, table layouts, and APA citations.
-  - **Assignee:** Assistant
+### R Code (QMD) Status
+
+| Section | Chunks | Status |
+|---------|--------|--------|
+| A1-A3 | Setup, Data Loading | Complete |
+| A4-A6 | Cleaning, Integration, SQLite DB | Complete |
+| A7-A16 | SQL Questions Q1-Q10 | Complete |
+| A17 | SQL Visualizations (fig_q1-q10) | Complete |
+| A18 | Exploratory Visualizations (fig_viz1-viz8) | Complete |
 
 ## Table of Contents
 
@@ -120,13 +96,13 @@ When you view this repository on the GitHub website, you will see a list of fold
 
 To work on the project, you need to "clone" (download) this repository onto your computer using R Studio.
 
-1.  Create a free account on [GitHub](https://github.com/).
-2.  Open **R Studio**.
-3.  Go to **File** \> **New Project...**
-4.  Select **Version Control** \> **Git**.
-5.  In the "Repository URL" box, paste the URL of this GitHub repository.
-6.  Choose where you want to save the project folder on your computer.
-7.  Click **Create Project**.
+1. Create a free account on [GitHub](https://github.com/).
+2. Open **R Studio**.
+3. Go to **File** \> **New Project...**
+4. Select **Version Control** \> **Git**.
+5. In the "Repository URL" box, paste the URL of this GitHub repository.
+6. Choose where you want to save the project folder on your computer.
+7. Click **Create Project**.
 
 Now you have a local copy of our project on your computer!
 
@@ -173,7 +149,7 @@ Before you start typing any code today, make sure you are on a new branch. **You
 git switch -c feat/your-name-what-youre-doing
 ```
 
-**⬆️ FILL THIS IN.** Example: `git switch -c feat/joshua-data-cleaning` *(This creates your sandbox and moves you into it).*
+**⬆ FILL THIS IN.** Example: `git switch -c feat/joshua-data-cleaning` *(This creates your sandbox and moves you into it).*
 
 #### Step 2: Do your work!
 
@@ -193,7 +169,7 @@ git add .
 git commit -m "Write a short description of what you changed here"
 ```
 
-**⬆️ FILL THIS IN.** Example: `git commit -m "Added dplyr code for merging datasets"` *(Make sure to write a descriptive message so the group knows what you did).*
+**⬆ FILL THIS IN.** Example: `git commit -m "Added dplyr code for merging datasets"` *(Make sure to write a descriptive message so the group knows what you did).*
 
 #### Step 4: Upload your branch to GitHub (Push)
 
@@ -222,7 +198,7 @@ You'll notice we have a specific file structure to avoid merge conflicts when mu
 
 ### `reports/sections/*.tex` — The "Write Your Chapter" Files
 
-- **What they are:** Individual LaTeX files for each chapter (e.g., `06_sql_investigation.tex`, `08_data_visualization.tex`).
+- **What they are:** Individual LaTeX files for each chapter (e.g., `05_sql_financial_analysis.tex`, `06_descriptive_and_visualizations.tex`).
 - **What they do:** This is where you actually write your assigned portion of the paper. By keeping sections in separate files, we prevent messy Git merge conflicts when everyone pushes their work at once.
 - **When to use it:** When you're ready to write your final text, tables, and insert your charts.
 
@@ -233,21 +209,21 @@ You'll notice we have a specific file structure to avoid merge conflicts when mu
 
 ### How They Work Together (The Simple Flow) {#how-they-work-together-the-simple-flow}
 
-```         
+```
 Step 1: Do your analysis in the .qmd file
         (write R code, run it, see charts, find answers)
                 │
                 ▼
-Step 2: Copy your final numbers, tables, and charts 
-        and write your essay in YOUR assigned section file 
-        (e.g., reports/sections/06_sql_investigation.tex)
+Step 2: Copy your final numbers, tables, and charts
+        and write your essay in YOUR assigned section file
+        (e.g., reports/sections/05_sql_financial_analysis.tex)
                 │
                 ▼
-Step 3: Render the master finstad_report.tex file into a PDF 
+Step 3: Render the master finstad_report.tex file into a PDF
         (beautiful, ready-to-submit paper)
 ```
 
-> **💡 The `.tex` file compiles into a PDF.** Every time you "render" or "compile" the main LaTeX file, it pulls your modular section and produces a polished, publication-ready PDF document at **`reports/finstad_report.pdf`**.
+> ** The `.tex` file compiles into a PDF.** Every time you "render" or "compile" the main LaTeX file, it pulls your modular section and produces a polished, publication-ready PDF document at **`reports/finstad_report.pdf`**.
 
 **Think of it this way:** The `.qmd` file is where you cook the meal. The `.tex` files in `sections/` are where you plate the dishes. The master `finstad_report.tex` is where the final dinner is served to the reviewers.
 
@@ -262,7 +238,7 @@ You don't need to become a LaTeX expert — just a few simple commands will let 
 Just type normally between sections. Paragraphs are separated by a blank line:
 
 ``` latex
-This is a normal paragraph. Everything here will  
+This is a normal paragraph. Everything here will
 appear in the report as plain text.
 
 This is a new paragraph. See? Just leave a blank line.
@@ -271,8 +247,8 @@ This is a new paragraph. See? Just leave a blank line.
 ### Making Text Bold, Italic, or Underlined {#making-text-bold-italic-or-underlined}
 
 ``` latex
-\textbf{This will be bold}        → **This will be bold**
-\textit{This will be italic}       → *This will be italic*
+\textbf{This will be bold} → **This will be bold**
+\textit{This will be italic} → *This will be italic*
 \underline{This will be underlined} → underlined
 ```
 
@@ -281,9 +257,9 @@ This is a new paragraph. See? Just leave a blank line.
 The template already has all the sections set up. But if you need to write your own:
 
 ``` latex
-\section{Title of My Section}        → 1. Title of My Section
-\subsection{Subsection Title}         → 1.1 Subsection Title
-\subsubsection{Smaller Subsection}    → 1.1.1 Smaller Subsection
+\section{Title of My Section} → 1. Title of My Section
+\subsection{Subsection Title} → 1.1 Subsection Title
+\subsubsection{Smaller Subsection} → 1.1.1 Smaller Subsection
 ```
 
 ### Adding a Table {#adding-a-table}
@@ -297,8 +273,8 @@ Here's a simple table you can copy-paste and fill in with your numbers:
     \toprule
     Asset & Mean Return & Std Dev & Sharpe Ratio \\
     \midrule
-    SPY   & 0.85\%      & 1.25\%  & 0.68          \\
-    BTC   & 2.10\%      & 4.50\%  & 0.47          \\
+    SPY & 0.85\% & 1.25\% & 0.68 \\
+    BTC & 2.10\% & 4.50\% & 0.47 \\
     \bottomrule
   \end{tabular}
   \caption{Daily Returns Summary}
@@ -353,7 +329,7 @@ The Sharpe ratio is calculated as: $\frac{R_p - R_f}{\sigma_p}$
 
 When you run code in your `.qmd` file and get a result like:
 
-```         
+```
 Mean return of SPY: 0.85%
 ```
 
@@ -363,11 +339,11 @@ You simply: **Type that number into the .tex file** in the appropriate section. 
 
 ## Pro Tips for Working with the Files
 
-1.  **Do all your heavy lifting in the .qmd** — Download data, clean it, run your 10 SQL investigations, calculate stats, make charts. The .qmd is built for this.
-2.  **Write your prose in the `sections/` folder** — Never dump paragraphs of text directly into `finstad_report.tex`. Find your assigned `.tex` file in `reports/sections/` and edit that.
-3.  **Keep your chart filenames simple** — Save them in the `reports/figures/` folder (e.g. `fig_q1.pdf`, `fig_viz1.pdf`) so they are easy to reference in LaTeX.
-4.  **Render the master `.tex` every time you make changes** to see if the PDF looks right. If you get an error, usually it's a missing `}` or `\\` in your modular section file — read the error message, fix it, and render again.
-5.  **You can render the `.tex` in R Studio** — Open `finstad_report.tex`, then click the "Compile PDF" button (it looks like a little PDF icon) or use the keyboard shortcut **Ctrl+Shift+K** (Windows/Linux) / **Cmd+Shift+K** (Mac).
+1. **Do all your heavy lifting in the .qmd** — Download data, clean it, run your 10 SQL investigations, calculate stats, make charts. The .qmd is built for this.
+2. **Write your prose in the `sections/` folder** — Never dump paragraphs of text directly into `finstad_report.tex`. Find your assigned `.tex` file in `reports/sections/` and edit that.
+3. **Keep your chart filenames simple** — Save them in the `reports/figures/` folder (e.g. `fig_q1.pdf`, `fig_viz1.pdf`) so they are easy to reference in LaTeX.
+4. **Render the master `.tex` every time you make changes** to see if the PDF looks right. If you get an error, usually it's a missing `}` or `\\` in your modular section file — read the error message, fix it, and render again.
+5. **You can render the `.tex` in R Studio** — Open `finstad_report.tex`, then click the "Compile PDF" button (it looks like a little PDF icon) or use the keyboard shortcut **Ctrl+Shift+K** (Windows/Linux) / **Cmd+Shift+K** (Mac).
 
 ------------------------------------------------------------------------
 
@@ -379,7 +355,7 @@ Every time you push a commit to GitHub, an automated pipeline runs in the cloud.
 
 Here is exactly what happens when you push:
 
-```         
+```
 You: git add . && git commit -m "added Q4 analysis" && git push
         |
 GitHub Actions:

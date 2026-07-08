@@ -21,7 +21,7 @@
   \setmainfont{Nimbus Roman}% Times-compatible fallback
 }
 \usepackage{tikz}             % Vector graphics and diagrams
-\usetikzlibrary{calc}         % TikZ coordinate calculations
+\usetikzlibrary{calc,shapes,arrows,positioning,fit}  % TikZ coordinate calculations, diagram node shapes
 \usepackage{xcolor}           % Color support (defines dlsugreen below)
 \usepackage{graphicx}         % Image inclusion (\includegraphics, \safeincludegraphics)
 \graphicspath{{.}{figures/}}
@@ -229,13 +229,10 @@
 \input{sections/02_data_sources.tex}
 \input{sections/04_data_cleaning.tex}
 \input{sections/05_database_integration.tex}
-\input{sections/06_sql_investigation.tex}
-\input{sections/07_descriptive_statistics.tex}
-\input{sections/08_data_visualization.tex}
-\input{sections/09_exploratory_analysis.tex}
-\input{sections/10_investment_recommendation.tex}
-\input{sections/11_executive_dashboard.tex}
-\input{sections/12_conclusion.tex}
+\input{sections/05_sql_financial_analysis.tex}
+\input{sections/06_descriptive_and_visualizations.tex}
+\input{sections/07_investment_recommendation.tex}
+\input{sections/08_conclusion.tex}
 \input{sections/99_references.tex}
 
 \newpage

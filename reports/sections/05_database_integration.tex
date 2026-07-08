@@ -1,58 +1,75 @@
 \section{Database Integration}
 
-The cleaned asset and macro datasets were consolidated into a single wide-format table for SQL querying. Four join strategies were evaluated to determine the most appropriate consolidation approach.
+\subsection{Wide-Format Assembly}
 
-The \texttt{left\_join} preserved all asset trading dates and produced \num{2192} rows. Macroeconomic variables returned NA on weekends and holidays where no FRED observation existed. The \texttt{inner\_join} retained only 46 rows, representing dates common to all eight datasets simultaneously. The \texttt{full\_join} produced \num{2192} rows by taking the union of all dates across assets and macro series. The \texttt{anti\_join} returned \num{2121} asset dates that were missing CPI data, confirming that weekend and holiday gaps in the monthly CPI series drove the reduction.
+After forward-fill produced complete daily series for all eight variables across the canonical business calendar, the cleaned asset and macroeconomic datasets were consolidated into a single wide-format table. Each row represents one business day. Columns are organised by asset with shared macroeconomic indicators occupying the remaining columns. This structure is not a design preference. It is the standard input format for SQL querying and the prerequisite for the four-join demonstration that follows.
 
-Table~\ref{tab:join_compare} summarises each join type and its row count.
+\subsection{Join Strategy Evaluation}
+
+Four SQL join strategies were evaluated. Table~\ref{tab:join_compare} reports the row counts after the forward-fill procedure.
 
 \begin{table}[H]
   \centering
-  \caption{Join Comparison}
+  \caption{Join Comparison After Forward-Fill}
   \label{tab:join_compare}
-  \begin{tabular}{
-    l
-    S[table-format=4.0]
-    p{9cm}
-  }
+  \begin{tabular}{l S[table-format=4.0] p{9cm}}
     \toprule
     Join Type & {Rows} & {Description} \\
     \midrule
-    left\_join  & 2192 & Preserves all asset dates; macro NA on non-trading days \\
-    inner\_join & 46   & Only dates common to all eight datasets \\
-    full\_join  & 2192 & Union including macro-only periods \\
-    anti\_join  & 2121 & Asset dates missing CPI, reflecting weekend and holiday gaps \\
+    left\_join  & 1566 & Preserves all canonical calendar dates. All macro variables are fully populated after forward-fill. No NA values. \\
+    inner\_join & 1566 & All eight series have complete coverage after forward-fill, so the intersection is the full calendar. \\
+    full\_join  & 1566 & The union of all dates equals the canonical calendar. \\
+    anti\_join  & 0    & No asset dates are missing macro data. Forward-fill guarantees coverage. \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-The final dataset was constructed using a \texttt{left\_join} with the asset table as the base, yielding \num{2192} rows and 13 columns. This strategy retained the maximum number of observable trading days while allowing macroeconomic series to populate only where data existed. Table~\ref{tab:obs_reduction} traces the observation counts through each processing stage.
+Before forward-fill, the inner\_join retained only 46 rows: dates common to all eight raw series simultaneously. After forward-fill, all eight series are fully populated. Every join type returns the same 1,566 rows. The anti\_join returns zero rows, confirming that no canonical calendar date lacks data for any series.
+
+The left\_join was retained as the primary strategy. The numerical distinction between join types has been eliminated by forward-fill, but the left\_join preserves the conceptual priority of the asset calendar as the analytical base. This is consistent with the approach established in the original analysis. The join comparison section exists not because the choice is consequential after forward-fill, but because the project requirements demand a demonstration of all four types and a justification for the selected strategy.
+
+\subsection{Final Analytical Dataset}
+
+The final dataset contains 1,566 rows and 13 columns with zero missing values across all observations. Table~\ref{tab:obs_reduction} traces the observation counts through each processing stage.
 
 \begin{table}[H]
   \centering
   \caption{Observation Reduction Across Processing Stages}
   \label{tab:obs_reduction}
-  \begin{tabular}{
-    l
-    S[table-format=5.0]
-    S[table-format=4.0]
-    S[table-format=4.0]
-  }
+  \begin{tabular}{l S[table-format=5.0] S[table-format=4.0] S[table-format=4.0] S[table-format=4.0]}
     \toprule
-    Dataset & {Original} & {After Cleaning} & {Final} \\
+    Dataset & {Original} & {After Calendar Filter} & {After Forward-Fill} & {Final} \\
     \midrule
-    AAPL     & 2512  & 1508 & {---} \\
-    BDO      & 2441  & 1468 & {---} \\
-    BTC      & 3652  & 2192 & {---} \\
-    SPY      & 2514  & 1508 & {---} \\
-    CPI      & 952   & 71   & {---} \\
-    DGS10    & 16105 & 1500 & {---} \\
-    FEDFUNDS & 863   & 72   & {---} \\
-    VIX      & 9216  & 1535 & {---} \\
+    AAPL     & 2512  & 1508 & 1566 & {---} \\
+    BDO      & 2441  & 1468 & 1566 & {---} \\
+    BTC      & 3652  & 1566 & 1566 & {---} \\
+    SPY      & 2514  & 1508 & 1566 & {---} \\
+    CPI      & 952   & 71   & 1566 & {---} \\
+    DGS10    & 16105 & 1500 & 1566 & {---} \\
+    FEDFUNDS & 863   & 72   & 1566 & {---} \\
+    VIX      & 9216  & 1535 & 1566 & {---} \\
     \addlinespace
-    Final Dataset & {---} & {---} & 2192 \\
+    Final Dataset & {---} & {---} & {---} & 1566 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-The sharp reduction from 952 to 71 observations for CPI reflects the monthly reporting frequency of the Consumer Price Index. The final row count of \num{2192} is driven by the asset with the most trading days, BTC, which trades continuously on cryptocurrency exchanges. The observation reduction is therefore explained by two factors: non-trading days that remove weekend and holiday observations in equities, and the lower reporting frequency of macroeconomic indicators.
+The original column captures the full historical depth of each series. FRED series extend decades before the sample window. The calendar filter column reports the count after restricting to the 2020-2025 period on each series' native calendar. The forward-fill column reflects the expansion to the 1,566 business-day canonical calendar via LOCF. The most dramatic expansion is CPI (71 to 1,566) and FEDFUNDS (72 to 1,566), which is expected for monthly and meeting-based series expanded to daily frequency. BTC's reduction from 3,652 to 1,566 represents the removal of 2,086 weekend and holiday rows, consistent with its 24/7 trading nature.
+
+\subsection{SQLite Database Construction}
+
+The wide-format dataset was restructured into long format, producing one row per asset-date combination. This adds an Asset column and yields 6,264 rows (4 assets multiplied by 1,566 business days). The long format is the native input for the dbplyr lazy-table interface used in the SQL investigation section.
+
+The dataset includes a CPI\_YoY column for inflation analysis, computed as the year-over-year percentage change in the Consumer Price Index. This computation requires a 12-month lag. It was performed on the raw monthly CPI series before forward-fill, using the pre-filter data that includes 2019 observations. Computing CPI\_YoY from the forward-filled step function would produce a misleading result. The step function changes only on CPI release dates, so the year-over-year change would spike on those dates and remain flat between them, fabricating a pattern where inflation appears to change discontinuously once per month. Computing from the raw monthly data preserves each genuine month-over-12-months change. The resulting series is then forward-filled to produce a daily CPI\_YoY estimate that is constant between monthly releases, which is economically correct: the year-over-year inflation rate does not change between CPI publication dates because no new information about prices has arrived.
+
+Dates are stored as TEXT in ISO 8601 format for SQL portability and human readability. The database is persisted at data/master\_dataset.sqlite. A CSV copy is exported for spreadsheet inspection. The SQLite database is the primary analytical interface.
+
+\subsection{Limitations}
+
+Three limitations warrant explicit acknowledgment.
+
+First, the simple Mon-Fri calendar includes exchange-specific holidays that forward-fill bridges. This overcounts tradable days for any individual asset by roughly 10 to 15 days per year per exchange. Exchange-specific calendars were rejected because maintaining separate NYSE and PSE holiday lists reduces reproducibility and introduces a dependency on external data sources. The regular-grid approach is the standard in mixed-frequency macro-finance (\cite{ghysels2016}).
+
+Second, LOCF assumes that the last known observation remains the best estimate until a new observation arrives. During structural breaks such as the March 2020 emergency FOMC rate cuts, the forward-filled FEDFUNDS rate may lag the actual policy rate by up to two weeks. The forward-filled rate reflects the previously announced rate, not the new rate, on days between an emergency announcement and the next scheduled release. Users of the dataset should verify that this timing mismatch does not affect their specific analysis.
+
+Third, weekend cryptocurrency trading days were discarded. This decision is grounded in the portfolio construction framework. An allocation decision involving AAPL, BDO, or SPY can only execute on business days. Weekend-only BTC price movements carry no economic weight for a portfolio that cannot act on them. Studies that claim informational content in 24/7 trading data address a different question, one about cross-market spillovers or weekend risk premia. They do not address joint portfolio construction constrained by equity market hours.

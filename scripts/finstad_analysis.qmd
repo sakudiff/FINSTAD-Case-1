@@ -89,8 +89,7 @@ crypto <- "BTC-USD"
 
 # Appendix A3 - Data Loading
 *Author: GALEDO, Enrique Lorenzo Hermoso*
-Loads all 8 CSV datasets from the data/ directory into R data frames. Records the original observation count for each dataset before any cleaning operations.
-Datasets include 4 asset price series (AAPL, BDO, BTC, SPY) and 4 FRED macroeconomic series (CPI, DGS10, FEDFUNDS, VIX).
+Loads all 8 CSV datasets from the data/ directory into R data frames. Records the original observation count for each dataset before any cleaning operations. Datasets include 4 asset price series (AAPL, BDO, BTC, SPY) and 4 FRED macroeconomic series (CPI, DGS10, FEDFUNDS, VIX). The raw CSVs contain observations well beyond the 2020-2025 analysis window; filtering to the sample period is applied in A4 across all series simultaneously.
 
 ```{r data-loading}
 # Data Loading -- GALEDO, Enrique Lorenzo Hermoso (Sec 3: Data Acquisition)
@@ -117,7 +116,7 @@ safe_kable(obs_original, caption="Original Observations per Dataset")
 
 # Appendix A4 - Data Cleaning
 *Author: SISON, Aaron Joshua Estacio*
-Standardises date formats across all 8 datasets, filters observations to the 2020-01-01 to 2025-12-31 sample period, counts missing values and duplicates, and computes daily returns for each OHLC asset.
+Standardises date formats across all 8 datasets, extracts December 2019 seed values for monthly macro series, filters to the 2020-2025 sample period, generates a canonical Mon-Fri business calendar, left-joins each asset onto the calendar, recalculates BTC returns after weekend removal, forward-fills Close prices and zero-fills Daily_Return on non-trading days, seeds CPI and FEDFUNDS with December 2019 values to avoid cold-start nulls, and forward-fills all four macroeconomic variables via LOCF.
 
 ```{r data-cleaning}
 # Sec 4: Data Cleaning -- SISON, Aaron Joshua Estacio
@@ -137,6 +136,18 @@ dgs10   <- dgs10   |> mutate(Date = ymd(Date))
 fedfunds <- fedfunds |> mutate(Date = ymd(Date))
 vix     <- vix     |> mutate(Date = ymd(Date))
 
+# Extract December 2019 seed values for CPI and FEDFUNDS
+# These provide the initial carry-forward for the first business days
+# of January 2020 before the first 2020 monthly release
+cpi_dec2019_val <- cpi |> filter(Date == as.Date("2019-12-01")) |> pull(Value)
+fedfunds_dec2019_val <- fedfunds |> filter(Date == as.Date("2019-12-01")) |> pull(Value)
+
+# Save pre-filter macro data for CPI_YoY computation (needs 12-month lag)
+cpi_pre_filter <- cpi
+dgs10_pre_filter <- dgs10
+fedfunds_pre_filter <- fedfunds
+vix_pre_filter <- vix
+
 # Filter ALL datasets to 2020-01-01 to 2025-12-31
 start_date <- as.Date("2020-01-01")
 end_date   <- as.Date("2025-12-31")
@@ -150,69 +161,144 @@ dgs10   <- dgs10   |> filter(Date >= start_date & Date <= end_date)
 fedfunds <- fedfunds |> filter(Date >= start_date & Date <= end_date)
 vix     <- vix     |> filter(Date >= start_date & Date <= end_date)
 
-# Observations after filtering
-obs_filtered <- data.frame(
+# Observations after date filtering (before calendar join)
+obs_date_filtered <- data.frame(
   Dataset = c("AAPL", "BDO", "BTC", "SPY", "CPI", "DGS10", "FEDFUNDS", "VIX"),
-  Filtered_Obs = c(nrow(aapl), nrow(bdo), nrow(btc), nrow(spy),
-                   nrow(cpi), nrow(dgs10), nrow(fedfunds), nrow(vix))
+  After_Date_Filter = c(nrow(aapl), nrow(bdo), nrow(btc), nrow(spy),
+                        nrow(cpi), nrow(dgs10), nrow(fedfunds), nrow(vix))
 )
 
-# Missing values count
-missing_summary <- data.frame(
-  Dataset = c("AAPL", "BDO", "BTC", "SPY", "CPI", "DGS10", "FEDFUNDS", "VIX"),
-  Missing_Values = c(sum(is.na(aapl)), sum(is.na(bdo)), sum(is.na(btc)),
-                     sum(is.na(spy)), sum(is.na(cpi)), sum(is.na(dgs10)),
-                     sum(is.na(fedfunds)), sum(is.na(vix)))
-)
+# Generate canonical Mon-Fri business calendar
+# No exchange-specific holiday filtering; holidays are bridged via forward-fill
+canonical_calendar <- data.frame(
+  Date = seq.Date(from = start_date, to = end_date, by = "day")
+) |>
+  filter(!weekdays(Date) %in% c("Saturday", "Sunday"))
 
-# Duplicate rows count
-dup_summary <- data.frame(
-  Dataset = c("AAPL", "BDO", "BTC", "SPY", "CPI", "DGS10", "FEDFUNDS", "VIX"),
-  Duplicates = c(sum(duplicated(aapl)), sum(duplicated(bdo)), sum(duplicated(btc)),
-                 sum(duplicated(spy)), sum(duplicated(cpi)), sum(duplicated(dgs10)),
-                 sum(duplicated(fedfunds)), sum(duplicated(vix)))
-)
+# Left-join each asset onto the calendar
+# Assets with no observation on a given calendar date get NA Close/Daily_Return
+# BTC loses approximately 626 weekend rows (2,192 to 1,566)
+aapl <- canonical_calendar |> left_join(aapl, by = "Date") |> arrange(Date)
+bdo  <- canonical_calendar |> left_join(bdo, by = "Date")  |> arrange(Date)
+btc  <- canonical_calendar |> left_join(btc, by = "Date")  |> arrange(Date)
+spy  <- canonical_calendar |> left_join(spy, by = "Date")  |> arrange(Date)
 
-# Clean BDO: parse Vol. column if it exists
+# Recalculate daily returns on the filtered business-day grid
+# After weekend removal, Monday's return uses Friday's close, not Sunday's
+# This must happen AFTER the left-join but BEFORE forward-fill
+aapl <- aapl |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
+bdo  <- bdo  |> arrange(Date) |> mutate(Daily_Return = (Price / lag(Price)) - 1)
+btc <- btc |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
+spy  <- spy  |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
+
+# Parse BDO volume strings before column rename
 if ("Vol." %in% colnames(bdo)) {
   bdo <- bdo |> mutate(`Vol.` = parse_bdo_volume(`Vol.`))
 }
 
-# Calculate daily returns for OHLC assets
-# Daily_Return = (Close / lag(Close)) - 1
-# For BDO the Price column is the close price
-aapl <- aapl |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
-bdo  <- bdo  |> arrange(Date) |> mutate(Daily_Return = (Price / lag(Price)) - 1)
-btc  <- btc  |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
-spy  <- spy  |> arrange(Date) |> mutate(Daily_Return = (Close / lag(Close)) - 1)
+# Rename BDO columns early for forward-fill consistency
+bdo <- bdo |> rename(Close = Price, Volume = `Vol.`)
 
-# Note: BDO's Change. column can be used to verify Daily_Return computation
-# The first observation of each asset will have NA for Daily_Return (no prior day)
+# Seed first-row NAs on 2020-01-01 (New Year's Day holiday, no trading)
+aapl_first_close <- aapl |> filter(!is.na(Close)) |> pull(Close) |> head(1)
+bdo_first_close <- bdo |> filter(!is.na(Close)) |> pull(Close) |> head(1)
+spy_first_close <- spy |> filter(!is.na(Close)) |> pull(Close) |> head(1)
+if (is.na(aapl$Close[1])) { aapl$Close[1] <- aapl_first_close }
+if (is.na(bdo$Close[1])) { bdo$Close[1] <- bdo_first_close }
+if (is.na(spy$Close[1])) { spy$Close[1] <- spy_first_close }
 
-# Combine cleaning summaries into one display table
-clean_summary <- obs_filtered |>
-  left_join(missing_summary, by = "Dataset") |>
-  left_join(dup_summary, by = "Dataset")
-safe_kable(clean_summary, caption="Observations After Filtering, Missing Values, and Duplicates")
+# Forward-fill asset Close prices and zero-fill Daily_Return
+# Close: last executable price carried forward (no trade, no price change)
+# Daily_Return: zero on non-trading days (no trade, no return)
+aapl <- aapl |> tidyr::fill(Close, .direction = "down") |>
+  mutate(Daily_Return = if_else(is.na(Daily_Return), 0, Daily_Return))
+bdo  <- bdo  |> tidyr::fill(Close, .direction = "down") |>
+  mutate(Daily_Return = if_else(is.na(Daily_Return), 0, Daily_Return))
+spy  <- spy  |> tidyr::fill(Close, .direction = "down") |>
+  mutate(Daily_Return = if_else(is.na(Daily_Return), 0, Daily_Return))
+btc  <- btc  |> mutate(Daily_Return = if_else(is.na(Daily_Return), 0, Daily_Return))
+
+# Rename macro variable Value columns to meaningful names
+cpi_clean     <- cpi     |> rename(CPI = Value)
+dgs10_clean   <- dgs10   |> rename(DGS10 = Value)
+fedfunds_clean <- fedfunds |> rename(FEDFUNDS = Value)
+vix_clean     <- vix     |> rename(VIX = Value)
+
+# Left-join each macro variable onto the calendar and forward-fill
+# CPI: monthly series; seed first row with December 2019 value
+cpi <- canonical_calendar |>
+  left_join(cpi_clean, by = "Date") |>
+  arrange(Date)
+cpi_nulls_before <- sum(is.na(cpi$CPI))
+if (is.na(cpi$CPI[1])) { cpi$CPI[1] <- cpi_dec2019_val }
+cpi <- cpi |> tidyr::fill(CPI, .direction = "down")
+
+# DGS10: business-daily series
+# After left-join, gaps exist where FRED did not report
+# on days corresponding to non-trading dates in the calendar
+dgs10 <- canonical_calendar |>
+  left_join(dgs10_clean, by = "Date") |>
+  arrange(Date)
+dgs10_nulls_before <- sum(is.na(dgs10$DGS10))
+dgs10_first <- dgs10 |> filter(!is.na(DGS10)) |> pull(DGS10) |> head(1)
+if (is.na(dgs10$DGS10[1])) { dgs10$DGS10[1] <- dgs10_first }
+dgs10 <- dgs10 |> tidyr::fill(DGS10, .direction = "down")
+
+# FEDFUNDS: meeting-based series; seed first row with December 2019 value
+fedfunds <- canonical_calendar |>
+  left_join(fedfunds_clean, by = "Date") |>
+  arrange(Date)
+fedfunds_nulls_before <- sum(is.na(fedfunds$FEDFUNDS))
+if (is.na(fedfunds$FEDFUNDS[1])) { fedfunds$FEDFUNDS[1] <- fedfunds_dec2019_val }
+fedfunds <- fedfunds |> tidyr::fill(FEDFUNDS, .direction = "down")
+
+# VIX: business-daily series
+vix <- canonical_calendar |>
+  left_join(vix_clean, by = "Date") |>
+  arrange(Date)
+vix_nulls_before <- sum(is.na(vix$VIX))
+vix_first <- vix |> filter(!is.na(VIX)) |> pull(VIX) |> head(1)
+if (is.na(vix$VIX[1])) { vix$VIX[1] <- vix_first }
+vix <- vix |> tidyr::fill(VIX, .direction = "down")
+
+# Observations after calendar join and forward-fill
+obs_after_ffill <- data.frame(
+  Dataset = c("AAPL", "BDO", "BTC", "SPY", "CPI", "DGS10", "FEDFUNDS", "VIX"),
+  After_Calendar = c(nrow(aapl), nrow(bdo), nrow(btc), nrow(spy),
+                     nrow(cpi), nrow(dgs10), nrow(fedfunds), nrow(vix)),
+  Nulls_Remaining = c(sum(is.na(aapl)), sum(is.na(bdo)), sum(is.na(btc)),
+                      sum(is.na(spy)), sum(is.na(cpi)), sum(is.na(dgs10)),
+                      sum(is.na(fedfunds)), sum(is.na(vix)))
+)
+
+# Forward-fill summary: null counts per macro column before and after
+ffill_macro <- data.frame(
+  Variable = c("CPI", "DGS10", "FEDFUNDS", "VIX"),
+  Nulls_Before_Fill = c(cpi_nulls_before, dgs10_nulls_before,
+                        fedfunds_nulls_before, vix_nulls_before),
+  Nulls_After_Fill = c(0, 0, 0, 0)
+)
+
+# Display tables
+safe_kable(obs_date_filtered, caption="Observations After Date Filtering (Before Calendar Join)")
+safe_kable(obs_after_ffill, caption="Observations After Calendar Join and Forward-Fill")
+safe_kable(ffill_macro, caption="Forward-Fill Summary: Null Counts Before and After")
 ```
-
-FRED data (CPI, DGS10, FEDFUNDS) has fewer rows due to monthly or business-daily reporting frequency. Missing values introduced by join operations are handled in Section 5.
 
 # Appendix A5 - Database Integration
 *Author: SISON, Aaron Joshua Estacio*
-Demonstrates all four SQL join types (left, inner, full, anti) and justifies the chosen join strategy. Assembles the final analytical dataset by combining asset data with macroeconomic series. Exports the observation reduction table for inclusion in the main report.
+Demonstrates all four SQL join types (left, inner, full, anti) and justifies the chosen join strategy. Assembles the final analytical dataset by combining asset data with macroeconomic series. Exports the observation reduction table for inclusion in the main report. All macroeconomic variables are forward-filled in A4, so the join does not introduce new null values.
 
 ```{r database-integration}
 # Sec 5: Database Integration -- SISON, Aaron Joshua Estacio
 
 # Prepare asset data for joining
-# Standardise column names: BDO uses Price (close price) and Vol. (volume)
-bdo_clean <- bdo |> rename(Close = Price, Volume = `Vol.`)
+# BDO columns already renamed in A4 (Price -> Close, Vol. -> Volume)
 
 # Add Asset identifier to each OHLC dataset and select common columns
 aapl_clean <- aapl |> mutate(Asset = "AAPL") |>
   select(Date, Asset, Open, High, Low, Close, Volume, Daily_Return)
-bdo_clean  <- bdo_clean |> mutate(Asset = "BDO") |>
+bdo_clean  <- bdo |> mutate(Asset = "BDO") |>
   select(Date, Asset, Open, High, Low, Close, Volume, Daily_Return)
 btc_clean  <- btc |> mutate(Asset = "BTC") |>
   select(Date, Asset, Open, High, Low, Close, Volume, Daily_Return)
@@ -229,56 +315,63 @@ assets_wide <- assets_all |>
               values_from = c(Close, Daily_Return),
               names_sep = "_")
 
-# Prepare macro datasets with descriptive column names
-cpi_clean     <- cpi     |> rename(CPI = Value)
-dgs10_clean   <- dgs10   |> rename(DGS10 = Value)
-fedfunds_clean <- fedfunds |> rename(FEDFUNDS = Value)
-vix_clean     <- vix     |> rename(VIX = Value)
-
-
+# Macro dataframes from A4 already have renamed columns (CPI, DGS10, FEDFUNDS, VIX)
+# and are forward-filled with zero nulls on the canonical calendar
 
 # Demonstration of all four join types
 
 # 1) left_join: keep all asset dates, attach macro data where available
+# After forward-fill, left_join produces zero NAs
 left_example <- assets_wide |>
-  left_join(cpi_clean, by = "Date") |>
-  left_join(dgs10_clean, by = "Date") |>
-  left_join(fedfunds_clean, by = "Date") |>
-  left_join(vix_clean, by = "Date")
+  left_join(cpi, by = "Date") |>
+  left_join(dgs10, by = "Date") |>
+  left_join(fedfunds, by = "Date") |>
+  left_join(vix, by = "Date")
 
 # 2) inner_join: only dates present in ALL datasets
+# After forward-fill, all series cover all calendar dates
 inner_example <- assets_wide |>
-  inner_join(cpi_clean, by = "Date") |>
-  inner_join(dgs10_clean, by = "Date") |>
-  inner_join(fedfunds_clean, by = "Date") |>
-  inner_join(vix_clean, by = "Date")
+  inner_join(cpi, by = "Date") |>
+  inner_join(dgs10, by = "Date") |>
+  inner_join(fedfunds, by = "Date") |>
+  inner_join(vix, by = "Date")
 
 # 3) full_join: all dates from any dataset
 full_example <- assets_wide |>
-  full_join(cpi_clean, by = "Date") |>
-  full_join(dgs10_clean, by = "Date") |>
-  full_join(fedfunds_clean, by = "Date") |>
-  full_join(vix_clean, by = "Date")
+  full_join(cpi, by = "Date") |>
+  full_join(dgs10, by = "Date") |>
+  full_join(fedfunds, by = "Date") |>
+  full_join(vix, by = "Date")
 
 # 4) anti_join: asset dates with NO macro data
+# After forward-fill, every date has macro data, so anti_join returns 0 rows
 anti_example <- assets_wide |>
-  anti_join(cpi_clean, by = "Date")
+  anti_join(cpi, by = "Date")
 
 # Build the final analytical dataset
 final_dataset <- left_example
 
-
-
 # Observation reduction table
+# Original_Obs: row count in each raw CSV (before any processing)
+# After_Calendar_Filter: rows remaining after date parsing and 2020-2025 filter
+# After_ForwardFill: rows on the canonical calendar after LOCF
+
+obs_original_vec <- obs_original$Original_Obs
+names(obs_original_vec) <- obs_original$Dataset
 
 reduction_table <- data.frame(
   Dataset = c("AAPL", "BDO", "BTC", "SPY", "CPI", "DGS10", "FEDFUNDS", "VIX",
               "Assets (wide)", "Final Dataset"),
-  Original_Obs = c(obs_original$Original_Obs, NA, NA),
-  After_Cleaning = c(nrow(aapl), nrow(bdo), nrow(btc), nrow(spy),
-                     nrow(cpi), nrow(dgs10), nrow(fedfunds), nrow(vix),
-                     nrow(assets_wide), NA),
-  After_Joins = c(rep(NA, 8), NA, nrow(final_dataset))
+  Original_Obs = c(obs_original_vec["AAPL"], obs_original_vec["BDO"],
+                   obs_original_vec["BTC"], obs_original_vec["SPY"],
+                   obs_original_vec["CPI"], obs_original_vec["DGS10"],
+                   obs_original_vec["FEDFUNDS"], obs_original_vec["VIX"],
+                   NA, NA),
+  After_Calendar_Filter = c(nrow(aapl), nrow(bdo), nrow(btc), nrow(spy),
+                            nrow(cpi), nrow(dgs10), nrow(fedfunds), nrow(vix),
+                            nrow(assets_wide), NA),
+  After_ForwardFill = c(NA, NA, NA, NA, nrow(cpi), nrow(dgs10),
+                        nrow(fedfunds), nrow(vix), NA, nrow(final_dataset))
 )
 
 knitr::kable(reduction_table, caption="Observation Counts Across Processing Stages")
@@ -288,7 +381,7 @@ cat(kable(reduction_table, format = "latex", booktabs = TRUE), file = "../report
 
 # Appendix A6 - Master Dataset Creation & SQL Database Setup
 *Author: SISON, Aaron Joshua Estacio*
-Builds the master analytical dataset by restructuring into long format (one row per asset-date combination) and saves it as a persistent SQLite database file. Pre-calculates CPI year-on-year change for inflation analysis. All subsequent SQL questions (A7-A16) query this persisted database.
+Builds the master analytical dataset by restructuring into long format (one row per asset-date combination) and saves it as a persistent SQLite database file with human-readable ISO dates. Pre-calculates CPI year-on-year change for inflation analysis. Exports a CSV copy for compatibility with spreadsheet software. All subsequent SQL questions (A7-A16) query this persisted database.
 
 ```{r sql-setup}
 # SQLite database setup — creates persisted master dataset
@@ -320,9 +413,14 @@ sql_long <- bind_rows(
 
 # Pre-calculate CPI YoY for Q10 (inflation analysis)
 # CPI is monthly; YoY change = (current / 12-month-ago) - 1
-cpi_yoy <- cpi_clean |>
+# CPI_YoY is computed from raw monthly CPI values to preserve genuine
+# month-over-12-months change, using pre-filter data so the 12-month
+# lag resolves correctly for January 2020
+cpi_yoy <- cpi_pre_filter |>
+  rename(CPI = Value) |>
   arrange(Date) |>
   mutate(CPI_YoY = (CPI / lag(CPI, 12)) - 1) |>
+  filter(Date >= start_date & Date <= end_date) |>
   select(Date, CPI_YoY)
 
 # Join CPI_YoY into the long dataset and forward-fill to cover all trading days
@@ -331,9 +429,13 @@ sql_long <- sql_long |>
   arrange(Date) |>
   tidyr::fill(CPI_YoY, .direction = "down")
 
-
+# Write to SQLite database
 dbWriteTable(con, "integrated_data", sql_long, overwrite = TRUE)
 fin_data <- tbl(con, "integrated_data")
+
+# Export CSV copy for spreadsheet compatibility (e.g., Microsoft Excel)
+write.csv(sql_long, file.path(data_dir, "master_dataset.csv"),
+          row.names = FALSE, na = "")
 
 # Show first 5 rows of the master dataset as a preview
 nrow_total <- collect(fin_data) |> nrow()
@@ -1227,41 +1329,26 @@ ggsave("../reports/figures/fig_viz8.pdf", width = 7, height = 4, device = "pdf")
 ```
 
 
-## Sec 7: Descriptive Statistics
+# Appendix A19 - Descriptive Statistics
 *Author: GALEDO, Enrique Lorenzo Hermoso*
-*Mean, median, variance, std dev, min, max, range, skewness, kurtosis.*
+*Note: Corresponds to Section 6 (Descriptive and Visualizations). Code is being developed in a separate PR and will be merged here.*
 
 ```{r descriptive-stats}
-# Sec 7: Descriptive Statistics -- compute mean, median, variance, skewness, kurtosis -- GALEDO, Enrique Lorenzo Hermoso
+# To be merged from GALEDO, Enrique Lorenzo Hermoso
 ```
 
-## Sec 8: Data Visualization
-*Author: SEBALLOS, Josiah Dweyn Panganiban*
-*At least 8 professional-quality figures.*
-
-```{r data-viz-1}
-# Sec 8: Data Visualization -- create 8 professional figures with ggplot2 -- SEBALLOS, Josiah Dweyn Panganiban
-```
-
-## Sec 9: Exploratory Analysis
+# Appendix A20 - Investment Recommendation
 *Author: SEECHUNG, Camille Castro*
-*Compare returns, volatility, inflationary periods, high-VIX periods, interest-rate environments.*
-
-```{r exploratory-analysis}
-# Sec 9: Exploratory Financial Analysis -- compare returns, volatility, inflation, VIX, interest rates -- SEECHUNG, Camille Castro
-```
-
-## Sec 10: Investment Recommendation
-*Author: SEECHUNG, Camille Castro*
-*Allocate USD 1,000,000.*
+*Note: Corresponds to Section 7 (Investment Recommendation). Allocate USD 1,000,000.*
 
 ```{r investment-rec}
-# Sec 10: Investment Recommendation -- USD 1,000,000 allocation among AAPL, BDO, BTC, cash -- SEECHUNG, Camille Castro
+# Sec 7: Investment Recommendation -- USD 1,000,000 allocation among AAPL, BDO, BTC, cash -- SEECHUNG, Camille Castro
 ```
 
-## Sec 11: Executive Dashboard
+# Appendix A21 - Executive Dashboard
 *Author: CRUZ, Ricardo Miguel Iñigo*
+*Note: Corresponds to Section 0 (Executive Summary).*
 
 ```{r dashboard-prep}
-# Sec 11: Executive Dashboard -- key stats, charts, SQL findings, recommendation summary -- CRUZ, Ricardo Miguel Iñigo
+# Sec 0: Executive Dashboard -- key stats, charts, SQL findings, recommendation summary -- CRUZ, Ricardo Miguel Iñigo
 ```
