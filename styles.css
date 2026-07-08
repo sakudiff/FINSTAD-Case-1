@@ -1,0 +1,9 @@
+.quarto-dashboard .card {
+  flex: 0 0 auto !important;
+}
+.quarto-dashboard .card-body {
+  flex: 0 0 auto !important;
+}
+.cell-output-display {
+  flex: 0 0 auto !important;
+}
