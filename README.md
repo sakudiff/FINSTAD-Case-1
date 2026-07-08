@@ -26,8 +26,8 @@
 | 07 | Investment Recommendation | Not written | Camille |
 | 08 | Conclusion | Not written | Camille |
 | 09 | References | Complete | All |
-| 10 | Appendix A (QMD PDF) | Rendered | Assistant |
-| 11 | Appendix B (Tables, Figures, GitHub) | Complete | Assistant |
+| 10 | Appendix A (QMD PDF) | Rendered | Everyone |
+| 11 | Appendix B (Tables, Figures, GitHub) | Complete | Everyone |
 | - | Executive Dashboard | TBD | Josiah & Aaron |
 | - | Presentation Deck | TBD | Josiah |
 
