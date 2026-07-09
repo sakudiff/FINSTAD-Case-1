@@ -9,19 +9,19 @@
 **Research Question:** Which asset delivered the highest return per unit of risk over the 2020 to 2025 sample period?
 
 - Computed a Sharpe-like ratio by dividing each asset's mean daily return by its standard deviation.
-- Sorted assets descending: AAPL (0.0627), BTC (0.0613), SPY (0.0534), BDO (0.0310).
+- Sorted assets descending: BDO (0.0524), BTC (0.0520), AAPL (0.0392), SPY (0.0353).
 - Constructed the metric via `group_by(Asset) %>% summarise(Mean_Daily_Return, SD_Daily_Return) %>% mutate(Risk_Adjusted_Return)`.
 - Extended the query with `arrange(desc(Risk_Adjusted_Return))` to produce the final ranking.
-- Added a benchmark reference line at SPY's ratio (0.0534) to contextualize relative performance.
+- Added a benchmark reference line at SPY's ratio (0.0353) to contextualize relative performance.
 
 ### Slide 2 — Figure (fig_q1.pdf)
 
 - **Figure 1** plots the risk-adjusted return as horizontal bars, ranked top to bottom by efficiency.
 - A dashed vertical line at SPY's benchmark level divides beaters from laggards.
-- AAPL led the hierarchy at 0.0627, built on a 0.121% mean daily return against 1.93% volatility.
-- BTC followed at 0.0613, achieving near-parity through higher return magnitude (0.233%) at 3.80% volatility.
-- BDO ranked last at 0.0310, producing a 2x spread between top and bottom of the ranking.
-- Answered the research question: AAPL delivered the highest return per unit of risk, while BDO lagged despite its near-zero correlation advantage.
+- BDO led the hierarchy at 0.0524, built on a 0.08% mean daily return against 1.54% volatility.
+- BTC followed at 0.0520, achieving near-parity through higher return magnitude (0.17%) at 3.19% volatility.
+- AAPL and SPY ranked below the Philippine asset, with AAPL at 0.0392 and SPY at 0.0353.
+- Answered the research question: BDO delivered the highest return per unit of risk, driven by its low volatility rather than high absolute returns.
 
 ---
 
@@ -34,19 +34,19 @@
 - Filtered the dataset to observations between 1 February and 31 March 2020.
 - Computed cumulative returns within each asset group using `cumprod(1 + Daily_Return) - 1` ordered by date.
 - Summarised start and end dates, total cumulative return, and observation count per asset.
-- Found that BTC declined 31.1% across 42 trading days, the largest cumulative loss.
-- SPY lost 19.2% and AAPL lost 16.1%, both over 42 trading days.
-- BDO lost only 5.3% over 42 days, the smallest COVID drawdown in the sample.
-- BDO's mild drawdown reflected delayed crisis transmission to Philippine equities rather than genuine resilience.
+- BDO posted a positive cumulative return of +41.67% across 60 trading days, gaining during the crisis.
+- BTC declined 31.14% across 60 days, the largest cumulative loss.
+- SPY lost 4.46% and AAPL lost 0.43%, both over 60 trading days.
+- BDO's positive COVID return reflected the delayed and muted impact of the global selloff on Philippine equities rather than genuine crisis alpha.
 
 ### Slide 2 — Figure (fig_q2.pdf)
 
 - **Figure 2** traces cumulative returns as line paths from February through March 2020.
-- SPY and AAPL declined in near lockstep, reflecting the broad US equity selloff.
+- SPY and AAPL declined modestly, reflecting the broad US equity selloff compressed into a narrow window.
 - BTC exhibited sharp intra-period reversals with violent single-day bounces followed by deeper declines.
-- BDO showed a delayed and shallower decline that contrasted with the immediate US equity collapse.
-- Confirmed that the proposition of cryptocurrency as a crisis hedge is rejected — BTC recorded the largest cumulative loss at 31.1%.
-- Answered the research question: all assets suffered losses, with BTC and SPY hit hardest, while BDO's minimal drawdown reflected market structure lag, not fundamental hedging.
+- BDO showed a pronounced upward trajectory that contrasted sharply with the US equity collapse.
+- Confirmed that the proposition of cryptocurrency as a crisis hedge is rejected — BTC recorded the largest cumulative loss at 31.14%.
+- Answered the research question: crisis impact was highly asset-specific, with BDO gaining as Philippine markets decoupled from global turmoil.
 
 ---
 
@@ -60,14 +60,14 @@
 - Computed the Pearson correlation matrix using `cor(use = "pairwise.complete.obs")`.
 - Reshaped the matrix to long format via `pivot_longer` for visual mapping.
 - Found the AAPL-SPY pair produced the highest coefficient at 0.787, a mechanical consequence of Apple's weighting in the S&P 500.
-- BDO formed a distinct diversification tier with correlations between 0.088 and 0.131 to all other assets.
+- BDO formed a distinct diversification tier with average cross-correlation of 0.090.
 
 ### Slide 2 — Figure (fig_q3.pdf)
 
 - **Figure 3** displays the pairwise correlation matrix as a colour-coded heatmap with numeric labels.
 - Dark blue squares mark the strongest positive correlations (AAPL-SPY at 0.787), light green squares mark the near-zero pairs.
-- BDO's average cross-correlation of 0.109 means it retains more than 89% of its stand-alone variance as diversifying power.
-- The BDO-BTC pair at 0.088 was the lowest in the matrix, offering the strongest portfolio diversification.
+- BDO's average cross-correlation of 0.090 means it retains more than 91% of its stand-alone variance as diversifying power.
+- The BDO-BTC pair at 0.076 was the lowest in the matrix, offering the strongest portfolio diversification.
 - Answered the research question: BDO provides the greatest diversification benefit, but unconditional correlations overstate the protection available during systemic crises.
 
 ---
@@ -83,7 +83,7 @@
 - Ranked by `Total_Return` descending to produce the performance hierarchy.
 - BTC delivered 1,115.4% total return (51.6% annualised), far exceeding all other assets.
 - BDO returned 5.7% total return (0.9% annualised), the lowest in the sample — essentially zero real capital appreciation across six years.
-- All assets have 1,566 observations after the forward-fill procedure.
+- All assets have 2,192 observations after the forward-fill procedure.
 
 ### Slide 2 — Figure (fig_q4.pdf)
 
@@ -103,16 +103,16 @@
 
 - Identified each asset's maximum and minimum daily return using `which.max()` and `which.min()` within `group_by(Asset)`.
 - Computed the return range as the difference between best and worst days.
-- BTC's worst day at -37.2% (12 March 2020) was more than three times SPY's worst day at -10.9%.
-- BDO's worst day at -13.4% was better balanced with its best day at 15.7%, showing more symmetric risk for a Philippine bank stock.
+- BTC's worst day at -37.2% (12 March 2020) was nearly four times SPY's worst day at -9.6%.
+- BDO's worst day at -11.8% was smaller than its best day at 15.7%, showing relatively balanced tail risk for a Philippine bank stock.
 - Only AAPL and SPY showed roughly symmetric extremes, with worst-day losses comparable to best-day gains.
 
 ### Slide 2 — Figure (fig_q5.pdf)
 
 - **Figure 5** plots best and worst trading days as grouped bars per asset, blue for gains and red for losses.
-- The asymmetry in the BTC and BDO tails is visually stark — the red bars extend far beyond the blue bars.
+- The asymmetry in the BTC tails is visually stark — the red bar for its worst day extends far beyond any other.
 - BTC's 37.2% decline on 12 March 2020 was a cascading liquidation event: levered longs margin-called, stop-loss orders triggered further declines, and the cascade exhausted every bid in the order book.
-- The 3.4x ratio between BTC's and SPY's worst-day losses defines the risk-budgeting challenge for a multi-asset portfolio.
+- The 3.9x ratio between BTC's and SPY's worst-day losses defines the risk-budgeting challenge for a multi-asset portfolio.
 - Answered the research question: assets with the highest unconditional volatility also have the most asymmetric tails, and those tails are structurally unhedgeable through conventional correlation-based methods.
 
 ---
@@ -126,17 +126,16 @@
 - Calculated 20-day and 60-day simple moving averages per asset using `stats::filter(Close, rep(1/20, 20), sides = 1)`.
 - Assigned a `Signal` — Bearish, Bullish, or Neutral — based on whether the 20-day MA sat above or below the 60-day MA.
 - Grouped by Asset and Signal to compute mean and standard deviation of daily returns per regime.
-- BTC generated 15 crossovers, more than twice as many as AAPL (6), SPY (8), or BDO (6).
-- AAPL's bullish mean return (0.15%) was 1.2x its bearish return (0.13%), the narrowest gap among the assets.
-- BDO and SPY showed bearish mean returns exceeding bullish means, reflecting the sample's strong upward drift.
+- AAPL's bullish mean return (0.09%) exceeded its bearish return (0.01%), offering the clearest trend-following signal.
+- BDO and SPY showed bearish mean returns exceeding bullish means, reflecting the sample's strong upward drift overwhelming short-term signals.
 
 ### Slide 2 — Figure (fig_q6.pdf)
 
 - **Figure 6** overlays the 20-day (blue) and 60-day (red) moving averages on closing prices from 2024 to 2025, faceted by asset.
-- The crossover points mark every signal reversal — BTC's panel shows frequent MA crossings, reflecting noisy short-term price action.
-- BTC's bullish mean return reached 0.35%, exceeding its bearish mean of 0.09%, offering a exploitable long-side bias.
-- SPY's bullish mean (0.06%) was below its bearish mean (0.18%), driven by the sample's strong upward trend overwhelming short-term signals.
-- Answered the research question: crossover frequency varies 2.5x across assets, and BTC's trend signal is too asymmetric to support a market-neutral approach.
+- BTC's bullish mean return reached 0.28%, the highest among all assets, while its bearish mean was just 0.02%.
+- SPY's bullish mean (0.03%) was below its bearish mean (0.04%), driven by the sample's strong upward trend overwhelming short-term signals.
+- BDO had the most balanced signal distribution with 1,085 bearish and 1,048 bullish observations.
+- Answered the research question: crossover frequency varies across assets, and BTC's trend signal asymmetry undermines symmetric long-short strategies.
 
 ---
 
@@ -149,7 +148,7 @@
 - Joined daily returns with volume data from the `assets_all` raw table via `left_join`.
 - Defined the high-volume regime as days in the top quartile (`quantile(Volume, 0.75)`) per asset.
 - Grouped by Asset and Volume_Regime to compute mean return, mean absolute return, and volatility.
-- In every asset, the high-volume regime produced mean absolute returns approximately double the normal-volume regime (e.g. SPY: 1.60% vs. 0.61%; BTC: 3.05% vs. 1.83%).
+- In every asset, the high-volume regime produced mean absolute returns approximately double the normal-volume regime (e.g. SPY: 1.33% vs. 0.46%; BTC: 3.05% vs. 1.83%).
 - BDO and SPY showed negative mean daily returns in high-volume days, consistent with adverse repricing events rather than benign liquidity provision.
 
 ### Slide 2 — Figure (fig_q7.pdf)
@@ -170,17 +169,17 @@
 
 - Filtered to observations with non-missing VIX values and partitioned into three regimes: VIX < 20, 20-30, and VIX > 30.
 - Grouped by Asset and VIX_Regime to compute conditional mean return, standard deviation, and observation count.
-- During high-fear periods, AAPL posted -0.51% and SPY -0.41%, while BDO showed -0.15% and BTC surprisingly -0.31%.
-- BTC's mean return in high-fear periods was negative at -0.31%, contradicting the earlier finding that crypto hedges volatility.
-- The high-fear regime contained 150 observations per asset, approximately 9.6% of the total sample.
+- During high-fear periods, BDO was the only asset with a positive mean daily return (0.14%), while AAPL posted -0.34%, SPY -0.24%, and BTC -0.16%.
+- BTC's negative high-fear mean contradicted the narrative that cryptocurrency hedges volatility.
+- The high-fear regime contained 206 observations per asset, approximately 9.4% of the total sample.
 
 ### Slide 2 — Figure (fig_q8.pdf)
 
 - **Figure 8** plots mean daily return by VIX regime as a grouped bar chart, blue for low fear and red for high fear.
-- No asset's high-fear bar extended above zero — all four assets showed negative mean returns during VIX > 30 periods.
-- AAPL's low-fear mean (0.25%) was substantially higher than BDO's (0.08%), establishing a clear calm-market hierarchy.
-- The COVID-19 crash from Q2 drove the high-fear regime, with BTC's larger negative return reflecting extreme tail events.
-- Answered the research question: VIX regime determines cross-asset return rankings — during high fear, all assets decline, with SPY showing the smallest mean negative return.
+- BDO's bar was the only positive red bar — every other asset's high-fear bar extended below the zero line.
+- AAPL's low-fear mean (0.13%) was substantially higher than BDO's (0.05%), establishing a clear calm-market hierarchy.
+- The COVID-19 crash from Q2 drove the high-fear regime, with BDO's positive return reflecting its decoupling from global risk-on dynamics.
+- Answered the research question: VIX regime determines cross-asset return rankings — during high fear, BDO uniquely delivered positive returns, likely reflecting domestic monetary insulation rather than genuine crisis alpha.
 
 ---
 
@@ -193,16 +192,16 @@
 - Computed daily changes in the 10-year yield via `DGS10_Change = DGS10 - lag(DGS10)` per asset.
 - Assigned each day to Yields Rising, Yields Falling, or No Change based on the sign of the change.
 - Grouped by Asset and Yield_Direction to produce conditional mean returns.
-- During rising-yield periods, all four assets posted positive returns — BTC (0.23%), AAPL (0.15%), SPY (0.15%), BDO (0.08%).
-- SPY was the only asset with a negative mean return (-0.01%) when yields fell, indicating falling yields signalled deteriorating growth expectations.
+- During rising-yield periods, all four assets posted positive returns — BTC (0.20%), BDO (0.13%), AAPL (0.11%), SPY (0.10%).
+- During falling-yield periods, BDO posted 0.12% and BTC 0.17%, while SPY was near-zero at 0.01%.
 
 ### Slide 2 — Figure (fig_q9.pdf)
 
 - **Figure 9** plots mean daily return conditional on yield direction, orange for rising yields and blue for falling yields.
 - Every asset shows a positive orange bar, contradicting the textbook DCF intuition that higher rates mechanically lower prices.
 - The growth-signalling channel dominated the discount-rate channel: rising yields reflected improving growth expectations, not restrictive monetary policy.
-- BDO showed near-zero sensitivity at 0.00% in falling-yield periods against 0.07% in rising-yield periods, a structurally negligible difference.
-- Answered the research question: rate sensitivity varies by asset, but the dominant transmission channel is growth expectations — a short-equity-on-rising-yields strategy would have been systematically wrong throughout the sample.
+- BDO showed positive returns in both regimes (0.13% rising, 0.12% falling), the most consistent performance across yield environments.
+- Answered the research question: rate sensitivity varies by asset, but the dominant transmission channel is growth expectations.
 
 ---
 
@@ -215,14 +214,15 @@
 - Filtered the dataset to the window where CPI year-on-year exceeded 5% (June 2021 to February 2023).
 - Computed cumulative returns per asset using `cumprod(1 + Daily_Return) - 1` within the filtered window.
 - Summarised start and end dates, CPI boundaries, total cumulative return, and mean daily return per asset.
-- BDO generated the highest cumulative return at 45.3%, followed by AAPL at 28.7%.
-- SPY eked out a 2.4% gain, while BTC collapsed by 38.0% — the asset marketed as digital gold delivered the worst inflation-hedging performance.
-- All four assets share 456 high-inflation observations after the forward-fill procedure.
+- AAPL generated the highest cumulative return at 27.8%, followed by BDO at 24.8%.
+- SPY gained 11.3%, while BTC collapsed by 38.0% — the asset marketed as digital gold delivered the worst inflation-hedging performance.
+- All four assets share 638 high-inflation observations.
 
 ### Slide 2 — Figure (fig_q10.pdf)
 
 - **Figure 10** plots cumulative return during the high-inflation window as horizontal bars, ranked best to worst.
-- BDO's bar leads at +45.3%, SPY's near-zero at +2.4%, and BTC's extends deep into negative territory at -38.0%.
-- BDO's performance was structural rather than coincidental: Philippine banks widen net interest margins when floating-rate loans reprice upward while deposit rates adjust slowly.
+- AAPL's bar leads at +27.8%, BDO follows at +24.8%, SPY at +11.3%, and BTC extends deep into negative territory at -38.0%.
+- AAPL's pricing power allowed it to pass input cost increases to consumers without triggering demand destruction.
+- BDO's performance reflected the endowment effect: Philippine banks widen net interest margins when floating-rate loans reprice upward while deposit rates adjust slowly.
 - BTC's 38.0% loss was the most informative negative data point: no cash flows, no contractual repricing mechanism, and no fundamental valuation floor meant the asset collapsed when the Fed withdrew liquidity.
-- Answered the research question: an emerging-market commercial bank — not gold, not Bitcoin — provided the most effective inflation hedge, while the asset with the highest stand-alone total return in Q4 became the worst performer during the inflation window.
+- Answered the research question: AAPL and BDO provided the most effective inflation hedges, while the asset with the highest stand-alone total return in Q4 became the worst performer during the inflation window.
