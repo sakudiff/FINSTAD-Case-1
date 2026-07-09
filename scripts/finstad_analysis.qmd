@@ -462,6 +462,23 @@ q1 <- fin_data |>
 spy_ratio <- q1 |> filter(Asset == "SPY") |> pull(Risk_Adjusted_Return)
 
 safe_kable(q1, digits=4, caption="Q1 Data Output")
+
+# Write LaTeX table to file for main report inclusion
+sink("../reports/sections/q1_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q1 Data Output}\n")
+cat("\\label{tab:q1}\n")
+cat("\\begin{tabular}{lrrr}\n")
+cat("\\toprule\n")
+cat("Asset & Mean\\_Daily\\_Return & SD\\_Daily\\_Return & Risk\\_Adjusted\\_Return \\\\
+")
+cat("\\midrule\n")
+for (i in 1:nrow(q1)) {
+  cat(sprintf("%s & %.4f & %.4f & %.4f \\\\
+", q1$Asset[i], q1$Mean_Daily_Return[i], q1$SD_Daily_Return[i], q1$Risk_Adjusted_Return[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A8 - SQL Question 2: COVID-19 Crash Cumulative Returns
@@ -492,6 +509,25 @@ q2_summary <- q2 |>
   )
 
 safe_kable(q2_summary, digits=4, caption="Q2 Summary Data Output")
+
+# Write LaTeX table to file
+sink("../reports/sections/q2_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q2 Summary Data Output}\n")
+cat("\\label{tab:q2}\n")
+cat("\\begin{tabular}{lllrr}\n")
+cat("\\toprule\n")
+cat("Asset & Start\\_Date & End\\_Date & Total\\_Cumulative\\_Return & Observations \\\\
+")
+cat("\\midrule\n")
+for (i in 1:nrow(q2_summary)) {
+  cat(sprintf("%s & %s & %s & %.4f & %d \\\\
+",
+    q2_summary$Asset[i], q2_summary$Start_Date[i], q2_summary$End_Date[i],
+    q2_summary$Total_Cumulative_Return[i], q2_summary$Observations[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A9 - SQL Question 3: Pairwise Correlation of Daily Returns
@@ -517,6 +553,24 @@ cor_long <- as.data.frame(cor_matrix) |>
          Asset2 = factor(Asset2, levels = c("AAPL", "BDO", "BTC", "SPY")))
 
 safe_kable(round(cor_matrix, 4), caption="Q3 Correlation Matrix Output")
+
+# Write LaTeX table to file
+sink("../reports/sections/q3_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q3 Correlation Matrix Output}\n")
+cat("\\label{tab:q3}\n")
+cat("\\begin{tabular}{lrrrr}\n")
+cat("\\toprule\n")
+cat("  & AAPL & BDO & BTC & SPY \\\\
+")
+cat("\\midrule\n")
+for (a in rownames(cor_matrix)) {
+  cat(sprintf("%s & %.4f & %.4f & %.4f & %.4f \\\\
+",
+    a, cor_matrix[a,"AAPL"], cor_matrix[a,"BDO"], cor_matrix[a,"BTC"], cor_matrix[a,"SPY"]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A10 - SQL Question 4: Asset Ranking by Total Return
@@ -553,6 +607,26 @@ q4_plot <- q4 |>
   mutate(Asset = factor(Asset, levels = q4$Asset[order(q4$Total_Return)]))
 
 safe_kable(q4, digits=4, caption="Q4 Data Output")
+
+# Write LaTeX table to file
+sink("../reports/sections/q4_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q4 Data Output}\n")
+cat("\\label{tab:q4}\n")
+cat("\\begin{tabular}{lllrrrrrrr}\n")
+cat("\\toprule\n")
+cat("Asset & Start\\_Date & End\\_Date & Start\\_Close & End\\_Close & Total\\_Return & Annualized\\_Return & Mean\\_Daily\\_Return & SD\\_Daily\\_Return & Obs \\\\
+")
+cat("\\midrule\n")
+for (i in 1:nrow(q4)) {
+  cat(sprintf("%s & %s & %s & %.2f & %.2f & %.4f & %.4f & %.4f & %.4f & %d \\\\
+",
+    q4$Asset[i], q4$Start_Date[i], q4$End_Date[i], q4$Start_Close[i], q4$End_Close[i],
+    q4$Total_Return[i], q4$Annualized_Return[i], q4$Mean_Daily_Return[i], q4$SD_Daily_Return[i],
+    q4$Observations[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A11 - SQL Question 5: Best and Worst Trading Days
@@ -582,6 +656,25 @@ q5 <- q5_raw |>
   arrange(Worst_Daily_Return)
 
 safe_kable(q5, digits=4, caption="Q5 Data Output")
+
+# Write LaTeX table to file
+sink("../reports/sections/q5_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q5 Data Output}\n")
+cat("\\label{tab:q5}\n")
+cat("\\begin{tabular}{lllrrrr}\n")
+cat("\\toprule\n")
+cat("Asset & Best\\_Date & Best\\_Daily\\_Return & Worst\\_Date & Worst\\_Daily\\_Return & Return\\_Range & Obs \\\\
+")
+cat("\\midrule\n")
+for (i in 1:nrow(q5)) {
+  cat(sprintf("%s & %s & %.4f & %s & %.4f & %.4f & %d \\\\
+",
+    q5$Asset[i], q5$Best_Date[i], q5$Best_Daily_Return[i],
+    q5$Worst_Date[i], q5$Worst_Daily_Return[i], q5$Return_Range[i], q5$Observations[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A12 - SQL Question 6: Moving Average Crossover Analysis
@@ -631,6 +724,24 @@ q6_latest_signal <- q6_ma |>
   arrange(Asset)
 
 safe_kable(q6, digits=4, caption="Q6 Data Output")
+
+# Write LaTeX table to file
+sink("../reports/sections/q6_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q6 Data Output}\n")
+cat("\\label{tab:q6}\n")
+cat("\\begin{tabular}{llrrr}\n")
+cat("\\toprule\n")
+cat("Asset & Signal & Mean\\_Daily\\_Return & SD\\_Daily\\_Return & Obs \\\\
+")
+cat("\\midrule\n")
+for (i in 1:nrow(q6)) {
+  cat(sprintf("%s & %s & %.4f & %.4f & %d \\\\
+",
+    q6$Asset[i], q6$Signal[i], q6$Mean_Daily_Return[i], q6$SD_Daily_Return[i], q6$Observations[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A13 - SQL Question 7: Volume and Volatility Relationship
@@ -685,6 +796,26 @@ q7 <- q7_raw |>
   arrange(Asset, Volume_Regime)
 
 safe_kable(q7, digits=4, caption="Q7 Data Output")
+
+# Write LaTeX table to file
+sink("../reports/sections/q7_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q7 Data Output}\n")
+cat("\\label{tab:q7}\n")
+cat("\\begin{tabular}{llrrrrr}\n")
+cat("\\toprule\n")
+cat("Asset & Volume\\_Regime & Obs & Mean\\_Daily\\_Return & Mean\\_Abs\\_Return & Volatility & Avg\\_Volume \\\\
+")
+cat("\\midrule\n")
+for (i in 1:nrow(q7)) {
+  cat(sprintf("%s & %s & %d & %.4f & %.4f & %.4f & %.0f \\\\
+",
+    q7$Asset[i], q7$Volume_Regime[i], q7$Observations[i],
+    q7$Mean_Daily_Return[i], q7$Mean_Absolute_Return[i],
+    q7$Volatility[i], q7$Average_Volume[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A14 - SQL Question 8: VIX Regime Analysis
@@ -724,6 +855,25 @@ q8_plot <- q8 |>
     "Low Volatility (VIX < 20)" = "VIX < 20 (Low Fear)"))
 
 safe_kable(q8, digits=4, caption="Q8 Data Output")
+
+# Write LaTeX table to file
+sink("../reports/sections/q8_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q8 Data Output}\n")
+cat("\\label{tab:q8}\n")
+cat("\\begin{tabular}{llrrr}\n")
+cat("\\toprule\n")
+cat("Asset & VIX\\_Regime & Mean\\_Daily\\_Return & SD\\_Daily\\_Return & Obs \\\\
+")
+cat("\\midrule\n")
+for (i in 1:nrow(q8)) {
+  cat(sprintf("%s & %s & %.4f & %.4f & %d \\\\
+",
+    q8$Asset[i], q8$VIX_Regime[i], q8$Mean_Daily_Return[i],
+    q8$SD_Daily_Return[i], q8$Observations[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A15 - SQL Question 9: Interest Rate Sensitivity
@@ -765,6 +915,25 @@ q9_plot <- q9 |>
   filter(Yield_Direction %in% c("Yields Rising", "Yields Falling"))
 
 safe_kable(q9, digits=4, caption="Q9 Data Output")
+
+# Write LaTeX table to file
+sink("../reports/sections/q9_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q9 Data Output}\n")
+cat("\\label{tab:q9}\n")
+cat("\\begin{tabular}{llrrr}\n")
+cat("\\toprule\n")
+cat("Asset & Yield\\_Direction & Mean\\_Daily\\_Return & SD\\_Daily\\_Return & Obs \\\\
+")
+cat("\\midrule\n")
+for (i in 1:nrow(q9)) {
+  cat(sprintf("%s & %s & %.4f & %.4f & %d \\\\
+",
+    q9$Asset[i], q9$Yield_Direction[i], q9$Mean_Daily_Return[i],
+    q9$SD_Daily_Return[i], q9$Observations[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A16 - SQL Question 10: Inflation Hedge Performance
@@ -800,6 +969,27 @@ q10_plot <- q10 |>
   mutate(Asset = factor(Asset, levels = q10$Asset[order(q10$Total_Cumulative_Return)]))
 
 safe_kable(q10, digits=4, caption="Q10 Data Output")
+
+# Write LaTeX table to file
+sink("../reports/sections/q10_table.tex")
+cat("\\begin{table}[H]\n\\centering\n")
+cat("\\caption{Q10 Data Output}\n")
+cat("\\label{tab:q10}\n")
+cat("\\begin{tabular}{lllrrrrr}\n")
+cat("\\toprule\n")
+cat("Asset & Start\\_Date & End\\_Date & Start\\_CPI\\_YoY & End\\_CPI\\_YoY & Total\\_Cumulative\\_Return & Mean\\_Daily\\_Return & Obs \\\\
+")
+cat("\\midrule\n")
+for (i in 1:nrow(q10)) {
+  cat(sprintf("%s & %s & %s & %.4f & %.4f & %.4f & %.4f & %d \\\\
+",
+    q10$Asset[i], q10$Start_Date[i], q10$End_Date[i],
+    q10$Start_CPI_YoY[i], q10$End_CPI_YoY[i],
+    q10$Total_Cumulative_Return[i], q10$Mean_Daily_Return[i],
+    q10$Observations[i]))
+}
+cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
+sink()
 ```
 
 # Appendix A17 - Data Visualization Charts
@@ -1292,7 +1482,7 @@ ggsave("../reports/figures/fig_viz7.pdf", width = 7, height = 5, device = "pdf")
 
 
 ### Viz Figure 8: Equal-Weighted Portfolio Risk Contribution
-Decomposes total portfolio variance into each asset's contribution to show that equal dollar weights do not produce equal risk.
+Decomposes total portfolio variance into each asset's contribution to show that equal dollar weights do not produce equal risk. SPY is excluded because Apple's 0.787 correlation with the S\&P 500 means that including both AAPL and SPY would double-count the same equity factor exposure, inflating its risk contribution.
 
 ```{r viz-j8}
 returns_matrix <- sql_long |>
