@@ -3,19 +3,16 @@ title: "FINSTAD Case 1 — Executive Dashboard"
 format:
   dashboard:
     css: styles.css
-    orientation: rows
-execute:
-  warning: false
-  message: false
 ---
 
 ```{r setup, include=FALSE}
 library(dplyr)
 library(tidyr)
-library(plotly)
 library(DBI)
 library(RSQLite)
 library(ggplot2)
+library(scales)
+library(knitr)
 
 con <- dbConnect(RSQLite::SQLite(), "data/master_dataset.sqlite")
 fin <- tbl(con, "integrated_data") |> collect() |> mutate(Date = as.Date(Date))
@@ -23,247 +20,360 @@ palette <- c(AAPL = "#555555", BDO = "#003D6B", BTC = "#F7931A", SPY = "#00733E"
 ```
 
 ```{r compute, include=FALSE}
-risk_adj <- fin |> filter(!is.na(Daily_Return)) |>
+# Calculate KPIs
+kpi_data <- fin |>
+  filter(!is.na(Daily_Return)) |>
   group_by(Asset) |>
-  summarise(Mean_DR = mean(Daily_Return), SD_DR = sd(Daily_Return),
-            Sharpe = mean(Daily_Return) / sd(Daily_Return), .groups = "drop")
+  summarise(
+    Total_Return = (last(Close) / first(Close)) - 1,
+    Ann_Vol = sd(Daily_Return) * sqrt(252),
+    Sharpe = mean(Daily_Return) / sd(Daily_Return),
+    Best_Day = max(Daily_Return),
+    Worst_Day = min(Daily_Return),
+    .groups = "drop"
+  )
 
-covid <- fin |> filter(Date >= "2020-02-01", Date <= "2020-03-31", !is.na(Daily_Return)) |>
-  group_by(Asset) |> arrange(Date) |>
+# Calculate drawdown for max DD
+cum_returns <- fin |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
   mutate(CumRet = cumprod(1 + Daily_Return) - 1) |>
-  summarise(Crash = last(CumRet), .groups = "drop")
+  ungroup()
 
-vix_regime <- fin |> filter(!is.na(VIX), !is.na(Daily_Return)) |>
+dd_full <- cum_returns |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(DD = (1 + CumRet) / (1 + cummax(CumRet)) - 1) |>
+  ungroup()
+
+max_dd <- dd_full |>
+  group_by(Asset) |>
+  summarise(Max_DD = min(DD), .groups = "drop")
+
+kpi_data <- kpi_data |> left_join(max_dd, by = "Asset")
+
+# Correlation matrix
+cor_mat <- fin |>
+  select(Date, Asset, Daily_Return) |>
+  pivot_wider(names_from = Asset, values_from = Daily_Return) |>
+  select(AAPL, BDO, BTC, SPY) |>
+  cor(use = "pairwise.complete.obs")
+
+cor_long <- as.data.frame(cor_mat) |>
+  tibble::rownames_to_column("Asset1") |>
+  pivot_longer(-Asset1, names_to = "Asset2", values_to = "Correlation") |>
+  mutate(
+    Asset1 = factor(Asset1, levels = rev(c("AAPL", "BDO", "BTC", "SPY"))),
+    Asset2 = factor(Asset2, levels = c("AAPL", "BDO", "BTC", "SPY"))
+  )
+
+# Risk-adjusted returns
+risk_adj <- fin |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  summarise(
+    Mean_DR = mean(Daily_Return),
+    SD_DR = sd(Daily_Return),
+    .groups = "drop"
+  )
+
+# Rolling 30-day volatility
+rolling_vol <- fin |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(Roll_SD = slider::slide_dbl(Daily_Return, sd, .before = 29, .complete = TRUE) * sqrt(252)) |>
+  ungroup() |>
+  filter(!is.na(Roll_SD))
+
+# COVID crash returns (Feb-Mar 2020)
+covid_crash <- fin |>
+  filter(Date >= "2020-02-01", Date <= "2020-03-31", !is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(CumRet = cumprod(1 + Daily_Return) - 1) |>
+  summarise(Crash = last(CumRet), .groups = "drop") |>
+  mutate(Asset = factor(Asset, levels = Asset[order(Crash)]))
+
+# VIX regime analysis
+vix_regime <- fin |>
+  filter(!is.na(VIX), !is.na(Daily_Return)) |>
   mutate(Regime = ifelse(VIX > 30, "High Fear", ifelse(VIX < 20, "Low Fear", "Moderate"))) |>
   filter(Regime %in% c("High Fear", "Low Fear")) |>
   group_by(Asset, Regime) |>
   summarise(Mean_DR = mean(Daily_Return), .groups = "drop")
 
-inflation <- fin |> filter(CPI_YoY > 0.05, !is.na(Daily_Return)) |>
-  group_by(Asset) |> arrange(Date) |>
+# Inflation hedge (CPI YoY > 5%)
+inflation_hedge <- fin |>
+  filter(CPI_YoY > 0.05, !is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
   mutate(CumRet = cumprod(1 + Daily_Return) - 1) |>
-  summarise(Infl_Return = last(CumRet), .groups = "drop")
-
-cum_returns <- fin |> filter(!is.na(Daily_Return)) |>
-  group_by(Asset) |> arrange(Date) |>
-  mutate(CumRet = cumprod(1 + Daily_Return) - 1) |> ungroup()
-
-cr_wide <- cum_returns |> select(Date, Asset, CumRet) |>
-  pivot_wider(names_from = Date, values_from = CumRet)
-dd_wide <- cum_returns |>
-  group_by(Asset) |> arrange(Date) |>
-  mutate(DD = CumRet - cummax(CumRet)) |> ungroup() |>
-  select(Date, Asset, DD) |>
-  pivot_wider(names_from = Date, values_from = DD)
-dates_seq <- sort(unique(cum_returns$Date))
-
-cor_matrix <- fin |> select(Date, Asset, Daily_Return) |>
-  pivot_wider(names_from = Asset, values_from = Daily_Return) |>
-  select(AAPL, BDO, BTC, SPY) |> cor(use = "pairwise.complete.obs")
-
-cor_long <- cor_matrix |> as.data.frame() |>
-  tibble::rownames_to_column("Asset1") |>
-  tidyr::pivot_longer(-Asset1, names_to = "Asset2", values_to = "Correlation") |>
-  mutate(Asset1 = factor(Asset1, levels = rev(c("AAPL", "BDO", "BTC", "SPY"))),
-         Asset2 = factor(Asset2, levels = c("AAPL", "BDO", "BTC", "SPY")))
-
-roll_vol <- fin |> filter(!is.na(Daily_Return)) |>
-  group_by(Asset) |> arrange(Date) |>
-  mutate(Roll_SD = slider::slide_dbl(Daily_Return, sd, .before = 29, .complete = TRUE) * sqrt(252)) |>
-  ungroup() |> filter(!is.na(Roll_SD))
-rv <- roll_vol[seq(1, nrow(roll_vol), 5), ]
-
-drawdown <- cum_returns |>
-  group_by(Asset) |> arrange(Date) |>
-  mutate(Peak = cummax(CumRet), DD = CumRet - Peak) |> ungroup()
-dd <- drawdown[seq(1, nrow(drawdown), 10), ]
-
-cx <- cum_returns[seq(1, nrow(cum_returns), 10), ]
-covid_plot <- covid |> mutate(Asset = factor(Asset, levels = covid$Asset[order(covid$Crash)]))
-inf_plot <- inflation |>
-  mutate(Asset = factor(Asset, levels = inflation$Asset[order(inflation$Infl_Return)]))
+  summarise(Infl_Return = last(CumRet), .groups = "drop") |>
+  mutate(Asset = factor(Asset, levels = Asset[order(Infl_Return)]))
 ```
 
-```{r base-chart, include=FALSE}
-base_theme <- theme_minimal(base_size = 8) +
-  theme(panel.grid.minor = element_blank(), axis.ticks = element_blank(),
-        plot.margin = margin(3, 3, 3, 3),
-        legend.text = element_text(size = 7),
-        axis.text = element_text(size = 7))
+## Row {height=10%}
 
-mp <- function(p) {
-  ggplotly(p) |> layout(margin = list(t = 15, b = 25, l = 35, r = 10))
-}
-```
-
-## Row {height=50%}
-
-### Column
-
-#### Returns / Drawdown {style="display:flex; align-items:center; padding:0 8px; font-size:0.75em; color:#666"}
-
-```{r}
+```{r kpi-total-return}
+#| title: "Total Return"
 #| echo: false
-p <- ggplot(cx, aes(x = Date, y = CumRet, color = Asset)) +
-  geom_line(size = 0.7) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "#B3B3B3", size = 0.3) +
-  scale_color_manual(values = palette) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(x = NULL, y = NULL) + base_theme +
-  theme(legend.position = "bottom", legend.title = element_blank(),
-        legend.box = "horizontal")
-cr_pl <- ggplotly(p) |> layout(margin = list(t = 35, b = 30, l = 40, r = 10))
+kpi_data |>
+  select(Asset, Total_Return) |>
+  mutate(Total_Return = percent(Total_Return, accuracy = 0.1)) |>
+  kable(col.names = c("Asset", "Return"), format = "html", table.attr = "class='table table-sm'")
+```
 
-dd_traces <- lapply(c("AAPL", "BDO", "BTC", "SPY"), function(a) {
-  ad <- dd_wide |> filter(Asset == a) |> select(-Asset) |> as.numeric()
-  list(x = dates_seq, y = ad, type = "scatter", mode = "lines",
-       name = a, visible = FALSE, showlegend = FALSE,
-       line = list(color = palette[[a]], dash = "dash", width = 1.5),
-       hovertemplate = paste0(a, ": %{y:.1%}<extra></extra>"))
-})
+```{r kpi-volatility}
+#| title: "Volatility"
+#| echo: false
+kpi_data |>
+  select(Asset, Ann_Vol) |>
+  mutate(Ann_Vol = percent(Ann_Vol, accuracy = 0.1)) |>
+  kable(col.names = c("Asset", "Volatility"), format = "html", table.attr = "class='table table-sm'")
+```
 
-cr_pl |>
-  add_trace(data = dd_traces[[1]], inherit = FALSE) |>
-  add_trace(data = dd_traces[[2]], inherit = FALSE) |>
-  add_trace(data = dd_traces[[3]], inherit = FALSE) |>
-  add_trace(data = dd_traces[[4]], inherit = FALSE) |>
-  layout(
-    updatemenus = list(list(
-      type = "dropdown", direction = "down", x = 1.02, y = 1, xanchor = "left",
-      active = 0,
-      buttons = list(
-        list(label = "Cumulative Returns", method = "update",
-             args = list(list(visible = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)),
-                         list(title = list(text = ""),
-                              yaxis = list(tickformat = ".0%")))),
-        list(label = "Drawdown from Peak", method = "update",
-             args = list(list(visible = c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE)),
-                         list(title = list(text = ""),
-                              yaxis = list(tickformat = ".0%"))))
-      )
-    ))
+```{r kpi-sharpe}
+#| title: "Sharpe Ratio"
+#| echo: false
+kpi_data |>
+  select(Asset, Sharpe) |>
+  mutate(Sharpe = round(Sharpe, 3)) |>
+  kable(col.names = c("Asset", "Sharpe"), format = "html", table.attr = "class='table table-sm'")
+```
+
+```{r kpi-max-dd}
+#| title: "Max Drawdown"
+#| echo: false
+kpi_data |>
+  select(Asset, Max_DD) |>
+  mutate(Max_DD = percent(Max_DD, accuracy = 0.1)) |>
+  kable(col.names = c("Asset", "Drawdown"), format = "html", table.attr = "class='table table-sm'")
+```
+
+```{r kpi-best-day}
+#| title: "Best Day"
+#| echo: false
+kpi_data |>
+  select(Asset, Best_Day) |>
+  mutate(Best_Day = percent(Best_Day, accuracy = 0.01)) |>
+  kable(col.names = c("Asset", "Best Day"), format = "html", table.attr = "class='table table-sm'")
+```
+
+```{r kpi-worst-day}
+#| title: "Worst Day"
+#| echo: false
+kpi_data |>
+  select(Asset, Worst_Day) |>
+  mutate(Worst_Day = percent(Worst_Day, accuracy = 0.01)) |>
+  kable(col.names = c("Asset", "Worst Day"), format = "html", table.attr = "class='table table-sm'")
+```
+
+## Row {height=65%}
+
+### Column {width=33%}
+
+```{r correlation-heatmap}
+#| echo: false
+#| fig-width: 4
+#| fig-height: 1.6
+ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
+  geom_tile(color = "white", linewidth = 1) +
+  geom_text(aes(label = sprintf("%.2f", Correlation)), size = 3) +
+  scale_fill_gradient2(low = "#1DC9A4", mid = "#F2F2F2", high = "#2E45B8",
+                       midpoint = 0.4, limits = c(0, 1)) +
+  labs(x = NULL, y = NULL, title = "Correlation Matrix") +
+  theme_minimal(base_size = 9) +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(5, 5, 5, 5)
   )
 ```
 
-### Column
+### Column {width=33%}
 
-#### Correlation Matrix
-
-```{r}
+```{r risk-return}
 #| echo: false
-p <- ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
-  geom_tile(color = "white", linewidth = 1) +
-  geom_text(aes(label = sprintf("%.3f", Correlation)), size = 2.8) +
-  scale_fill_gradient2(low = "#1DC9A4", mid = "#F2F2F2", high = "#2E45B8",
-                       midpoint = 0.4, limits = c(0, 1)) +
-  labs(x = NULL, y = NULL) + base_theme +
-  theme(panel.grid = element_blank(), legend.position = "none")
-mp(p)
-```
-
-### Column
-
-#### Risk vs Return
-
-```{r}
-#| echo: false
-p <- ggplot(risk_adj, aes(x = SD_DR * 100, y = Mean_DR * 100, color = Asset,
-                          text = paste(Asset, "R:", round(Mean_DR*100, 3),
-                                       "% SD:", round(SD_DR*100, 2), "%"))) +
+#| fig-width: 4
+#| fig-height: 1.6
+ggplot(risk_adj, aes(x = SD_DR * 100, y = Mean_DR * 100, color = Asset)) +
   geom_point(size = 3) +
   scale_color_manual(values = palette) +
-  labs(x = "Risk (SD %)", y = "Mean Return (%)") +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  scale_y_continuous(labels = scales::percent_format(scale = 1)) + base_theme +
-  theme(legend.position = "none")
-ggplotly(p, tooltip = "text") |> layout(margin = list(t = 15, b = 35, l = 45, r = 10))
+  labs(x = "Risk (SD %)", y = "Mean Return (%)", title = "Risk vs Return") +
+  theme_minimal(base_size = 9) +
+  theme(
+    legend.position = "bottom",
+    plot.margin = margin(5, 5, 5, 5)
+  )
 ```
 
-### Column
+### Column {width=34%} {.tabset}
 
-#### Rolling 30-Day Volatility
-
-```{r}
+```{r cumulative-returns}
+#| title: "Cumulative Returns"
 #| echo: false
-p <- ggplot(rv, aes(x = Date, y = Roll_SD, color = Asset)) +
+#| fig-width: 4
+#| fig-height: 1.6
+cum_returns <- fin |>
+  filter(!is.na(Daily_Return)) |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(CumRet = cumprod(1 + Daily_Return) - 1) |>
+  ungroup()
+
+ggplot(cum_returns, aes(x = Date, y = CumRet, color = Asset)) +
+  geom_line(size = 0.7) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "#B3B3B3") +
+  scale_color_manual(values = palette) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = NULL, y = NULL, title = "Cumulative Returns") +
+  theme_minimal(base_size = 9) +
+  theme(
+    legend.position = "bottom",
+    plot.margin = margin(5, 5, 5, 5)
+  )
+```
+
+```{r drawdown}
+#| title: "Drawdown"
+#| echo: false
+#| fig-width: 4
+#| fig-height: 1.6
+dd_full <- cum_returns |>
+  group_by(Asset) |>
+  arrange(Date) |>
+  mutate(DD = (1 + CumRet) / (1 + cummax(CumRet)) - 1) |>
+  ungroup()
+
+ggplot(dd_full, aes(x = Date, y = DD, color = Asset)) +
+  geom_line(size = 0.7) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "#B3B3B3") +
+  scale_color_manual(values = palette) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = NULL, y = NULL, title = "Drawdown from Peak") +
+  theme_minimal(base_size = 9) +
+  theme(
+    legend.position = "bottom",
+    plot.margin = margin(5, 5, 5, 5)
+  )
+```
+
+```{r rolling-vol}
+#| title: "Rolling Volatility"
+#| echo: false
+#| fig-width: 4
+#| fig-height: 1.6
+ggplot(rolling_vol, aes(x = Date, y = Roll_SD, color = Asset)) +
   geom_line(size = 0.6) +
   scale_color_manual(values = palette) +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = NULL, y = NULL) + base_theme +
-  theme(legend.position = "bottom", legend.title = element_blank(),
-        legend.box = "horizontal")
-mp(p)
+  labs(x = NULL, y = "Volatility", title = "30-Day Rolling Volatility") +
+  theme_minimal(base_size = 9) +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    plot.margin = margin(5, 5, 5, 5)
+  )
 ```
 
-## Row {height=50%}
-
-### Column
-
-#### Drawdown from Peak
-
-```{r}
+```{r covid-crash}
+#| title: "COVID Crash"
 #| echo: false
-p <- ggplot(dd, aes(x = Date, y = DD, color = Asset)) +
-  geom_line(size = 0.6) +
-  geom_area(aes(fill = Asset), alpha = 0.15) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "#B3B3B3", size = 0.3) +
-  scale_color_manual(values = palette) +
+#| fig-width: 4
+#| fig-height: 1.6
+ggplot(covid_crash, aes(x = Asset, y = Crash, fill = Asset)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  geom_text(aes(label = sprintf("%+.1f%%", Crash * 100)), 
+            vjust = ifelse(covid_crash$Crash < 0, 1.2, -0.3), 
+            size = 3, color = "#333333") +
   scale_fill_manual(values = palette) +
   scale_y_continuous(labels = scales::percent_format()) +
-  labs(x = NULL, y = NULL) + base_theme +
-  theme(legend.position = "bottom", legend.title = element_blank(),
-        legend.box = "horizontal")
-mp(p)
+  labs(x = NULL, y = "Return", title = "COVID Crash (Feb-Mar 2020)") +
+  theme_minimal(base_size = 9) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5)
+  )
 ```
 
-### Column
-
-#### COVID Crash
-
-```{r}
+```{r vix-regime}
+#| title: "VIX Regime"
 #| echo: false
-p <- ggplot(covid_plot, aes(x = Crash * 100, y = Asset, fill = Asset)) +
-  geom_col(width = 0.6, show.legend = FALSE) +
-  geom_text(aes(label = sprintf("%+.1f%%", Crash * 100),
-                hjust = ifelse(Crash < 0, 1.1, -0.1)), size = 2.5, color = "#333333") +
-  scale_fill_manual(values = palette) +
-  labs(x = "Drawdown (%)", y = NULL) + base_theme +
-  theme(panel.grid.major.y = element_blank())
-mp(p)
-```
-
-### Column
-
-#### VIX Regime
-
-```{r}
-#| echo: false
-p <- ggplot(vix_regime, aes(x = Asset, y = Mean_DR * 100, fill = Regime)) +
+#| fig-width: 4
+#| fig-height: 1.6
+ggplot(vix_regime, aes(x = Asset, y = Mean_DR * 100, fill = Regime)) +
   geom_col(position = position_dodge(0.7), width = 0.6) +
   geom_hline(yintercept = 0, size = 0.3, color = "#595959") +
   scale_fill_manual(values = c("High Fear" = "#C91D42", "Low Fear" = "#2E45B8")) +
-  labs(x = NULL, y = "Mean Daily Return (%)") + base_theme +
-  theme(panel.grid.major.x = element_blank(), legend.position = "bottom",
-        legend.title = element_blank())
-mp(p)
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  labs(x = NULL, y = "Mean Return", title = "VIX Regime Comparison") +
+  theme_minimal(base_size = 9) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    plot.margin = margin(5, 5, 5, 5)
+  )
 ```
 
-### Column
-
-#### Inflation Hedge (CPI > 5%)
-
-```{r}
+```{r inflation-hedge}
+#| title: "Inflation Hedge"
 #| echo: false
-p <- ggplot(inf_plot, aes(x = Infl_Return * 100, y = Asset, fill = Asset)) +
-  geom_col(width = 0.5, show.legend = FALSE) +
-  geom_text(aes(label = sprintf("%+.1f%%", Infl_Return * 100),
-                hjust = ifelse(Infl_Return < 0, 1.1, -0.1)), size = 2.5, color = "#333333") +
+#| fig-width: 4
+#| fig-height: 1.6
+ggplot(inflation_hedge, aes(x = Asset, y = Infl_Return, fill = Asset)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  geom_text(aes(label = sprintf("%+.1f%%", Infl_Return * 100)), 
+            vjust = ifelse(inflation_hedge$Infl_Return < 0, 1.2, -0.3), 
+            size = 3, color = "#333333") +
   scale_fill_manual(values = palette) +
-  labs(x = "Cumulative Return (%)", y = NULL) + base_theme +
-  theme(panel.grid.major.y = element_blank())
-mp(p)
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = NULL, y = "Return", title = "High Inflation Period (CPI > 5%)") +
+  theme_minimal(base_size = 9) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5)
+  )
 ```
 
-```{r db-close, include=FALSE}
+## Row {height=25%}
+
+### Column {width=60%}
+
+```{r recommendation}
+#| title: "Investment Recommendation"
+#| echo: false
+knitr::kable(
+  data.frame(
+    Asset = c("AAPL", "BDO", "BTC", "Cash"),
+    Allocation = c("—", "—", "—", "—"),
+    Weight = c("—", "—", "—", "—")
+  ),
+  format = "html",
+  table.attr = "class='table table-sm'"
+)
+```
+
+### Column {width=40%}
+
+```{r descriptive-stats}
+#| title: "Descriptive Statistics"
+#| echo: false
+knitr::kable(
+  data.frame(
+    Statistic = c("Mean", "Median", "Variance", "Std Dev", "Min", "Max", "Range", "Skewness", "Kurtosis"),
+    AAPL = rep("—", 9),
+    BDO = rep("—", 9),
+    BTC = rep("—", 9),
+    SPY = rep("—", 9)
+  ),
+  format = "html",
+  table.attr = "class='table table-sm'"
+)
+```
+
+```{r close, include=FALSE}
 dbDisconnect(con)
 ```
