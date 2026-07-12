@@ -170,14 +170,14 @@ kpi_data |>
   kable(col.names = c("Asset", "Worst Day"), format = "html", table.attr = "class='table table-sm'")
 ```
 
-## Row {height=65%}
+## Row {height=50%}
 
 ### Column {width=33%}
 
 ```{r correlation-heatmap}
 #| echo: false
 #| fig-width: 4
-#| fig-height: 1.6
+#| fig-height: 2.0
 ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
   geom_tile(color = "white", linewidth = 1) +
   geom_text(aes(label = sprintf("%.2f", Correlation)), size = 3) +
@@ -197,7 +197,7 @@ ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
 ```{r risk-return}
 #| echo: false
 #| fig-width: 4
-#| fig-height: 1.6
+#| fig-height: 2.0
 ggplot(risk_adj, aes(x = SD_DR * 100, y = Mean_DR * 100, color = Asset)) +
   geom_point(size = 3) +
   scale_color_manual(values = palette) +
@@ -215,7 +215,7 @@ ggplot(risk_adj, aes(x = SD_DR * 100, y = Mean_DR * 100, color = Asset)) +
 #| title: "Cumulative Returns"
 #| echo: false
 #| fig-width: 4
-#| fig-height: 1.6
+#| fig-height: 2.0
 cum_returns <- fin |>
   filter(!is.na(Daily_Return)) |>
   group_by(Asset) |>
@@ -240,7 +240,7 @@ ggplot(cum_returns, aes(x = Date, y = CumRet, color = Asset)) +
 #| title: "Drawdown"
 #| echo: false
 #| fig-width: 4
-#| fig-height: 1.6
+#| fig-height: 2.0
 dd_full <- cum_returns |>
   group_by(Asset) |>
   arrange(Date) |>
@@ -264,7 +264,7 @@ ggplot(dd_full, aes(x = Date, y = DD, color = Asset)) +
 #| title: "Rolling Volatility"
 #| echo: false
 #| fig-width: 4
-#| fig-height: 1.6
+#| fig-height: 2.0
 ggplot(rolling_vol, aes(x = Date, y = Roll_SD, color = Asset)) +
   geom_line(size = 0.6) +
   scale_color_manual(values = palette) +
@@ -282,7 +282,7 @@ ggplot(rolling_vol, aes(x = Date, y = Roll_SD, color = Asset)) +
 #| title: "COVID Crash"
 #| echo: false
 #| fig-width: 4
-#| fig-height: 1.6
+#| fig-height: 2.0
 ggplot(covid_crash, aes(x = Asset, y = Crash, fill = Asset)) +
   geom_col(width = 0.6, show.legend = FALSE) +
   geom_text(aes(label = sprintf("%+.1f%%", Crash * 100)), 
@@ -302,7 +302,7 @@ ggplot(covid_crash, aes(x = Asset, y = Crash, fill = Asset)) +
 #| title: "VIX Regime"
 #| echo: false
 #| fig-width: 4
-#| fig-height: 1.6
+#| fig-height: 2.0
 ggplot(vix_regime, aes(x = Asset, y = Mean_DR * 100, fill = Regime)) +
   geom_col(position = position_dodge(0.7), width = 0.6) +
   geom_hline(yintercept = 0, size = 0.3, color = "#595959") +
@@ -322,7 +322,7 @@ ggplot(vix_regime, aes(x = Asset, y = Mean_DR * 100, fill = Regime)) +
 #| title: "Inflation Hedge"
 #| echo: false
 #| fig-width: 4
-#| fig-height: 1.6
+#| fig-height: 2.0
 ggplot(inflation_hedge, aes(x = Asset, y = Infl_Return, fill = Asset)) +
   geom_col(width = 0.6, show.legend = FALSE) +
   geom_text(aes(label = sprintf("%+.1f%%", Infl_Return * 100)), 
@@ -338,7 +338,7 @@ ggplot(inflation_hedge, aes(x = Asset, y = Infl_Return, fill = Asset)) +
   )
 ```
 
-## Row {height=25%}
+## Row {height=40%}
 
 ### Column {width=60%}
 

@@ -19,7 +19,7 @@
 .card-body {
   padding: 0.25rem 0.5rem !important;
   margin: 0 !important;
-  height: fit-content !important;
+  height: auto !important;
   max-height: none !important;
   flex: 0 0 auto !important;
   flex-grow: 0 !important;
@@ -36,11 +36,12 @@
   height: fit-content !important;
 }
 
-/* Make chart images fill their container completely */
+/* Make chart images fill their container completely
+   flex: 1 1 100% allows stretching in flex parents (KPI cards with display:flex) */
 .cell-output-display {
   height: fit-content !important;
-  flex: 0 0 auto !important;
-  width: 100%;
+  flex: 1 1 100% !important;
+  width: 100% !important;
 }
 
 .card-body img {
@@ -67,8 +68,14 @@
 
 /* Reduce card header size */
 .card-header {
-  padding: 0.4rem 0.75rem;
+  padding: 0.4rem 0.50rem;
   font-size: 0.9em;
+}
+
+/* Stretch tables to full container width */
+.card .table,
+.card .table-sm {
+  width: 100% !important;
 }
 
 /* Compact bottom panel tables */
@@ -90,26 +97,9 @@
    tab button overlap with KPI headers.
    ======================================== */
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) .card {
-  margin-top: 40px !important;
+  margin-top: 60px !important;
 }
 
-/* ========================================
-   FIX 2: Give KPI cards a larger minimum height
-   so they act as a clear top banner.
-   Targets card-body in the KPI row (1st child).
-   ======================================== */
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:first-child .card-body {
-  min-height: 70px !important;
-  display: flex !important;
-  align-items: center !important;
-}
-
-/* ========================================
-   FIX 3: Shift bottom tables up to close the
-   gap with the charts. No extra margin between
-   the Charts row and Bottom Tables row.
-   ======================================== */
-.bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:last-child .card {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
+  min-height: 40px !important;
 }
