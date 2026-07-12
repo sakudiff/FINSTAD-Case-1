@@ -1,5 +1,6 @@
 ---
 title: "FINSTAD Case 1 — Executive Dashboard"
+output-file: index.html
 format:
   dashboard:
     css: styles.css
