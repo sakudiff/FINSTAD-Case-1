@@ -76,6 +76,7 @@
 .card .table,
 .card .table-sm {
   width: 100% !important;
+  table-layout: fixed !important;
 }
 
 /* Compact bottom panel tables */
@@ -98,6 +99,11 @@
    ======================================== */
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) .card {
   margin-top: 60px !important;
+}
+
+/* Make correlation matrix and risk-return cards stretch to match tabset height */
+.bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) > .bslib-grid .card {
+  height: 85% !important;
 }
 
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:first-child .card-body {

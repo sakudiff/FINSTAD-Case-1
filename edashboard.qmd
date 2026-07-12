@@ -188,7 +188,7 @@ ggplot(cor_long, aes(x = Asset2, y = Asset1, fill = Correlation)) +
   theme(
     panel.grid = element_blank(),
     legend.position = "none",
-    plot.margin = margin(5, 5, 5, 5)
+    plot.margin = margin(15, 15, 15, 15)
   )
 ```
 
@@ -205,7 +205,7 @@ ggplot(risk_adj, aes(x = SD_DR * 100, y = Mean_DR * 100, color = Asset)) +
   theme_minimal(base_size = 9) +
   theme(
     legend.position = "bottom",
-    plot.margin = margin(5, 5, 5, 5)
+    plot.margin = margin(15, 15, 15, 15)
   )
 ```
 
@@ -232,7 +232,7 @@ ggplot(cum_returns, aes(x = Date, y = CumRet, color = Asset)) +
   theme_minimal(base_size = 9) +
   theme(
     legend.position = "bottom",
-    plot.margin = margin(5, 5, 5, 5)
+    plot.margin = margin(15, 15, 15, 15)
   )
 ```
 
@@ -256,7 +256,7 @@ ggplot(dd_full, aes(x = Date, y = DD, color = Asset)) +
   theme_minimal(base_size = 9) +
   theme(
     legend.position = "bottom",
-    plot.margin = margin(5, 5, 5, 5)
+    plot.margin = margin(15, 15, 15, 15)
   )
 ```
 
@@ -274,7 +274,7 @@ ggplot(rolling_vol, aes(x = Date, y = Roll_SD, color = Asset)) +
   theme(
     legend.position = "bottom",
     legend.title = element_blank(),
-    plot.margin = margin(5, 5, 5, 5)
+    plot.margin = margin(15, 15, 15, 15)
   )
 ```
 
@@ -294,7 +294,7 @@ ggplot(covid_crash, aes(x = Asset, y = Crash, fill = Asset)) +
   theme_minimal(base_size = 9) +
   theme(
     panel.grid.major.x = element_blank(),
-    plot.margin = margin(5, 5, 5, 5)
+    plot.margin = margin(15, 15, 15, 15)
   )
 ```
 
@@ -314,7 +314,7 @@ ggplot(vix_regime, aes(x = Asset, y = Mean_DR * 100, fill = Regime)) +
     panel.grid.major.x = element_blank(),
     legend.position = "bottom",
     legend.title = element_blank(),
-    plot.margin = margin(5, 5, 5, 5)
+    plot.margin = margin(15, 15, 15, 15)
   )
 ```
 
@@ -334,7 +334,7 @@ ggplot(inflation_hedge, aes(x = Asset, y = Infl_Return, fill = Asset)) +
   theme_minimal(base_size = 9) +
   theme(
     panel.grid.major.x = element_blank(),
-    plot.margin = margin(5, 5, 5, 5)
+    plot.margin = margin(15, 15, 15, 15)
   )
 ```
 
@@ -347,9 +347,9 @@ ggplot(inflation_hedge, aes(x = Asset, y = Infl_Return, fill = Asset)) +
 #| echo: false
 knitr::kable(
   data.frame(
-    Asset = c("AAPL", "BDO", "BTC", "Cash"),
-    Allocation = c("—", "—", "—", "—"),
-    Weight = c("—", "—", "—", "—")
+    Asset = c("AAPL", "BDO", "BTC", "Cash", "—", "—", "—", "—", "—"),
+    Allocation = c("—", "—", "—", "—", "—", "—", "—", "—", "—"),
+    Weight = c("—", "—", "—", "—", "—", "—", "—", "—", "—")
   ),
   format = "html",
   table.attr = "class='table table-sm'"
