@@ -1,23 +1,90 @@
-/* Compact KPI tables */
-.card .table {
-  font-size: 0.75em;
-  margin-bottom: 0;
+/* ========================================
+   FINSTAD Dashboard — Economist Design
+   ======================================== */
+
+/* --- Page Background --- */
+.quarto-dashboard {
+  background-color: #F2F2F2 !important;
 }
 
-.card .table td,
-.card .table th {
-  padding: 0.2rem 0.4rem;
-  line-height: 1.2;
+.page-layout-custom {
+  padding: 0.5rem !important;
+  gap: 0 !important;
 }
 
-.card .table thead th {
-  font-size: 0.85em;
-  font-weight: 600;
+/* --- Cards --- */
+.card {
+  background: #FFFFFF !important;
+  border: 1px solid #D9D9D9 !important;
+  border-top: 3px solid #880808 !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  height: fit-content !important;
+  max-height: none !important;
+  flex: 0 0 auto !important;
+  flex-grow: 0 !important;
 }
 
-/* Card body - wrap tightly around content, no stretching */
-.card-body {
+.card.html-fill-container {
+  height: fit-content !important;
+  flex: 0 0 auto !important;
+}
+
+/* --- Card Header --- */
+.card-header {
+  padding: 0.35rem 0.75rem !important;
+  font-size: 0.85em !important;
+  font-weight: 700 !important;
+  font-family: Georgia, "Times New Roman", Times, serif !important;
+  color: #141F52 !important;
+  background: none !important;
+  border-bottom: 1px solid #E6E6E6 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+}
+
+.card-header .card-title {
+  color: #141F52 !important;
+  font-size: inherit !important;
+}
+
+/* Tabset card header (no title) */
+.card-header.dashboard-card-no-title {
+  padding: 0.2rem 0.75rem !important;
+  border-bottom: none !important;
+}
+
+/* --- Tabset --- */
+.nav-tabs {
+  border-bottom: 1px solid #D9D9D9 !important;
+}
+
+.nav-tabs .nav-link {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 0.7em !important;
+  font-weight: 500 !important;
+  color: #595959 !important;
+  border: none !important;
   padding: 0.25rem 0.5rem !important;
+  margin-right: 0.15rem !important;
+  border-radius: 0 !important;
+}
+
+.nav-tabs .nav-link.active {
+  color: #141F52 !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid #880808 !important;
+  background: none !important;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #141F52 !important;
+  border-bottom: 2px solid #B3B3B3 !important;
+}
+
+/* --- Card Body --- */
+.card-body {
+  padding: 0.25rem 0.75rem !important;
   margin: 0 !important;
   height: auto !important;
   max-height: none !important;
@@ -26,7 +93,6 @@
   align-self: flex-start !important;
 }
 
-/* Override Bootstrap fill classes on card-body */
 .card-body.html-fill-item {
   height: fit-content !important;
   flex: 0 0 auto !important;
@@ -36,8 +102,7 @@
   height: fit-content !important;
 }
 
-/* Make chart images fill their container completely
-   flex: 1 1 100% allows stretching in flex parents (KPI cards with display:flex) */
+/* --- Chart Images --- */
 .cell-output-display {
   height: fit-content !important;
   flex: 1 1 100% !important;
@@ -55,70 +120,132 @@
   user-select: none;
 }
 
-/* Ensure cards don't stretch vertically */
-.card {
-  height: fit-content !important;
-  max-height: none !important;
-  flex: 0 0 auto !important;
-  flex-grow: 0 !important;
-}
-
-.card.html-fill-container {
-  height: fit-content !important;
-  flex: 0 0 auto !important;
-}
-
-/* Reduce card header size */
-.card-header {
-  padding: 0.4rem 0.50rem;
-  font-size: 0.9em;
-}
-
-/* Hide the bslib fullscreen/expand button on cards */
-.bslib-full-screen-enter {
-  display: none !important;
-}
-
-/* Stretch tables to full container width */
-.card .table,
-.card .table-sm {
+/* --- KPI Tables --- */
+.card .table {
+  font-size: 0.75em;
+  margin-bottom: 0;
   width: 100% !important;
   table-layout: fixed !important;
 }
 
-/* Compact bottom panel tables */
+.card .table thead {
+  border-bottom: 2px solid #141F52 !important;
+}
+
+.card .table thead th {
+  font-size: 0.7em !important;
+  font-weight: 700 !important;
+  color: #141F52 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  padding: 0.2rem 0.4rem !important;
+  border-bottom: none !important;
+}
+
+.card .table td {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 0.8em !important;
+  font-weight: 500 !important;
+  color: #333333 !important;
+  padding: 0.15rem 0.4rem !important;
+  line-height: 1.3 !important;
+  border-top: 1px solid #F2F2F2 !important;
+}
+
+.card .table-striped tbody tr:nth-of-type(odd) {
+  background-color: #F9F9F9 !important;
+}
+
+/* --- Bottom Tables (Recommendation & Descriptive Stats) --- */
 .card .table-sm {
-  font-size: 0.8em;
+  font-size: 0.75em !important;
+  width: 100% !important;
+  table-layout: fixed !important;
+}
+
+.card .table-sm thead th {
+  font-size: 0.65em !important;
+  font-weight: 700 !important;
+  color: #141F52 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  border-bottom: 2px solid #141F52 !important;
+  padding: 0.15rem 0.3rem !important;
 }
 
 .card .table-sm td,
 .card .table-sm th {
-  padding: 0.15rem 0.3rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 0.75em !important;
+  font-weight: 400 !important;
+  color: #333333 !important;
+  padding: 0.15rem 0.3rem !important;
+  border-top: 1px solid #F2F2F2 !important;
 }
 
-/* ========================================
-   FIX 1 & 4: Add vertical spacing between
-   KPI row and Chart row.
-   Targets ALL chart cards plus the tabset
-   card in the Charts row (2nd child of main grid).
-   This pushes the charts down AND fixes the
-   tab button overlap with KPI headers.
-   ======================================== */
+/* --- Navbar --- */
+.navbar {
+  background-color: #880808 !important;
+  border-bottom: 3px solid #141F52 !important;
+  padding: 0.3rem 0.75rem !important;
+}
+
+.navbar-container {
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+}
+
+/* Center the title */
+.navbar-brand-container {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  white-space: nowrap !important;
+}
+
+/* Left group text */
+.navbar-left-group {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 0.75em !important;
+  font-weight: 500 !important;
+  color: #FFFFFF !important;
+  opacity: 0.9 !important;
+  letter-spacing: 0.02em !important;
+}
+
+.navbar-title-text a {
+  font-family: Georgia, "Times New Roman", Times, serif !important;
+  font-size: 0.9em !important;
+  font-weight: 700 !important;
+  color: #FFFFFF !important;
+  letter-spacing: 0.02em !important;
+  text-decoration: none !important;
+}
+
+/* --- Hide Expand Button --- */
+.bslib-full-screen-enter {
+  display: none !important;
+}
+
+/* --- Layout Spacing --- */
+
+/* Vertical spacing between KPI row and chart row */
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) .card {
   margin-top: 60px !important;
 }
 
-/* Make correlation matrix and risk-return cards stretch to match tabset height */
+/* Chart columns height */
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) > .bslib-grid .card {
   height: 85% !important;
 }
 
-/* Constrain tabset card to same height as the other two chart columns */
+/* Tabset card height */
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) > .card.tabset {
   height: 85% !important;
 }
 
-/* Tabset images: fill available space, don't clip */
+/* Tabset card body fills space */
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) .card.tabset .card-body {
   height: 100% !important;
   display: flex;
@@ -137,6 +264,20 @@
   object-fit: contain !important;
 }
 
+/* KPI row min-height */
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:first-child .card-body {
   min-height: 40px !important;
+}
+
+/* --- Navbar Tabs (from Quarto) --- */
+.tab-content {
+  border: none !important;
+}
+
+/* --- Responsive Coda --- */
+/* Economist red accent rule */
+.ds-rule {
+  border: 0;
+  border-top: 1px solid #B3B3B3;
+  margin: 0.5rem 0;
 }
