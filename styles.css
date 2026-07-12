@@ -1,9 +1,111 @@
-.quarto-dashboard .card {
+/* Compact KPI tables */
+.card .table {
+  font-size: 0.75em;
+  margin-bottom: 0;
+}
+
+.card .table td,
+.card .table th {
+  padding: 0.2rem 0.4rem;
+  line-height: 1.2;
+}
+
+.card .table thead th {
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+/* Card body - wrap tightly around content, no stretching */
+.card-body {
+  padding: 0.25rem 0.5rem !important;
+  margin: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  flex: 0 0 auto !important;
+  flex-grow: 0 !important;
+  align-self: flex-start !important;
+}
+
+/* Override Bootstrap fill classes on card-body */
+.card-body.html-fill-item {
+  height: fit-content !important;
   flex: 0 0 auto !important;
 }
-.quarto-dashboard .card-body {
-  flex: 0 0 auto !important;
+
+.card-body.html-fill-container {
+  height: fit-content !important;
 }
+
+/* Make chart images fill their container completely
+   flex: 1 1 100% allows stretching in flex parents (KPI cards with display:flex) */
 .cell-output-display {
+  height: fit-content !important;
+  flex: 1 1 100% !important;
+  width: 100% !important;
+}
+
+.card-body img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+/* Ensure cards don't stretch vertically */
+.card {
+  height: fit-content !important;
+  max-height: none !important;
   flex: 0 0 auto !important;
+  flex-grow: 0 !important;
+}
+
+.card.html-fill-container {
+  height: fit-content !important;
+  flex: 0 0 auto !important;
+}
+
+/* Reduce card header size */
+.card-header {
+  padding: 0.4rem 0.50rem;
+  font-size: 0.9em;
+}
+
+/* Stretch tables to full container width */
+.card .table,
+.card .table-sm {
+  width: 100% !important;
+  table-layout: fixed !important;
+}
+
+/* Compact bottom panel tables */
+.card .table-sm {
+  font-size: 0.8em;
+}
+
+.card .table-sm td,
+.card .table-sm th {
+  padding: 0.15rem 0.3rem;
+}
+
+/* ========================================
+   FIX 1 & 4: Add vertical spacing between
+   KPI row and Chart row.
+   Targets ALL chart cards plus the tabset
+   card in the Charts row (2nd child of main grid).
+   This pushes the charts down AND fixes the
+   tab button overlap with KPI headers.
+   ======================================== */
+.bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) .card {
+  margin-top: 60px !important;
+}
+
+/* Make correlation matrix and risk-return cards stretch to match tabset height */
+.bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) > .bslib-grid .card {
+  height: 85% !important;
+}
+
+.bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:first-child .card-body {
+  min-height: 40px !important;
 }
