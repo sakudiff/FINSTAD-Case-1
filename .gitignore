@@ -48,3 +48,4 @@ scratch/
 *.py
 TODO.md
 reports/fig_viz*.pdf
+.pi-subagents/artifacts

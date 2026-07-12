@@ -51,6 +51,8 @@
   margin: 0;
   padding: 0;
   display: block;
+  pointer-events: none;
+  user-select: none;
 }
 
 /* Ensure cards don't stretch vertically */
@@ -70,6 +72,11 @@
 .card-header {
   padding: 0.4rem 0.50rem;
   font-size: 0.9em;
+}
+
+/* Hide the bslib fullscreen/expand button on cards */
+.bslib-full-screen-enter {
+  display: none !important;
 }
 
 /* Stretch tables to full container width */
@@ -104,6 +111,30 @@
 /* Make correlation matrix and risk-return cards stretch to match tabset height */
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) > .bslib-grid .card {
   height: 85% !important;
+}
+
+/* Constrain tabset card to same height as the other two chart columns */
+.bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) > .card.tabset {
+  height: 85% !important;
+}
+
+/* Tabset images: fill available space, don't clip */
+.bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) .card.tabset .card-body {
+  height: 100% !important;
+  display: flex;
+  align-items: center;
+}
+
+.bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) .card.tabset .cell-output-display {
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:nth-child(2) .card.tabset img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
 }
 
 .bslib-page-fill > .bslib-grid-item.bslib-grid > .bslib-grid:first-child .card-body {
