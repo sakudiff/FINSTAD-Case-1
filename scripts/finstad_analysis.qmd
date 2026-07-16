@@ -992,7 +992,201 @@ cat("\\bottomrule\n\\end{tabular}\n\\end{table}\n")
 sink()
 ```
 
-# Appendix A17 - Data Visualization Charts
+# Appendix A17 - Descriptive Statistics
+*Author: GALEDO, Enrique Lorenzo Hermoso*
+Computes the full 9-statistic descriptive table across all final-dataset variables,
+the correlation matrix of daily returns and macroeconomic series, faceted density
+plots, and individual time series plots for each variable.
+
+```{r descriptive-stats}
+# Descriptive Statistics — GALEDO, Enrique Lorenzo Hermoso
+
+# Select all numeric columns from final_dataset (wide format), drop Date
+numeric_cols <- final_dataset |>
+  select(-Date) |>
+  select(where(is.numeric))
+
+calc_skewness <- function(x) {
+  x <- x[!is.na(x)]
+  n <- length(x)
+  if (n < 3) return(NA_real_)
+  m <- mean(x)
+  s <- sd(x)
+  if (s == 0) return(NA_real_)
+  (sum((x - m)^3) / n) / (s^3)
+}
+
+calc_kurtosis <- function(x) {
+  x <- x[!is.na(x)]
+  n <- length(x)
+  if (n < 4) return(NA_real_)
+  m <- mean(x)
+  s <- sd(x)
+  if (s == 0) return(NA_real_)
+  (sum((x - m)^4) / n) / (s^2)^2 - 3
+}
+
+stat_names <- c("Mean", "Median", "Variance", "Std_Dev", "Min", "Max", "Range", "Skewness", "Kurtosis")
+desc_stats <- data.frame(Statistic = stat_names, row.names = NULL, stringsAsFactors = FALSE)
+
+for (col_name in names(numeric_cols)) {
+  x <- numeric_cols[[col_name]]
+  x_clean <- x[!is.na(x)]
+  desc_stats[[col_name]] <- c(
+    mean(x_clean),
+    median(x_clean),
+    var(x_clean),
+    sd(x_clean),
+    min(x_clean),
+    max(x_clean),
+    max(x_clean) - min(x_clean),
+    calc_skewness(x_clean),
+    calc_kurtosis(x_clean)
+  )
+}
+
+write.csv(desc_stats, file.path(data_dir, "descriptive_stats.csv"), row.names = FALSE, na = "")
+
+safe_kable(desc_stats, digits = 4, caption = paste("Descriptive Statistics — Final Dataset Variables (", ncol(numeric_cols), " columns)", sep = ""))
+```
+
+## Correlation Matrix: Returns & Macroeconomic Variables
+
+```{r desc-correlation}
+desc_cor_cols <- final_dataset |>
+  select(Daily_Return_AAPL, Daily_Return_BDO, Daily_Return_BTC, Daily_Return_SPY,
+         VIX, FEDFUNDS, CPI, DGS10)
+
+desc_cor_matrix <- cor(desc_cor_cols, use = "pairwise.complete.obs")
+
+write.csv(as.data.frame(desc_cor_matrix), file.path(data_dir, "correlation_matrix.csv"), na = "")
+
+cor_long_desc <- as.data.frame(desc_cor_matrix) |>
+  tibble::rownames_to_column("Variable1") |>
+  pivot_longer(-Variable1, names_to = "Variable2", values_to = "Correlation")
+
+ggplot(cor_long_desc, aes(x = Variable2, y = Variable1, fill = Correlation)) +
+  geom_tile(color = "white", linewidth = 1) +
+  geom_text(aes(label = sprintf("%.3f", Correlation)), size = 2.8) +
+  scale_fill_gradient2(low = "#1DC9A4", mid = "#F2F2F2", high = "#2E45B8",
+                       midpoint = 0, limits = c(-1, 1)) +
+  labs(title = "Correlation Matrix: Returns & Macroeconomic Variables",
+       subtitle = "Pearson correlation, 2020 to 2025", x = NULL, y = NULL) +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+ggsave("../reports/figures/fig_desc_correlation.pdf", width = 8, height = 6, device = "pdf")
+```
+
+## Density Plots
+
+```{r desc-density}
+# Macroeconomic variables
+macro_long <- final_dataset |>
+  select(Date, CPI, DGS10, FEDFUNDS, VIX) |>
+  pivot_longer(-Date, names_to = "Variable", values_to = "Value") |>
+  filter(!is.na(Value))
+
+ggplot(macro_long, aes(x = Value)) +
+  geom_density(fill = "#003D6B", alpha = 0.6, color = NA) +
+  facet_wrap(~ Variable, scales = "free", ncol = 3) +
+  labs(title = "Density Distributions: Macroeconomic Variables",
+       subtitle = "2020 to 2025", x = NULL, y = "Density") +
+  theme_minimal(base_size = 10)
+ggsave("../reports/figures/fig_desc_density_macro.pdf", width = 9, height = 6, device = "pdf")
+
+# Asset daily returns
+asset_returns <- sql_long |>
+  filter(!is.na(Daily_Return)) |>
+  select(Asset, Daily_Return)
+
+ggplot(asset_returns, aes(x = Daily_Return, fill = Asset)) +
+  geom_density(alpha = 0.5, color = NA) +
+  scale_fill_manual(values = c(AAPL = "#555555", BDO = "#003D6B",
+                                BTC = "#F7931A", SPY = "#00733E")) +
+  facet_wrap(~ Asset, scales = "free", ncol = 2) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(title = "Density Distributions: Daily Returns by Asset",
+       subtitle = "2020 to 2025", x = "Daily Return", y = "Density") +
+  theme_minimal(base_size = 10) +
+  theme(legend.position = "none")
+ggsave("../reports/figures/fig_desc_density_returns.pdf", width = 8, height = 6, device = "pdf")
+```
+
+## Time Series Plots
+
+```{r desc-timeseries}
+palette <- c(AAPL = "#555555", BDO = "#003D6B", BTC = "#F7931A", SPY = "#00733E")
+
+# Macroeconomic variables — individual plots
+
+ggplot(cpi, aes(x = Date, y = CPI)) +
+  geom_line(color = "#003D6B", linewidth = 0.6) +
+  labs(title = "CPI Level Over Time", x = NULL, y = "CPI Index") +
+  theme_minimal(base_size = 10)
+ggsave("../reports/figures/fig_desc_ts_cpi.pdf", width = 7, height = 3.5, device = "pdf")
+
+ggplot(dgs10, aes(x = Date, y = DGS10)) +
+  geom_line(color = "#00733E", linewidth = 0.6) +
+  labs(title = "10-Year Treasury Yield Over Time", x = NULL, y = "Yield (%)") +
+  theme_minimal(base_size = 10)
+ggsave("../reports/figures/fig_desc_ts_dgs10.pdf", width = 7, height = 3.5, device = "pdf")
+
+ggplot(fedfunds, aes(x = Date, y = FEDFUNDS)) +
+  geom_line(color = "#C91D42", linewidth = 0.6) +
+  labs(title = "Federal Funds Rate Over Time", x = NULL, y = "Rate (%)") +
+  theme_minimal(base_size = 10)
+ggsave("../reports/figures/fig_desc_ts_fedfunds.pdf", width = 7, height = 3.5, device = "pdf")
+
+ggplot(vix, aes(x = Date, y = VIX)) +
+  geom_line(color = "#F7931A", linewidth = 0.6) +
+  labs(title = "VIX Over Time", x = NULL, y = "VIX Index") +
+  theme_minimal(base_size = 10)
+ggsave("../reports/figures/fig_desc_ts_vix.pdf", width = 7, height = 3.5, device = "pdf")
+
+# CPI_YoY (computed in A6, joined into sql_long — use that source)
+cpi_yoy_ts <- sql_long |>
+  filter(Asset == "AAPL") |>
+  select(Date, CPI_YoY) |>
+  filter(!is.na(CPI_YoY)) |>
+  distinct(Date, .keep_all = TRUE)
+
+ggplot(cpi_yoy_ts, aes(x = Date, y = CPI_YoY)) +
+  geom_line(color = "#2E45B8", linewidth = 0.6) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", color = "#B3B3B3", linewidth = 0.3) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "CPI Year-on-Year Change Over Time",
+       subtitle = "Dashed line at 5% threshold", x = NULL, y = "CPI YoY (%)") +
+  theme_minimal(base_size = 10)
+ggsave("../reports/figures/fig_desc_ts_cpiyoy.pdf", width = 7, height = 3.5, device = "pdf")
+
+# Daily returns per asset — individual plots
+for (asset_name in c("AAPL", "BDO", "BTC", "SPY")) {
+  asset_data <- sql_long |>
+    filter(Asset == asset_name, !is.na(Daily_Return))
+  p <- ggplot(asset_data, aes(x = Date, y = Daily_Return)) +
+    geom_line(color = palette[asset_name], linewidth = 0.3) +
+    scale_y_continuous(labels = scales::percent_format()) +
+    labs(title = paste("Daily Returns:", asset_name), x = NULL, y = "Daily Return") +
+    theme_minimal(base_size = 10)
+  ggsave(sprintf("../reports/figures/fig_desc_ts_returns_%s.pdf", tolower(asset_name)),
+         plot = p, width = 7, height = 3.5, device = "pdf")
+}
+```
+
+## TeX Export
+
+```{r desc-tex-export}
+# Generate LaTeX table snippets for the paper
+# Path resolution mirrors data_dir pattern: QMD may render from project root or scripts/
+if (dir.exists("scripts")) {
+  source("scripts/desc_stats_to_tex.R")
+} else {
+  source("desc_stats_to_tex.R")
+}
+```
+
+# Appendix A18 - Data Visualization Charts
 *Author: SEBALLOS, Josiah Dweyn Panganiban*
 Contains the ggplot code for all 10 figures corresponding to SQL Questions Q1 through Q10.
 Each figure is saved as a PDF to the reports/figures/ directory for inclusion in the main report's Data Visualization section.
@@ -1254,7 +1448,7 @@ ggplot(q10_plot, aes(x = Total_Cumulative_Return, y = Asset, fill = Asset)) +
 ggsave("../reports/figures/fig_q10.pdf", width = 7, height = 3.5, device = "pdf")
 ```
 
-# Appendix A18 - Exploratory Data Visualization
+# Appendix A19 - Exploratory Data Visualization
 *Author: SEBALLOS, Josiah Dweyn Panganiban*
 Contains 8 exploratory figures covering cumulative returns, price trends, return distributions, rolling volatility, drawdown analysis, risk-return profiles, and portfolio risk contribution. These complement the SQL-driven charts in A17.
 
@@ -1518,14 +1712,6 @@ ggplot(fig8_data, aes(x = Asset, y = Risk_Contribution, fill = Asset)) +
 ggsave("../reports/figures/fig_viz8.pdf", width = 7, height = 4, device = "pdf")
 ```
 
-
-# Appendix A19 - Descriptive Statistics
-*Author: GALEDO, Enrique Lorenzo Hermoso*
-*Note: Corresponds to Section 6 (Descriptive and Visualizations). Code is being developed in a separate PR and will be merged here.*
-
-```{r descriptive-stats}
-# To be merged from GALEDO, Enrique Lorenzo Hermoso
-```
 
 # Appendix A20 - Investment Recommendation
 *Author: SEECHUNG, Camille Castro*

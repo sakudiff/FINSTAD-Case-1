@@ -389,17 +389,9 @@ knitr::kable(
 ```{r descriptive-stats}
 #| title: "Descriptive Statistics"
 #| echo: false
-knitr::kable(
-  data.frame(
-    Statistic = c("Mean", "Median", "Variance", "Std Dev", "Min", "Max", "Range", "Skewness", "Kurtosis"),
-    AAPL = rep("—", 9),
-    BDO = rep("—", 9),
-    BTC = rep("—", 9),
-    SPY = rep("—", 9)
-  ),
-  format = "html",
-  table.attr = "class='table table-sm'"
-)
+desc_stats <- read.csv("../data/descriptive_stats.csv", stringsAsFactors = FALSE)
+knitr::kable(desc_stats, format = "html", table.attr = "class='table table-sm'",
+             digits = 4)
 ```
 
 ```{r close, include=FALSE}
