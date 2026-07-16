@@ -1,18 +1,42 @@
-\section{Descriptive Statistics \& Data Visualizations}
-
 \subsection{Descriptive Statistics}
 
-{} [Present mean, median, variance, standard deviation, minimum, maximum, range, skewness, kurtosis and discuss implications.]
+Table~\ref{tab:descriptive_stats} presents nine summary statistics for each of the twelve variables in the final analytical dataset, comprising four asset closing prices and daily returns, four macroeconomic series, and the year-on-year CPI change. The statistics span central tendency (mean, median), dispersion (variance, standard deviation, minimum, maximum, range), and distribution shape (skewness, kurtosis) over the 2020 to 2025 sample period at daily frequency. The asset close prices alone reveal a wide disparity in valuation magnitudes: Bitcoin ranges from \$4,971 to \$124,753 with a mean of \$47,213, while Apple ranges from \$54.16 to \$285.66 with a mean of \$164.72, and BDO ranges from \$70.29 to \$168.00 with a mean of \$118.60. These figures establish the baseline scale within which subsequent return-based analysis operates.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# Sec 7: Descriptive Statistics {-}{-} compute mean, median, variance, skewness, kurtosis {-}{-} GALEDO, Enrique Lorenzo Hermoso}
-\end{Highlighting}
-\end{Shaded}
+\input{sections/descriptive_stats_table.tex}
+
+The daily return statistics expose the central tension in the sample. Bitcoin delivers the highest mean daily return at 0.233\% but also the highest standard deviation at 3.80\%, a pairing that cannot be separated in practice ,  higher expected return in this asset is structurally bundled with higher variance. At the opposite end, SPY posts the lowest mean return at 0.068\% and the lowest standard deviation at 1.27\%, reflecting the volatility-dampening effect of broad index diversification. Apple occupies a middle ground with a mean return of 0.121\% at 1.93\% volatility, while BDO posts a mean return of 0.063\% at 2.04\% volatility, placing its risk-adjusted profile marginally below SPY. The skewness statistics reveal directional tail asymmetries that a mean-variance framework misses. Bitcoin's skewness of \(-0.45\) indicates that its extreme daily returns lean toward the downside ,  the left tail is heavier than the right. Apple and BDO exhibit positive skewness of 0.33 and 0.41 respectively, meaning their rare extreme days tend toward the upside. BDO's positive skewness of 0.41 represents a notable reversal from the original dataset's negative figure, indicating that the revised data captured upside tail events previously missed. The kurtosis statistics confirm that all four assets exhibit fat tails relative to the normal distribution benchmark of three. SPY records the highest kurtosis at 14.38, meaning the broad market index ,  often perceived as the safest holding ,  is the most prone to extreme daily shocks. Apple follows at 7.83, BDO at 6.63, and Bitcoin at 9.30, each substantially exceeding the Gaussian baseline.
+
+The macroeconomic variables display a different distributional structure. CPI, DGS10, and FEDFUNDS are all negatively skewed at \(-0.33\), \(-0.42\), and \(-0.17\) respectively, reflecting that interest rates and inflation spent more of the sample period at elevated levels than at depressed ones, with the left tail representing the brief near-zero period of early 2020. The VIX is a case apart: its skewness of 2.62 and kurtosis of 11.94 are the most extreme among all twelve variables. These values capture the characteristic signature of a volatility regime that is calm approximately 90\% of the time and punctuated by brief, violent spikes. Figure~\ref{fig:desc_density_macro} visualizes these distributions directly. CPI and DGS10 are multi-modal, with distinct peaks corresponding to the pre-2021 near-zero inflation and rate environment, the 2022--2023 tightening cycle, and the subsequent plateau. The FEDFUNDS density shows a sharp mode near zero representing the zero-interest-rate-policy period, followed by a secondary concentration near 4\%--5\% after the hiking cycle. The VIX density is heavily right-skewed with a long tail of extreme observations above 40.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_desc_density_macro.pdf}
+  \caption{Density distributions of macroeconomic variables, 2020 to 2025. CPI and DGS10 exhibit multi-modality reflecting distinct monetary policy regimes within the sample period.}
+  \label{fig:desc_density_macro}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_desc_density_returns.pdf}
+  \caption{Density distributions of daily returns by asset, 2020 to 2025. Each panel shows the smoothed distribution of a single asset\'s daily returns.}
+  \label{fig:desc_density_returns}
+\end{figure}
+
+The correlation matrix in Table~\ref{tab:correlation_matrix} and Figure~\ref{fig:desc_correlation} expands the pairwise asset correlations from Q3 to incorporate all five macroeconomic variables, producing an \(8 \times 8\) structure. The asset-return quadrant confirms what Q3 established: AAPL and SPY move in near lockstep at 0.787, BDO's average cross-correlation with the other three assets is 0.109, and BDO's correlation with Bitcoin is the lowest pair in the matrix at 0.088. The macroeconomic quadrant, however, tells a different story. The three monetary-policy variables ,  FEDFUNDS, CPI, and DGS10 ,  form a tight cluster with pairwise correlations ranging from 0.871 to 0.958. The correlation between CPI and DGS10 at 0.958 is near-perfect, reflecting that inflation and long-term interest rates moved as a single factor through the post-COVID cycle: rising inflation drove expectations of tighter policy, which pushed yields higher in lockstep. VIX is inversely correlated with all four asset returns, ranging from \(-0.04\) to \(-0.16\), and more strongly inversely correlated with the macro bloc at approximately \(-0.45\). The implication is that adding CPI, DGS10, and FEDFUNDS to a returns-based analysis does not add three independent dimensions of macroeconomic information; it adds one monetary-policy factor plus VIX as a separate fear-and-liquidity dimension.
+
+\input{sections/correlation_matrix_table.tex}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_desc_correlation.pdf}
+  \caption{Correlation matrix of daily returns and macroeconomic variables, 2020 to 2025. The FEDFUNDS-CPI-DGS10 bloc exhibits near-perfect positive correlation, confirming a single dominant monetary policy factor.}
+  \label{fig:desc_correlation}
+\end{figure}
+
+These descriptive statistics establish three empirical constraints that frame the subsequent SQL investigations and the investment recommendation. First, Bitcoin's return premium is inseparable from its variance premium: any allocation to the cryptocurrency must account for a single-day drawdown exceeding 37\% and a distribution that is negatively skewed and leptokurtic. Second, BDO emerges as a structurally diversifying asset rather than the laggard suggested by earlier data: its positive skewness, low cross-asset correlation, and the lowest VIX sensitivity in the sample together make it a candidate for portfolio risk reduction despite its modest stand-alone return. Third, the macroeconomic environment over the 2020--2025 period was dominated by a single monetary-policy factor: FEDFUNDS, CPI, and DGS10 moved as a bloc, and any analysis that treats them as independent sources of variation will overstate the dimensionality of the conditioning information set.
 
 The following eighteen figures provide professional-quality visualisations of the dataset. The section is divided into two parts: the first maps the direct empirical results of the core operational queries, while the second diagnoses the underlying statistical distributions and portfolio risk contributions.
 
-\subsection{SQL Investigation Visualizations}
 
 \begin{figure}[H]
   \centering
