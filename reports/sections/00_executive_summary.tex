@@ -1,8 +1,14 @@
 \newpage
+
 \begin{center}
 \textbf{\Large Executive Summary}
 \end{center}
-{} [Summarize the objectives, datasets used, major SQL findings, key statistical results, and investment recommendation here (Maximum 1 Page).]
+
+This study constructed an integrated financial database spanning January 2020 through December 2025, combining daily price data for four assets (AAPL, BDO, BTC, SPY) with four FRED macroeconomic indicators (CPI, DGS10, FEDFUNDS, VIX). The raw datasets originated from Yahoo Finance, the Philippine Stock Exchange, and the Federal Reserve, each with distinct trading calendars, reporting frequencies, and date formats. Calendar alignment reduced the dataset to 1,566 common business days using a deterministic Monday-through-Friday grid, and missing macroeconomic observations were bridged via forward-fill. The integrated data was stored in a SQLite relational database and analyzed through ten structured SQL investigations (Q1--Q10).
+
+The risk-adjusted return analysis established a clear hierarchy: BDO produced the highest return per unit of risk, followed by BTC, AAPL, and SPY. The correlation structure revealed that BDO exhibited the lowest pairwise correlations with all other assets, making it the most effective diversifier in the set. BTC carried the highest volatility and the largest single-day loss of 37.2\% during the March 2020 crash, with a worst-day loss 3.9 times that of SPY. The COVID crash period erased 19.2\% from SPY and 31.1\% from BTC, while BDO recovered faster than any other asset. Volume-regime analysis showed that high-volume days amplified volatility across all assets without producing higher mean returns. VIX-regime analysis confirmed that all assets underperformed during high-fear periods, with AAPL and SPY posting negative mean returns when VIX exceeded 30. Interest-rate regime analysis found no consistent directional effect across assets. Inflation-hedge analysis during CPI-YoY periods above 5\% showed BTC and SPY delivering positive cumulative returns while AAPL and BDO declined, confirming that inflation protection varies by asset structure.
+
+No single asset dominated across all metrics. BTC maximized return but at volatility levels that make it unsuitable as a core holding. BDO maximized risk-adjusted return and diversification benefit. AAPL delivered consistent long-term capital appreciation with moderate risk. SPY provided broad U.S. market exposure and served as the analytical benchmark. The recommended portfolio allocates USD 1,000,000 as follows: AAPL (35\%), BDO (30\%), SPY (20\%), and BTC (15\%). This allocation balances return, risk, and diversification rather than maximizing any single objective. The allocation was validated using Excel Solver to minimize portfolio variance subject to return and diversification constraints. All supporting code, data, and the interactive executive dashboard are available in the project repository.
 
 \newpage
 \tableofcontents
