@@ -1713,18 +1713,5 @@ ggsave("../reports/figures/fig_viz8.pdf", width = 7, height = 4, device = "pdf")
 ```
 
 
-# Appendix A20 - Investment Recommendation
-*Author: SEECHUNG, Camille Castro*
-*Note: Corresponds to Section 7 (Investment Recommendation). Allocate USD 1,000,000.*
-
-```{r investment-rec}
-# Sec 7: Investment Recommendation -- USD 1,000,000 allocation among AAPL, BDO, BTC, cash -- SEECHUNG, Camille Castro
-```
-
-# Appendix A21 - Executive Dashboard
-*Author: CRUZ, Ricardo Miguel Iñigo*
-*Note: Corresponds to Section 0 (Executive Summary).*
-
-```{r dashboard-prep}
-# Sec 0: Executive Dashboard -- key stats, charts, SQL findings, recommendation summary -- CRUZ, Ricardo Miguel Iñigo
-```
+# Appendix A20 - Investment Recommendation (Excel Solver)
+*Note: Asset allocation was optimized using Excel Solver, minimizing portfolio variance subject to return and diversification constraints.*
