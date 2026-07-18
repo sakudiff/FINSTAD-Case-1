@@ -1,0 +1,381 @@
+# FINSTAD Case 1 — Project Repository
+
+**Course:** FINSTAD \| **Section:** C01 \| **Group:** 3
+
+### Group Members:
+
+1. CRUZ, Ricardo Miguel Iñigo
+2. GALEDO, Enrique Lorenzo Hermoso
+3. SEBALLOS, Josiah Dweyn Panganiban
+4. SEECHUNG, Camille Castro
+5. SISON, Aaron Joshua Estacio
+
+------------------------------------------------------------------------
+
+### Section Status (Updated per Approved Revisions)
+
+| # | Section | Status | Assignee |
+|---|---------|--------|----------|
+| 00 | Executive Summary | Not written | TBD |
+| 01 | Introduction | Not written | Enrique |
+| 02 | Data Sources | Complete | Enrique |
+| 03 | Data Cleaning | Complete | Aaron |
+| 04 | Database Integration | Complete | Aaron |
+| 05 | SQL Financial Investigation (Q1-Q10) | Complete | Aaron, Inigo |
+| 06 | Descriptive Statistics & Data Visualizations | Partial (Viz done, Stats placeholder) | Enrique, Josiah |
+| 07 | Investment Recommendation | Not written | Camille |
+| 08 | Conclusion | Not written | Camille |
+| 09 | References | Complete | All |
+| 10 | Appendix A (QMD PDF) | Rendered | Everyone |
+| 11 | Appendix B (Tables, Figures, GitHub) | Complete | Everyone |
+| - | Executive Dashboard | TBD | Josiah & Aaron |
+| - | Presentation Deck | TBD | Josiah |
+
+### R Code (QMD) Status
+
+| Section | Chunks | Status |
+|---------|--------|--------|
+| A1-A3 | Setup, Data Loading | Complete |
+| A4-A6 | Cleaning, Integration, SQLite DB | Complete |
+| A7-A16 | SQL Questions Q1-Q10 | Complete |
+| A17 | SQL Visualizations (fig_q1-q10) | Complete |
+| A18 | Exploratory Visualizations (fig_viz1-viz8) | Complete |
+
+## Table of Contents
+
+- [Project Structure](#project-structure)
+- [Welcome to GitHub! (A Guide for Beginners)](#welcome-to-github-a-guide-for-beginners)
+  - [Navigating the GitHub Website](#navigating-the-github-website)
+- [How to Get this Code into R Studio (Cloning)](#how-to-get-this-code-into-r-studio-cloning)
+- [How to Contribute & Save Your Work (The Pull Request Workflow)](#how-to-contribute--save-your-work-the-pull-request-workflow)
+  - [What is a Branch?](#what-is-a-branch)
+  - [What is a Pull Request (PR)?](#what-is-a-pull-request-pr)
+  - [A Quick Tour of R Studio — Where Do I Type What?](#a-quick-tour-of-r-studio--where-do-i-type-what)
+  - [The Step-by-Step Workflow](#the-step-by-step-workflow)
+- [Our Two Main Files: The .qmd and The .tex — What's the Difference?](#our-two-main-files-the-qmd-and-the-tex--whats-the-difference)
+  - [How They Work Together](#how-they-work-together-the-simple-flow)
+- [LaTeX Basics: How to Add Content to Your .tex File](#latex-basics-how-to-add-content-to-your-tex-file)
+  - [Adding Regular Text](#adding-regular-text)
+  - [Making Text Bold, Italic, or Underlined](#making-text-bold-italic-or-underlined)
+  - [Adding Section Headings](#adding-section-headings)
+  - [Adding a Table](#adding-a-table)
+  - [Adding an Image (Chart / Figure)](#adding-an-image-chart--figure)
+  - [Adding a Bullet List](#adding-a-bullet-list)
+  - [Adding a Numbered List](#adding-a-numbered-list)
+  - [Adding Math (If Needed)](#adding-math-if-needed)
+  - [How to Put Your R Output Into the .tex](#how-to-put-your-r-output-into-the-tex)
+- [Pro Tips for Working with Both Files](#pro-tips-for-working-with-both-files)
+
+------------------------------------------------------------------------
+
+## Project Structure {#project-structure}
+
+Here is how our project files are organized:
+
+- `/data/` — Where we will store our downloaded datasets (CSV, Excel). This includes our chosen US Asset, PH Asset, Crypto, SPY, and FRED macroeconomic data.
+- `/scripts/` — Where our analysis code lives. The main file here is `finstad_analysis.qmd` (a Quarto Markdown file) — this is where we write R code, run analysis, make charts, and test our findings.
+- `/reports/` — Where our formatted report lives. The main file here is `finstad_report.tex` (a LaTeX file) — this is where we assemble the final APA-formatted PDF paper using the polished results from our analysis.
+- `/presentations/` — Where we will store our presentation slide deck and Executive Dashboard.
+- `guidelines.md` — The project requirements and rubric provided by the instructor.
+
+------------------------------------------------------------------------
+
+## Welcome to GitHub! (A Guide for Beginners) {#welcome-to-github-a-guide-for-beginners}
+
+If you haven't used GitHub before, don't worry! Think of GitHub as a highly organized **Google Drive specifically for code**.
+
+Instead of saving files as `analysis_final_final_v2.R`, GitHub tracks every single change we make. It allows all of us to work on the project at the same time without accidentally deleting each other's work.
+
+### Navigating the GitHub Website {#navigating-the-github-website}
+
+When you view this repository on the GitHub website, you will see a list of folders and files. You can click on any folder (like `scripts/`) to see what's inside, or click on a file to read its contents. This page you are reading right now is the `README.md` file, which is automatically displayed on the front page of the repository.
+
+------------------------------------------------------------------------
+
+## How to Get this Code into R Studio (Cloning) {#how-to-get-this-code-into-r-studio-cloning}
+
+To work on the project, you need to "clone" (download) this repository onto your computer using R Studio.
+
+1. Create a free account on [GitHub](https://github.com/).
+2. Open **R Studio**.
+3. Go to **File** \> **New Project...**
+4. Select **Version Control** \> **Git**.
+5. In the "Repository URL" box, paste the URL of this GitHub repository.
+6. Choose where you want to save the project folder on your computer.
+7. Click **Create Project**.
+
+Now you have a local copy of our project on your computer!
+
+------------------------------------------------------------------------
+
+## How to Contribute & Save Your Work (The Pull Request Workflow)
+
+When you make changes to files in R Studio, they only save to your personal computer. To share your work with the group on GitHub, we use a system called **Branches** and **Pull Requests (PRs)**.
+
+### What is a Branch? {#what-is-a-branch}
+
+Think of a branch as a separate sandbox or parallel universe. Instead of all 5 of us editing the exact same files at the same time (which causes messy conflicts), you create your own branch to work on your specific task.
+
+### What is a Pull Request (PR)? {#what-is-a-pull-request-pr}
+
+A Pull Request is how you ask the group to review your work before it gets added to the main, official version of the project. - **Why we use it:** It protects our main code from accidental deletions or breaking errors. It also lets us see what everyone else is doing. - **When will others see your changes?** They can see your branch immediately after you push it, but your code won't affect the official `main` project until the PR is merged.
+
+### A Quick Tour of R Studio — Where Do I Type What?
+
+If you open R Studio, you'll see a few different panels. Here's what each one is for:
+
+- **Source Editor (top-left)** — This is like a Word document for your code. You can write R scripts, open the `.qmd` file, edit this README, and save your work here. When you type code in the Source Editor, it doesn't run until you click the **Run** button or press **Ctrl+Enter**. Think of it as your notebook where you draft your analysis before "publishing" it.
+
+- **Console / Terminal (bottom-left)** — This is where commands actually get executed. There are actually *two* tabs here:
+
+  - The **Console** tab — This is for running R code line by line. If you type `2 + 2` here and press Enter, R calculates it immediately.
+  - The **Terminal** tab — This is for system commands like Git. **When the instructions below say "type these commands in the Terminal,"** click the **Terminal** tab first (next to the Console tab). Then type your `git` commands there.
+
+- **Environment / History (top-right)** — This shows all the data and variables you've loaded into R. If you import a dataset, it will appear here.
+
+- **Files / Plots / Packages / Help (bottom-right)** — This shows your project files, any charts you make, installed packages, and help documentation.
+
+**The golden rule:** Write your R analysis code in the **Source Editor** (top-left), and type your Git commands in the **Terminal** tab (bottom-left).
+
+### The Step-by-Step Workflow {#the-step-by-step-workflow}
+
+**To save your work, open the "Terminal" tab in R Studio (usually next to the Console tab at the bottom left) and type these commands in order:**
+
+#### Step 1: Create your own branch
+
+Before you start typing any code today, make sure you are on a new branch. **You need to pick a branch name that describes what you're working on.** Replace `your-name` with your actual name and what you're doing (e.g., `feat/joshua-data-cleaning` for data cleaning, `feat/camille-visualizations` for charts, `feat/enrique-report` for writing the report):
+
+``` bash
+git switch -c feat/your-name-what-youre-doing
+```
+
+**⬆ FILL THIS IN.** Example: `git switch -c feat/joshua-data-cleaning` *(This creates your sandbox and moves you into it).*
+
+#### Step 2: Do your work!
+
+Write your R code, make your graphs, save your files in R Studio.
+
+#### Step 3: Package your changes (Stage & Commit)
+
+When you are ready to upload your work, you need to label what you did.
+
+``` bash
+git add .
+```
+
+*(This tells Git "I want to save ALL the files I just edited").*
+
+``` bash
+git commit -m "Write a short description of what you changed here"
+```
+
+**⬆ FILL THIS IN.** Example: `git commit -m "Added dplyr code for merging datasets"` *(Make sure to write a descriptive message so the group knows what you did).*
+
+#### Step 4: Upload your branch to GitHub (Push)
+
+Send your labeled work to the cloud!
+
+``` bash
+git push -u origin HEAD
+```
+
+#### Step 5: Open a Pull Request (PR)
+
+Go to our project page on the GitHub website. You will see a green button that says **"Compare & pull request"**. Click it, write a short description of what you did, and click **"Create pull request"**.
+
+Once the group reviews it and clicks **Merge**, your code becomes part of the official project!
+
+------------------------------------------------------------------------
+
+## Our Project Workflow: The `.qmd` and the Modular `.tex` Structure
+
+You'll notice we have a specific file structure to avoid merge conflicts when multiple people are writing at the same time:
+
+### `scripts/finstad_analysis.qmd` — The "Do the Work" File
+
+- **What it is:** A Quarto Markdown file (like a smart, mix-code-and-words document). Think of it as your lab notebook where you write R code, run it, see the results, and test your findings.
+- **When to use it:** During the analysis phase — downloading data, cleaning it, merging it, running SQL queries, calculating statistics, and making charts.
+
+### `reports/sections/*.tex` — The "Write Your Chapter" Files
+
+- **What they are:** Individual LaTeX files for each chapter (e.g., `05_sql_financial_analysis.tex`, `06_descriptive_and_visualizations.tex`).
+- **What they do:** This is where you actually write your assigned portion of the paper. By keeping sections in separate files, we prevent messy Git merge conflicts when everyone pushes their work at once.
+- **When to use it:** When you're ready to write your final text, tables, and insert your charts.
+
+### `reports/finstad_report.tex` — The "Master Assembler" File
+
+- **What it is:** The main LaTeX document. **Do not write your essay in here.**
+- **What it does:** It pulls in all the individual section files from `reports/sections/`, applies the APA 7th-edition formatting, and builds the final PDF.
+
+### How They Work Together (The Simple Flow) {#how-they-work-together-the-simple-flow}
+
+```
+Step 1: Do your analysis in the .qmd file
+        (write R code, run it, see charts, find answers)
+                │
+                ▼
+Step 2: Copy your final numbers, tables, and charts
+        and write your essay in YOUR assigned section file
+        (e.g., reports/sections/05_sql_financial_analysis.tex)
+                │
+                ▼
+Step 3: Render the master finstad_report.tex file into a PDF
+        (beautiful, ready-to-submit paper)
+```
+
+> ** The `.tex` file compiles into a PDF.** Every time you "render" or "compile" the main LaTeX file, it pulls your modular section and produces a polished, publication-ready PDF document at **`reports/finstad_report.pdf`**.
+
+**Think of it this way:** The `.qmd` file is where you cook the meal. The `.tex` files in `sections/` are where you plate the dishes. The master `finstad_report.tex` is where the final dinner is served to the reviewers.
+
+------------------------------------------------------------------------
+
+## LaTeX Basics: How to Add Content to Your `.tex` File
+
+You don't need to become a LaTeX expert — just a few simple commands will let you add everything you need.
+
+### Adding Regular Text {#adding-regular-text}
+
+Just type normally between sections. Paragraphs are separated by a blank line:
+
+``` latex
+This is a normal paragraph. Everything here will
+appear in the report as plain text.
+
+This is a new paragraph. See? Just leave a blank line.
+```
+
+### Making Text Bold, Italic, or Underlined {#making-text-bold-italic-or-underlined}
+
+``` latex
+\textbf{This will be bold} → **This will be bold**
+\textit{This will be italic} → *This will be italic*
+\underline{This will be underlined} → underlined
+```
+
+### Adding Section Headings {#adding-section-headings}
+
+The template already has all the sections set up. But if you need to write your own:
+
+``` latex
+\section{Title of My Section} → 1. Title of My Section
+\subsection{Subsection Title} → 1.1 Subsection Title
+\subsubsection{Smaller Subsection} → 1.1.1 Smaller Subsection
+```
+
+### Adding a Table {#adding-a-table}
+
+Here's a simple table you can copy-paste and fill in with your numbers:
+
+``` latex
+\begin{table}[H]
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    Asset & Mean Return & Std Dev & Sharpe Ratio \\
+    \midrule
+    SPY & 0.85\% & 1.25\% & 0.68 \\
+    BTC & 2.10\% & 4.50\% & 0.47 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Daily Returns Summary}
+  \label{tab:returns}
+\end{table}
+```
+
+**Quick table anatomy:** - `{lccc}` — Means: left-aligned column, then 3 centered columns (`l` = left, `c` = center, `r` = right) - Columns are separated with `&`, rows end with `\\` - `\toprule`, `\midrule`, `\bottomrule` — fancy horizontal lines
+
+### Adding an Image (Chart / Figure)
+
+Save your chart as a PNG file in the `/reports/` folder, then add:
+
+``` latex
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{my_chart.png}
+  \caption{Cumulative Returns of Assets (2020–2025)}
+  \label{fig:cumulative_returns}
+\end{figure}
+```
+
+**Pro tip:** The `[width=\textwidth]` part scales the image to fit the page width. You can use `width=0.5\textwidth` for half-width, or `height=8cm` for a specific height.
+
+### Adding a Bullet List {#adding-a-bullet-list}
+
+``` latex
+\begin{itemize}
+  \item First point
+  \item Second point
+  \item Third point
+\end{itemize}
+```
+
+### Adding a Numbered List {#adding-a-numbered-list}
+
+``` latex
+\begin{enumerate}
+  \item Step one
+  \item Step two
+  \item Step three
+\end{enumerate}
+```
+
+### Adding Math (If Needed) {#adding-math-if-needed}
+
+``` latex
+The Sharpe ratio is calculated as: $\frac{R_p - R_f}{\sigma_p}$
+```
+
+### How to Put Your R Output Into the .tex
+
+When you run code in your `.qmd` file and get a result like:
+
+```
+Mean return of SPY: 0.85%
+```
+
+You simply: **Type that number into the .tex file** in the appropriate section. Or better yet, if the `.qmd` produces a table or chart, save it as a PNG/CSV and use the `\includegraphics` or `\begin{tabular}` commands above to insert it.
+
+------------------------------------------------------------------------
+
+## Pro Tips for Working with the Files
+
+1. **Do all your heavy lifting in the .qmd** — Download data, clean it, run your 10 SQL investigations, calculate stats, make charts. The .qmd is built for this.
+2. **Write your prose in the `sections/` folder** — Never dump paragraphs of text directly into `finstad_report.tex`. Find your assigned `.tex` file in `reports/sections/` and edit that.
+3. **Keep your chart filenames simple** — Save them in the `reports/figures/` folder (e.g. `fig_q1.pdf`, `fig_viz1.pdf`) so they are easy to reference in LaTeX.
+4. **Render the master `.tex` every time you make changes** to see if the PDF looks right. If you get an error, usually it's a missing `}` or `\\` in your modular section file — read the error message, fix it, and render again.
+5. **You can render the `.tex` in R Studio** — Open `finstad_report.tex`, then click the "Compile PDF" button (it looks like a little PDF icon) or use the keyboard shortcut **Ctrl+Shift+K** (Windows/Linux) / **Cmd+Shift+K** (Mac).
+
+------------------------------------------------------------------------
+
+## If You Cannot Render Locally: The CI Pipeline
+
+Not everyone has R, LaTeX, or the required packages installed on their machine. Installing a full TeX distribution can take hours and consume several gigabytes of disk space. This is a known obstacle, and this repository provides a direct path around it.
+
+Every time you push a commit to GitHub, an automated pipeline runs in the cloud. It installs R, installs Quarto, downloads every required LaTeX package, renders the `.qmd` appendix, compiles the `.tex` report, and commits the resulting PDFs back to the repository. You never touch a terminal. You never wait for a package to compile.
+
+Here is exactly what happens when you push:
+
+```
+You: git add . && git commit -m "added Q4 analysis" && git push
+        |
+GitHub Actions:
+  1. Syntax check: parses all R code in the .qmd, catches typos and missing braces
+  2. Render (Ubuntu, macOS, Windows): runs the full pipeline on all three operating systems
+     - Installs R, Quarto, LaTeX, biber, and all R packages
+     - Runs quarto render on finstad_analysis.qmd, generating all figures
+     - Copies the appendix PDF to the reports folder
+     - Runs latexmk on finstad_report.tex, resolving all citations
+     - Uploads the completed PDFs as downloadable artifacts
+  3. Commit: takes the Ubuntu-built PDFs and commits them back to the repository
+     - reports/finstad_report.pdf
+     - scripts/finstad_analysis.pdf
+        |
+You: git pull
+     -> you now have the fresh PDFs with your changes rendered
+```
+
+To view the latest report without pulling, open the repository on GitHub, navigate to the **Actions** tab, select the most recent workflow run, and download the PDFs under **Artifacts**. The report PDF is also directly viewable in the repository at `reports/finstad_report.pdf` after the workflow commits it.
+
+This means every group member can contribute to the `.qmd` and `.tex` files regardless of what software they have installed. Edit the source files, commit, push, pull the rendered PDFs. That is the entire workflow.
+
+The three-OS matrix (Ubuntu, macOS, Windows) exists for a reason: if a change breaks the build on one platform but not others, the pipeline catches it. A green checkmark across all three means the document compiles identically on any machine your professor might open it on.
