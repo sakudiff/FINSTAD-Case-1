@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>FINSTAD Case 1 — Executive Dashboard</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -29,18 +26,19 @@ ul.task-list li input[type="checkbox"] {
 <script src="edashboard_files/libs/clipboard/clipboard.min.js"></script>
 <script src="edashboard_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="edashboard_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="edashboard_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="edashboard_files/libs/quarto-html/popper.min.js"></script>
 <script src="edashboard_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="edashboard_files/libs/quarto-html/anchor.min.js"></script>
 <link href="edashboard_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="edashboard_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="edashboard_files/libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="edashboard_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="edashboard_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="edashboard_files/libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="edashboard_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="edashboard_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="edashboard_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="edashboard_files/libs/bootstrap/bootstrap-6a298fde403041579a69b2204f21ed52.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="edashboard_files/libs/bootstrap/bootstrap-dark-6a298fde403041579a69b2204f21ed52.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="edashboard_files/libs/bootstrap/bootstrap-6a298fde403041579a69b2204f21ed52.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="edashboard_files/libs/bootstrap/bootstrap-78b5adbbc375d7e18de0e8bd95e59b2b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="edashboard_files/libs/bootstrap/bootstrap-dark-78b5adbbc375d7e18de0e8bd95e59b2b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="edashboard_files/libs/bootstrap/bootstrap-78b5adbbc375d7e18de0e8bd95e59b2b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="edashboard_files/libs/quarto-dashboard/quarto-dashboard.js"></script>
 <script src="edashboard_files/libs/quarto-dashboard/stickythead.js"></script>
 
@@ -136,19 +134,19 @@ Volatility
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">AAPL</td>
-<td style="text-align: left;">22.9%</td>
+<td style="text-align: left;">30.6%</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">BDO</td>
-<td style="text-align: left;">24.5%</td>
+<td style="text-align: left;">32.4%</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">BTC</td>
-<td style="text-align: left;">50.6%</td>
+<td style="text-align: left;">60.4%</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">SPY</td>
-<td style="text-align: left;">15.1%</td>
+<td style="text-align: left;">20.1%</td>
 </tr>
 </tbody>
 </table>
@@ -175,19 +173,19 @@ Sharpe Ratio
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">AAPL</td>
-<td style="text-align: right;">0.039</td>
+<td style="text-align: right;">0.063</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">BDO</td>
-<td style="text-align: right;">0.052</td>
+<td style="text-align: right;">0.031</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">BTC</td>
-<td style="text-align: right;">0.052</td>
+<td style="text-align: right;">0.061</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">SPY</td>
-<td style="text-align: right;">0.035</td>
+<td style="text-align: right;">0.053</td>
 </tr>
 </tbody>
 </table>
@@ -214,11 +212,11 @@ Max Drawdown
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">AAPL</td>
-<td style="text-align: left;">-28.8%</td>
+<td style="text-align: left;">-30.7%</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">BDO</td>
-<td style="text-align: left;">-24.6%</td>
+<td style="text-align: left;">-26.9%</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">BTC</td>
@@ -226,7 +224,7 @@ Max Drawdown
 </tr>
 <tr class="even">
 <td style="text-align: left;">SPY</td>
-<td style="text-align: left;">-21.1%</td>
+<td style="text-align: left;">-33.7%</td>
 </tr>
 </tbody>
 </table>
@@ -261,7 +259,7 @@ Best Day
 </tr>
 <tr class="odd">
 <td style="text-align: left;">BTC</td>
-<td style="text-align: left;">18.75%</td>
+<td style="text-align: left;">21.11%</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">SPY</td>
@@ -292,11 +290,11 @@ Worst Day
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">AAPL</td>
-<td style="text-align: left;">-9.88%</td>
+<td style="text-align: left;">-12.86%</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">BDO</td>
-<td style="text-align: left;">-11.76%</td>
+<td style="text-align: left;">-13.39%</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">BTC</td>
@@ -304,7 +302,7 @@ Worst Day
 </tr>
 <tr class="even">
 <td style="text-align: left;">SPY</td>
-<td style="text-align: left;">-9.56%</td>
+<td style="text-align: left;">-10.94%</td>
 </tr>
 </tbody>
 </table>
@@ -470,75 +468,155 @@ Descriptive Statistics
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Statistic</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">AAPL</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">BDO</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">BTC</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">SPY</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Close_AAPL</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Close_BDO</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Close_BTC</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Close_SPY</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Daily_Return_AAPL</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Daily_Return_BDO</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Daily_Return_BTC</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Daily_Return_SPY</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">CPI</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">DGS10</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FEDFUNDS</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VIX</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Mean</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
+<td style="text-align: right;">164.7239</td>
+<td style="text-align: right;">118.6006</td>
+<td style="text-align: right;">4.721292e+04</td>
+<td style="text-align: right;">438.7232</td>
+<td style="text-align: right;">0.0012</td>
+<td style="text-align: right;">0.0006</td>
+<td style="text-align: right;">0.0023</td>
+<td style="text-align: right;">0.0007</td>
+<td style="text-align: right;">293.6122</td>
+<td style="text-align: right;">2.9587</td>
+<td style="text-align: right;">2.7553</td>
+<td style="text-align: right;">20.9324</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Median</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
+<td style="text-align: right;">163.0800</td>
+<td style="text-align: right;">123.2500</td>
+<td style="text-align: right;">3.993467e+04</td>
+<td style="text-align: right;">414.3350</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0007</td>
+<td style="text-align: right;">0.0004</td>
+<td style="text-align: right;">298.8320</td>
+<td style="text-align: right;">3.5700</td>
+<td style="text-align: right;">3.7800</td>
+<td style="text-align: right;">19.0000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Variance</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
+<td style="text-align: right;">2469.6072</td>
+<td style="text-align: right;">696.9352</td>
+<td style="text-align: right;">9.882352e+08</td>
+<td style="text-align: right;">11746.4060</td>
+<td style="text-align: right;">0.0004</td>
+<td style="text-align: right;">0.0004</td>
+<td style="text-align: right;">0.0014</td>
+<td style="text-align: right;">0.0002</td>
+<td style="text-align: right;">523.2442</td>
+<td style="text-align: right;">1.9771</td>
+<td style="text-align: right;">4.9038</td>
+<td style="text-align: right;">61.6242</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Std Dev</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
+<td style="text-align: left;">Std_Dev</td>
+<td style="text-align: right;">49.6951</td>
+<td style="text-align: right;">26.3995</td>
+<td style="text-align: right;">3.143621e+04</td>
+<td style="text-align: right;">108.3808</td>
+<td style="text-align: right;">0.0193</td>
+<td style="text-align: right;">0.0204</td>
+<td style="text-align: right;">0.0380</td>
+<td style="text-align: right;">0.0127</td>
+<td style="text-align: right;">22.8745</td>
+<td style="text-align: right;">1.4061</td>
+<td style="text-align: right;">2.2145</td>
+<td style="text-align: right;">7.8501</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Min</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
+<td style="text-align: right;">54.1600</td>
+<td style="text-align: right;">70.2900</td>
+<td style="text-align: right;">4.970790e+03</td>
+<td style="text-align: right;">204.4200</td>
+<td style="text-align: right;">-0.1286</td>
+<td style="text-align: right;">-0.1339</td>
+<td style="text-align: right;">-0.3717</td>
+<td style="text-align: right;">-0.1094</td>
+<td style="text-align: right;">255.8020</td>
+<td style="text-align: right;">0.5200</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">11.8600</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Max</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
+<td style="text-align: right;">285.6600</td>
+<td style="text-align: right;">168.0000</td>
+<td style="text-align: right;">1.247525e+05</td>
+<td style="text-align: right;">686.7300</td>
+<td style="text-align: right;">0.1533</td>
+<td style="text-align: right;">0.1570</td>
+<td style="text-align: right;">0.2111</td>
+<td style="text-align: right;">0.1050</td>
+<td style="text-align: right;">326.0310</td>
+<td style="text-align: right;">4.9800</td>
+<td style="text-align: right;">5.3300</td>
+<td style="text-align: right;">82.6900</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Range</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
+<td style="text-align: right;">231.5000</td>
+<td style="text-align: right;">97.7100</td>
+<td style="text-align: right;">1.197817e+05</td>
+<td style="text-align: right;">482.3100</td>
+<td style="text-align: right;">0.2819</td>
+<td style="text-align: right;">0.2909</td>
+<td style="text-align: right;">0.5828</td>
+<td style="text-align: right;">0.2144</td>
+<td style="text-align: right;">70.2290</td>
+<td style="text-align: right;">4.4600</td>
+<td style="text-align: right;">5.2800</td>
+<td style="text-align: right;">70.8300</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Skewness</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
+<td style="text-align: right;">0.0927</td>
+<td style="text-align: right;">-0.0825</td>
+<td style="text-align: right;">7.299000e-01</td>
+<td style="text-align: right;">0.4766</td>
+<td style="text-align: right;">0.3335</td>
+<td style="text-align: right;">0.4081</td>
+<td style="text-align: right;">-0.4464</td>
+<td style="text-align: right;">-0.2729</td>
+<td style="text-align: right;">-0.3336</td>
+<td style="text-align: right;">-0.4161</td>
+<td style="text-align: right;">-0.1667</td>
+<td style="text-align: right;">2.6170</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Kurtosis</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">—</td>
+<td style="text-align: right;">-0.4105</td>
+<td style="text-align: right;">-1.2613</td>
+<td style="text-align: right;">-5.189000e-01</td>
+<td style="text-align: right;">-0.5565</td>
+<td style="text-align: right;">7.8268</td>
+<td style="text-align: right;">6.6348</td>
+<td style="text-align: right;">9.2965</td>
+<td style="text-align: right;">14.3788</td>
+<td style="text-align: right;">-1.3422</td>
+<td style="text-align: right;">-1.4613</td>
+<td style="text-align: right;">-1.7565</td>
+<td style="text-align: right;">11.9357</td>
 </tr>
 </tbody>
 </table>
