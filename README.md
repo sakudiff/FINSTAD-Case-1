@@ -6,11 +6,11 @@ A consolidated financial database and empirical analysis of four assets (AAPL, B
 
 ## Group Members
 
-- CRUZ, Ricardo Miguel Iñigo
-- GALEDO, Enrique Lorenzo Hermoso
-- SEBALLOS, Josiah Dweyn Panganiban
-- SEECHUNG, Camille Castro
-- SISON, Aaron Joshua Estacio
+- CRUZ, Ricardo Miguel Iñigo ([@inigocruz](https://github.com/inigocruz))
+- GALEDO, Enrique Lorenzo Hermoso ([@rickysasd](https://github.com/rickysasd))
+- SEBALLOS, Josiah Dweyn Panganiban ([@hoshiadweyn](https://github.com/hoshiadweyn))
+- SEECHUNG, Camille Castro ([@camillecs7](https://github.com/camillecs7))
+- SISON, Aaron Joshua Estacio ([@sakudiff](https://github.com/sakudiff))
 
 ## Key Resources
 
@@ -19,7 +19,8 @@ A consolidated financial database and empirical analysis of four assets (AAPL, B
 | **Final Report (PDF)** | [`reports/finstad_report.pdf`](reports/finstad_report.pdf) |
 | **Appendix — Complete R Code (PDF)** | [`scripts/finstad_analysis.pdf`](scripts/finstad_analysis.pdf) |
 | **Executive Dashboard** | [finstadgroup3-executive-dashboard.netlify.app](https://finstadgroup3-executive-dashboard.netlify.app/) |
-| **Presentation Video** | [canva.link/a12r34100jmvebr](https://canva.link/a12r34100jmvebr) |
+| **Presentation Link** | [canva.link/a12r34100jmvebr](https://canva.link/a12r34100jmvebr) |
+| **Presentation Video** | [Google Drive](https://drive.google.com/file/d/1HJgEu4CaJjNuf1SDWIzoSyyQ66-iU-vx/view?usp=sharing) |
 | **GitHub Repository** | [github.com/sakudiff/FINSTAD-Case-1](https://github.com/sakudiff/FINSTAD-Case-1) |
 
 ## Key Findings
