@@ -6,11 +6,11 @@ A consolidated financial database and empirical analysis of four assets (AAPL, B
 
 ## Group Members
 
-- CRUZ, Ricardo Miguel Iñigo
-- GALEDO, Enrique Lorenzo Hermoso
-- SEBALLOS, Josiah Dweyn Panganiban
-- SEECHUNG, Camille Castro
-- SISON, Aaron Joshua Estacio
+- CRUZ, Ricardo Miguel Iñigo ([@inigocruz](https://github.com/inigocruz))
+- GALEDO, Enrique Lorenzo Hermoso ([@rickysasd](https://github.com/rickysasd))
+- SEBALLOS, Josiah Dweyn Panganiban ([@hoshiadweyn](https://github.com/hoshiadweyn))
+- SEECHUNG, Camille Castro ([@camillecs7](https://github.com/camillecs7))
+- SISON, Aaron Joshua Estacio ([@sakudiff](https://github.com/sakudiff))
 
 ## Key Resources
 
