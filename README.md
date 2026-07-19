@@ -19,7 +19,8 @@ A consolidated financial database and empirical analysis of four assets (AAPL, B
 | **Final Report (PDF)** | [`reports/finstad_report.pdf`](reports/finstad_report.pdf) |
 | **Appendix — Complete R Code (PDF)** | [`scripts/finstad_analysis.pdf`](scripts/finstad_analysis.pdf) |
 | **Executive Dashboard** | [finstadgroup3-executive-dashboard.netlify.app](https://finstadgroup3-executive-dashboard.netlify.app/) |
-| **Presentation Video** | [canva.link/a12r34100jmvebr](https://canva.link/a12r34100jmvebr) |
+| **Presentation Link** | [canva.link/a12r34100jmvebr](https://canva.link/a12r34100jmvebr) |
+| **Presentation Video** | [Google Drive](https://drive.google.com/file/d/1HJgEu4CaJjNuf1SDWIzoSyyQ66-iU-vx/view?usp=sharing) |
 | **GitHub Repository** | [github.com/sakudiff/FINSTAD-Case-1](https://github.com/sakudiff/FINSTAD-Case-1) |
 
 ## Key Findings
